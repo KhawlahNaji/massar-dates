@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html dir="ltr"><head><meta charset="UTF-8"><title>MASSAR DATES - Content Manager</title>
+<style>
+*{box-sizing:border-box;font-family:system-ui,sans-serif}body{background:#f4f6f9;margin:0;padding:0}
+.header{background:#1a1a1a;color:#fff;padding:20px;text-align:center}
+.container{max-width:1000px;margin:30px auto;padding:0 20px}
+.card{background:#fff;border-radius:10px;padding:25px;box-shadow:0 4px 15px rgba(0,0,0,.05);margin-bottom:25px}
+.btn{padding:10px 20px;border:none;border-radius:6px;cursor:pointer;font-weight:700;color:#fff;margin:4px}
+.btn-gold{background:#c59b27}.btn-green{background:#27ae60}.btn-red{background:#e74c3c}.btn-gray{background:#7f8c8d}
+table{width:100%;border-collapse:collapse}th,td{padding:12px;text-align:left;border-bottom:1px solid #eee}
+th{background:#fbfbfb;color:#666;font-size:14px}
+input,select,textarea{width:100%;padding:10px;border:1px solid #ccc;border-radius:6px;font-size:14px;margin-bottom:10px}
+.grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:15px}
+.tabs{display:flex;gap:10px;margin-bottom:20px}
+.tab{padding:12px 25px;background:#fff;border:2px solid #ddd;border-radius:8px;cursor:pointer;font-weight:700}
+.tab.active{border-color:#c59b27;color:#c59b27;background:#fff8e1}
+</style></head>
+<body>
+<div class="header"><h1>🌴 MASSAR5 DATES Content Manager</h1><p style="margin:0;color:#bbb">Discover Cards & Blog Manager</p></div>
+<div class="container">
+    <div class="tabs">
+        <button class="tab active" onclick="switchTab('disc')">🌍 Discover Cards</button>
+        <button class="tab" onclick="switchTab('blog')">📝 Blog Posts</button>
+    </div>
+
+    <div id="discTab">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:15px">
+            <h2>Discover Cards</h2><button class="btn btn-gold" onclick="showDiscForm()">+ Add New Card</button>
+        </div>
+        <div class="card"><table><thead><tr><th>Image</th><th>Title (EN)</th><th>Active</th><th>Actions</th></tr></thead><tbody id="discTableBody"></tbody></table></div>
+        <div id="discFormWrap" style="display:none" class="card">
+            <h3 id="discFormTitle">New Card</h3><input type="hidden" id="discEditId">
+            <label>Image URL:</label><input id="discImage" placeholder="https://...">
+            <div class="grid-3">
+                <div><h4>Arabic</h4><input id="discTitleAr" placeholder="Title"><textarea id="discDescAr" placeholder="Desc" rows="3"></textarea></div>
+                <div><h4>English</h4><input id="discTitleEn" placeholder="Title"><textarea id="discDescEn" placeholder="Desc" rows="3"></textarea></div>
+                <div><h4>Malay</h4><input id="discTitleMs" placeholder="Title"><textarea id="discDescMs" placeholder="Desc" rows="3"></textarea></div>
+            </div>
+            <div style="margin-top:15px;display:flex;gap:10px"><button class="btn btn-green" onclick="saveDiscCard()">Save</button><button class="btn btn-gray" onclick="document.getElementById('discFormWrap').style.display='none'">Cancel</button></div>
+        </div>
+    </div>
+
+    <div id="blogTab" style="display:none">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:15px">
+            <h2>Blog Posts</h2><button class="btn btn-gold" onclick="showBlogForm()">+ Add New Post</button>
+        </div>
+        <div class="card"><table><thead><tr><th>Title (EN)</th><th>Category</th><th>Active</th><th>Actions</th></tr></thead><tbody id="blogTableBody"></tbody></table></div>
+        <div id="blogFormWrap" style="display:none" class="card">
+            <h3 id="blogFormTitle">New Post</h3><input type="hidden" id="blogEditId">
+            <div class="grid-3" style="grid-template-columns:1fr 1fr">
+                <div><label>Slug:</label><input id="blogSlug"></div>
+                <div><label>Category:</label><select id="blogCategory"><option value="types-of-dates">Types</option><option value="saudi-farms">Farms</option><option value="dates-guide">Guide</option><option value="nutrition">Nutrition</option><option value="recipes">Recipes</option><option value="news">News</option></select></div>
+            </div>
+            <label>Image URL:</label><input id="blogImage" placeholder="https://...">
+            <div class="grid-3">
+                <div><h4>Arabic</h4><input id="blogTitleAr" placeholder="Title"><textarea id="blogExcAr" placeholder="Excerpt" rows="3"></textarea><textarea id="blogContAr" placeholder="Content HTML" rows="6"></textarea></div>
+                <div><h4>English</h4><input id="blogTitleEn" placeholder="Title"><textarea id="blogExcEn" placeholder="Excerpt" rows="3"></textarea><textarea id="blogContEn" placeholder="Content HTML" rows="6"></textarea></div>
+                <div><h4>Malay</h4><input id="blogTitleMs" placeholder="Title"><textarea id="blogExcMs" placeholder="Excerpt" rows="3"></textarea><textarea id="blogContMs" placeholder="Content HTML" rows="6"></textarea></div>
+            </div>
+            <div style="margin-top:15px;display:flex;gap:10px"><button class="btn btn-green" onclick="saveBlogPost()">Save</button><button class="btn btn-gray" onclick="document.getElementById('blogFormWrap').style.display='none'">Cancel</button></div>
+        </div>
+    </div>
+</div>
+
+<script>
+let token = localStorage.getItem('adminToken');
+if (!token) { window.location.href = '/admin'; }
+
+function switchTab(t) {
+    document.getElementById('discTab').style.display = t === 'disc' ? 'block' : 'none';
+    document.getElementById('blogTab').style.display = t === 'blog' ? 'block' : 'none';
+    document.querySelectorAll('.tab').forEach(b => b.classList.remove('active'));
+    event.target.classList.add('active');
+}
+
+// DISCOVER LOGIC
+async function loadDisc() {
+    const r = await fetch('/api/admin/discover', { headers: { 'Authorization': 'Bearer ' + token } });
+    const c = await r.json();
+    document.getElementById('discTableBody').innerHTML = c.map(x => '<tr><td><img src="'+x.image_url+'" style="height:50px;border-radius:4px"></td><td>'+x.title_en+'</td><td>'+(x.active?'✅':'❌')+'</td><td><button class="btn btn-gold" onclick="editDisc('+x.id+')">✏️</button><button class="btn btn-red" onclick="delDisc('+x.id+')">🗑️</button></td></tr>').join('');
+}
+function showDiscForm(c) { document.getElementById('discFormWrap').style.display='block'; document.getElementById('discFormTitle').textContent=c?'Edit':'New'; document.getElementById('discEditId').value=c?c.id:''; document.getElementById('discImage').value=c?(c.image_url||''):''; ['Ar','En','Ms'].forEach(l=>{document.getElementById('discTitle'+l).value=c?(c['title_'+l.toLowerCase()]||''):''; document.getElementById('discDesc'+l).value=c?(c['desc_'+l.toLowerCase()]||''):''}); }
+async function saveDiscCard() { const id=document.getElementById('discEditId').value; const d={image_url:document.getElementById('discImage').value,active:1,sort_order:0}; ['ar','en','ms'].forEach(l=>{d['title_'+l]=document.getElementById('discTitle'+l.charAt(0).toUpperCase()+l.slice(1)).value;d['desc_'+l]=document.getElementById('discDesc'+l.charAt(0).toUpperCase()+l.slice(1)).value}); await fetch(id?'/api/admin/discover/'+id:'/api/admin/discover',{method:id?'PUT':'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+token},body:JSON.stringify(d)}); document.getElementById('discFormWrap').style.display='none'; loadDisc(); }
+async function editDisc(id) { const r=await fetch('/api/admin/discover',{headers:{'Authorization':'Bearer '+token}}); const c=await r.json(); const x=c.find(i=>i.id===id); if(x)showDiscForm(x); }
+async function delDisc(id) { if(!confirm('Delete?'))return; await fetch('/api/admin/discover/'+id,{method:'DELETE',headers:{'Authorization':'Bearer '+token}}); loadDisc(); }
+
+// BLOG LOGIC
+async function loadBlog() {
+    const r = await fetch('/api/admin/blog', { headers: { 'Authorization': 'Bearer ' + token } });
+    const p = await r.json();
+    document.getElementById('blogTableBody').innerHTML = p.map(x => '<tr><td>'+x.title_en+'</td><td>'+x.category+'</td><td>'+(x.published?'✅':'❌')+'</td><td><button class="btn btn-gold" onclick="editBlog('+x.id+')">✏️</button><button class="btn btn-gray" onclick="toggleBlog('+x.id+')">'+(x.published?'🙈':'👁️')+'</button><button class="btn btn-red" onclick="delBlog('+x.id+')">🗑️</button></td></tr>').join('');
+}
+function showBlogForm(p) { document.getElementById('blogFormWrap').style.display='block'; document.getElementById('blogFormTitle').textContent=p?'Edit':'New'; document.getElementById('blogEditId').value=p?p.id:''; document.getElementById('blogSlug').value=p?p.slug:''; document.getElementById('blogCategory').value=p?p.category:'news'; document.getElementById('blogImage').value=p?(p.image_url||''):''; ['Ar','En','Ms'].forEach(l=>{document.getElementById('blogTitle'+l).value=p?(p['title_'+l.toLowerCase()]||''):''; document.getElementById('blogExc'+l).value=p?(p['excerpt_'+l.toLowerCase()]||''):''; document.getElementById('blogCont'+l).value=p?(p['content_'+l.toLowerCase()]||''):''}); }
+async function saveBlogPost() { const id=document.getElementById('blogEditId').value; const d={slug:document.getElementById('blogSlug').value,category:document.getElementById('blogCategory').value,image_url:document.getElementById('blogImage').value,published:1,featured:0,sort_order:0}; ['ar','en','ms'].forEach(l=>{d['title_'+l]=document.getElementById('blogTitle'+l.charAt(0).toUpperCase()+l.slice(1)).value;d['excerpt_'+l]=document.getElementById('blogExc'+l.charAt(0).toUpperCase()+l.slice(1)).value;d['content_'+l]=document.getElementById('blogCont'+l.charAt(0).toUpperCase()+l.slice(1)).value}); await fetch(id?'/api/admin/blog/'+id:'/api/admin/blog',{method:id?'PUT':'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+token},body:JSON.stringify(d)}); document.getElementById('blogFormWrap').style.display='none'; loadBlog(); }
+async function editBlog(id) { const r=await fetch('/api/admin/blog',{headers:{'Authorization':'Bearer '+token}}); const p=await r.json(); const x=p.find(i=>i.id===id); if(x)showBlogForm(x); }
+async function toggleBlog(id) { await fetch('/api/admin/blog/'+id+'/toggle',{method:'PATCH',headers:{'Authorization':'Bearer '+token}}); loadBlog(); }
+async function delBlog(id) { if(!confirm('Delete?'))return; await fetch('/api/admin/blog/'+id,{method:'DELETE',headers:{'Authorization':'Bearer '+token}}); loadBlog(); }
+
+loadDisc(); loadBlog();
+</script>
+</body></html>
