@@ -1,12 +1,11 @@
 {
   "name": "massar-dates",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "description": "MASSAR DATES - Premium Saudi Dates",
+  "main": "server.js",
   "scripts": {
-  "start": "node server.js"
-}
-,
+    "start": "node create_product_categories.js && node server.js"
+  },
   "keywords": [],
   "author": "",
   "license": "ISC",
