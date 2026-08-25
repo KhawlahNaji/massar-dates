@@ -259,12 +259,12 @@
         Products
     </a>
     <div class="products-dropdown-menu">
-        <button onclick="openProductsCategory(null)" id="dropAllProducts">All Products</button>
-        <button onclick="openProductsCategory(1)" id="dropDates">Dates</button>
-        <button onclick="openProductsCategory(2)" id="dropOils">Oils</button>
-        <button onclick="openProductsCategory(3)" id="dropNuts">Nuts</button>
-        <button onclick="openProductsCategory(4)" id="dropHoney">Honey</button>
-        <button onclick="openProductsCategory(5)" id="dropGiftBoxes">Gift Boxes</button>
+        <button onclick="openProductsCategory(null)">All Products</button>
+        <button onclick="openProductsCategory(1)">Dates</button>
+        <button onclick="openProductsCategory(2)">Oils</button>
+        <button onclick="openProductsCategory(3)">Nuts</button>
+        <button onclick="openProductsCategory(4)">Honey</button>
+        <button onclick="openProductsCategory(5)">Gift Boxes</button>
     </div>
 </div>
             <a href="#" onclick="navigateTo('about'); return false;" id="navAbout">About Us</a>
@@ -515,12 +515,12 @@
             <h1 class="detail-name" id="detName"></h1>
             <p class="detail-description" id="detDesc"></p>
             <div class="detail-meta">
-                <div><div class="meta-label" id="lblDetOrigin">Origin</div><div class="meta-value" id="detOrigin"></div></div>
-                <div><div class="meta-label" id="lblDetType">Type</div><div class="meta-value" id="detType"></div></div>
-                <div><div class="meta-label" id="lblDetTexture">Texture</div><div class="meta-value" id="detTexture"></div></div>
-                <div><div class="meta-label" id="lblDetTaste">Taste</div><div class="meta-value" id="detTaste"></div></div>
+                <div><div class="meta-label">Origin</div><div class="meta-value" id="detOrigin"></div></div>
+                <div><div class="meta-label">Type</div><div class="meta-value" id="detType"></div></div>
+                <div><div class="meta-label">Texture</div><div class="meta-value" id="detTexture"></div></div>
+                <div><div class="meta-label">Taste</div><div class="meta-value" id="detTaste"></div></div>
             </div>
-            <div class="meta-label" id="lblSelectWeight" style="margin-bottom:12px">Select Weight</div>
+            <div class="meta-label" style="margin-bottom:12px">Select Weight</div>
             <div class="weight-options" id="detWeights"></div>
             <div class="detail-price" id="detPrice">RM --</div>
             <div class="quantity-selector"><button class="qty-btn" onclick="chgQty(-1)">−</button><span class="qty-value" id="detQty">1</span><button class="qty-btn" onclick="chgQty(1)">+</button></div>
@@ -741,126 +741,6 @@ async function handleContactSubmit(event) {
     }
 }
 
-const productDetailTranslations = {
-    en: {
-        variety: "Saudi Arabia",
-        origin: "Origin",
-        type: "Type",
-        typeValue: "Dates",
-        texture: "Texture",
-        taste: "Taste",
-        selectWeight: "Select Weight"
-    },
-    ar: {
-        variety: "المملكة العربية السعودية",
-        origin: "المنشأ",
-        type: "النوع",
-        typeValue: "تمور",
-        texture: "القوام",
-        taste: "المذاق",
-        selectWeight: "اختر الوزن"
-    },
-    ms: {
-        variety: "Arab Saudi",
-        origin: "Asal",
-        type: "Jenis",
-        typeValue: "Kurma",
-        texture: "Tekstur",
-        taste: "Rasa",
-        selectWeight: "Pilih Berat"
-    }
-};
-
-function updateProductDetailLanguage() {
-
-    const translations = {
-
-        en: {
-            origin: "Origin",
-            type: "Type",
-            texture: "Texture",
-            taste: "Taste",
-            weight: "Select Weight",
-
-            originValue: "Saudi Arabia",
-            typeValue: "Dates",
-            textureValue: "Soft & Chewy",
-            tasteValue: "Rich & Sweet"
-        },
-
-        ar: {
-            origin: "المنشأ",
-            type: "النوع",
-            texture: "القوام",
-            taste: "الطعم",
-            weight: "اختر الوزن",
-
-            originValue: "المملكة العربية السعودية",
-            typeValue: "تمور",
-            textureValue: "ناعم وغني",
-            tasteValue: "غني وحلو"
-        },
-
-        ms: {
-            origin: "Asal",
-            type: "Jenis",
-            texture: "Tekstur",
-            taste: "Rasa",
-            weight: "Pilih Berat",
-
-            originValue: "Arab Saudi",
-            typeValue: "Kurma",
-            textureValue: "Lembut & Kenyal",
-            tasteValue: "Kaya & Manis"
-        }
-
-    };
-
-    const t = translations[lang] || translations.en;
-
-    const setText = (id, value) => {
-        const el = document.getElementById(id);
-        if (el) el.textContent = value;
-    };
-
-    setText("lblDetOrigin", t.origin);
-    setText("lblDetType", t.type);
-    setText("lblDetTexture", t.texture);
-    setText("lblDetTaste", t.taste);
-    setText("lblSelectWeight", t.weight);
-
-    const product = selProd;
-
-    if (!product) return;
-
-    setText(
-        "detOrigin",
-        product["origin_" + lang] ||
-        product.origin ||
-        t.originValue
-    );
-
-    setText(
-        "detType",
-        product["type_" + lang] ||
-        product.type ||
-        t.typeValue
-    );
-
-    setText(
-        "detTexture",
-        product["texture_" + lang] ||
-        product.texture_en ||
-        t.textureValue
-    );
-
-    setText(
-        "detTaste",
-        product["taste_" + lang] ||
-        product.taste_en ||
-        t.tasteValue
-    );
-}
 function getProductDesc(p, l) {
     if (!p) return '';
     if (p['description_' + l]) return p['description_' + l];
@@ -1107,36 +987,21 @@ async function loadProductCategories() {
         const res = await fetch('/api/product-categories');
         const categories = await res.json();
 
-        const allText =
-            lang === 'ar' ? 'جميع المنتجات' :
-            lang === 'ms' ? 'Semua Produk' :
-            'All Products';
-
         grid.innerHTML = `
             <button
                 onclick="filterProductsByCategory(null)"
                 class="category-btn active"
                 id="categoryBtnAll">
-                ${allText}
+                All Products
             </button>
-        ` + categories.map(c => {
-
-            const categoryName =
-                c['name_' + lang] ||
-                c.name_en ||
-                c.name_ar ||
-                c.name_ms ||
-                'Category';
-
-            return `
-                <button
-                    onclick="filterProductsByCategory(${c.id})"
-                    class="category-btn"
-                    id="categoryBtn${c.id}">
-                    ${categoryName}
-                </button>
-            `;
-        }).join('');
+        ` + categories.map(c => `
+            <button
+                onclick="filterProductsByCategory(${c.id})"
+                class="category-btn"
+                id="categoryBtn${c.id}">
+                ${c.name_en}
+            </button>
+        `).join('');
 
     } catch (error) {
         console.error('Categories loading error:', error);
@@ -1219,91 +1084,33 @@ function renderProducts() {
 }
 
 function showDetail(slugOrId) {
-    const p = products.find(x =>
-        x.slug === slugOrId ||
-        String(x.id) === String(slugOrId)
-    );
-
+    const p = products.find(x => x.slug === slugOrId || String(x.id) === String(slugOrId));
     if (!p) return;
-
     selProd = p;
     qty = 1;
 
     const name = getProductName(p, lang);
     const desc = getProductDesc(p, lang);
 
-    const getLangValue = (field, fallback) => {
-        return p[field + "_" + lang] ||
-               p[field + "_en"] ||
-               p[field] ||
-               fallback;
-    };
-
     document.getElementById('detBreadcrumb').textContent = name;
     document.getElementById('detName').textContent = name;
     document.getElementById('detDesc').textContent = desc;
+    document.getElementById('detVariety').textContent = p.variety || 'Saudi Arabia';
+    document.getElementById('detOrigin').textContent = p.origin || 'Saudi Arabia';
+    const productType =
+    p.type ||
+    (p.name_en || '').match(/Ajwa|Safawi|Sukkari|Sukkary|Medjool|Khalas|Saghai|Barhi|Anbara|Mabroom/i)?.[0] ||
+    'Dates';
 
-    document.getElementById('detVariety').textContent =
-        p["variety_" + lang] ||
-        p.variety ||
-        (lang === 'ar' ? 'تمور سعودية' :
-         lang === 'ms' ? 'Kurma Saudi' :
-         'Saudi Dates');
-
-    document.getElementById('detOrigin').textContent =
-        getLangValue(
-            'origin',
-            lang === 'ar'
-                ? 'المملكة العربية السعودية'
-                : lang === 'ms'
-                    ? 'Arab Saudi'
-                    : 'Saudi Arabia'
-        );
-
-    document.getElementById('detType').textContent =
-        getLangValue(
-            'type',
-            lang === 'ar'
-                ? 'تمور'
-                : lang === 'ms'
-                    ? 'Kurma'
-                    : 'Dates'
-        );
-
-    document.getElementById('detTexture').textContent =
-        getLangValue(
-            'texture',
-            lang === 'ar'
-                ? 'ناعم وغني'
-                : lang === 'ms'
-                    ? 'Lembut & Kenyal'
-                    : 'Soft & Chewy'
-        );
-
-    document.getElementById('detTaste').textContent =
-        getLangValue(
-            'taste',
-            lang === 'ar'
-                ? 'غني وحلو'
-                : lang === 'ms'
-                    ? 'Kaya & Manis'
-                    : 'Rich & Sweet'
-        );
-
-    updateProductDetailLanguage();
+document.getElementById('detType').textContent = productType;
+    document.getElementById('detTexture').textContent = p['texture_' + lang] || p.texture_en || 'Soft & Chewy';
+    document.getElementById('detTaste').textContent = p['taste_' + lang] || p.taste_en || 'Rich & Sweet';
 
     const imgWrap = document.getElementById('detImg');
-
-    imgWrap.innerHTML = p.image_url
-        ? `<img src="${p.image_url}" alt="${name}">`
-        : `<div style="font-size:80px;opacity:.2">🌴</div>`;
+    imgWrap.innerHTML = p.image_url ? `<img src="${p.image_url}" alt="${name}">` : `<div style="font-size:80px;opacity:.2">🌰</div>`;
 
     const pKeys = Object.keys(p.prices || {});
-
-    selWeight = pKeys.includes('500g')
-        ? '500g'
-        : (pKeys[0] || '500g');
-
+    selWeight = pKeys.includes('500g') ? '500g' : (pKeys[0] || '500g');
     renderDetailWeights();
     updateDetailPrice();
     navigateTo('detail');
@@ -1457,57 +1264,6 @@ function updateNavigationLanguage() {
         mobile.dir = lang === "ar" ? "rtl" : "ltr";
     }
 }
-    loadProductCategories();
-
-    if (selProd) {
-        showDetail(selProd.slug || selProd.id);
-    }
-
-function updateProductDropdownLanguage() {
-
-    const t = {
-        en: {
-            all: "All Products",
-            dates: "Dates",
-            oils: "Oils",
-            nuts: "Nuts",
-            honey: "Honey",
-            gifts: "Gift Boxes"
-        },
-
-        ar: {
-            all: "جميع المنتجات",
-            dates: "التمور",
-            oils: "الزيوت",
-            nuts: "المكسرات",
-            honey: "العسل",
-            gifts: "علب الهدايا"
-        },
-
-        ms: {
-            all: "Semua Produk",
-            dates: "Kurma",
-            oils: "Minyak",
-            nuts: "Kacang",
-            honey: "Madu",
-            gifts: "Kotak Hadiah"
-        }
-    };
-
-    const x = t[lang] || t.en;
-
-    const setDrop = (id, value) => {
-        const el = document.getElementById(id);
-        if (el) el.textContent = value;
-    };
-
-    setDrop("dropAllProducts", x.all);
-    setDrop("dropDates", x.dates);
-    setDrop("dropOils", x.oils);
-    setDrop("dropNuts", x.nuts);
-    setDrop("dropHoney", x.honey);
-    setDrop("dropGiftBoxes", x.gifts);
-}
 function setLang(l) {
     if (!['en', 'ar', 'ms'].includes(l)) {
         l = 'en';
@@ -1528,8 +1284,6 @@ function setLang(l) {
 
     applyConfig();
     updateNavigationLanguage();
-    updateProductDropdownLanguage();
-    loadProductCategories();
     renderProducts();
 
     if (selProd) {
