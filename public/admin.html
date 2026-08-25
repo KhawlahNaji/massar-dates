@@ -92,9 +92,215 @@
         .modal-overlay{display:none;position:fixed;inset:0;background:rgba(30,20,15,.6);backdrop-filter:blur(4px);z-index:500;align-items:center;justify-content:center;padding:20px}
         .modal-overlay.active{display:flex}
         .modal{background:var(--white);width:100%;max-width:780px;max-height:92vh;border-radius:var(--radius-lg);overflow-y:auto;padding:28px}
-        
+     /* ===== TEXT EDITOR CONTROLS ===== */
+
+.text-editor-toolbar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
+    padding: 10px;
+    margin-bottom: 10px;
+    background: var(--cream);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+}
+
+.text-editor-toolbar label {
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--brown-dark);
+    margin: 0;
+}
+
+.text-editor-toolbar select,
+.text-editor-toolbar input[type="color"] {
+    height: 34px;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    background: white;
+    padding: 4px 8px;
+}
+
+.text-editor-toolbar button {
+    height: 34px;
+    min-width: 34px;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    background: white;
+    cursor: pointer;
+    font-weight: 700;
+    color: var(--brown-dark);
+}
+
+.text-editor-toolbar button:hover {
+    background: var(--gold);
+    color: white;
+}
+
+.text-editor-toolbar .editor-size {
+    width: 75px;
+}
+
+.text-editor-toolbar .editor-font {
+    width: 120px;
+}
+
+.rich-text-editor {
+    width: 100%;
+    min-height: 100px;
+    padding: 12px 16px;
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius-md);
+    background: var(--cream);
+    font-size: 16px;
+    outline: none;
+    overflow-y: auto;
+}
+
+.rich-text-editor:focus {
+    border-color: var(--gold);
+    background: var(--white);
+}
+
+.rich-text-editor[dir="rtl"] {
+    text-align: right;
+}   
         @media(max-width:900px){.sidebar{transform:translateX(-100%)}.sidebar.open{transform:translateX(0)}.main-wrap{margin-left:0}.form-grid{grid-template-columns:1fr}}
-    </style>
+   /* ================= BLOG RICH TEXT EDITOR ================= */
+
+.blog-editor {
+    width: 100%;
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius-md);
+    background: var(--white);
+    overflow: hidden;
+    box-shadow: var(--shadow-sm);
+}
+
+.blog-editor-toolbar {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 6px;
+    padding: 10px;
+    background: var(--cream);
+    border-bottom: 1px solid var(--border);
+}
+
+.blog-editor-toolbar select {
+    width: auto;
+    min-width: 100px;
+    padding: 7px 9px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    background: var(--white);
+    color: var(--brown-dark);
+    font-size: 13px;
+}
+
+.blog-editor-toolbar button {
+    min-width: 36px;
+    height: 34px;
+    padding: 5px 9px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    background: var(--white);
+    color: var(--brown-dark);
+    font-size: 14px;
+}
+
+.blog-editor-toolbar button:hover {
+    background: var(--cream-dark);
+    border-color: var(--gold);
+}
+
+.editor-color {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    height: 34px;
+    padding: 4px 8px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    background: var(--white);
+    font-size: 13px;
+}
+
+.editor-color input {
+    width: 30px;
+    height: 25px;
+    padding: 0;
+    border: none;
+    background: transparent;
+    cursor: pointer;
+}
+
+.blog-editor-content {
+    width: 100%;
+    min-height: 280px;
+    padding: 18px 20px;
+    background: var(--white);
+    color: var(--text);
+    font-family: var(--font-body);
+    font-size: 16px;
+    line-height: 1.8;
+    outline: none;
+    overflow-y: auto;
+}
+
+.blog-editor-content:focus {
+    box-shadow: inset 0 0 0 2px rgba(184,149,106,.25);
+}
+
+.blog-editor-content p {
+    margin: 8px 0;
+}
+
+.blog-editor-content h2 {
+    margin: 18px 0 10px;
+    color: var(--brown-dark);
+    font-family: var(--font-display);
+}
+
+.blog-editor-content h3 {
+    margin: 15px 0 8px;
+    color: var(--brown-dark);
+}
+
+.blog-editor-content ul,
+.blog-editor-content ol {
+    margin: 10px 25px;
+    padding-left: 20px;
+}
+
+.blog-editor-content img {
+    max-width: 100%;
+    height: auto;
+    border-radius: var(--radius-md);
+    margin: 12px 0;
+}
+
+.blog-editor-content a {
+    color: var(--gold-dark);
+    text-decoration: underline;
+}
+
+@media (max-width: 700px) {
+    .blog-editor-toolbar {
+        gap: 5px;
+    }
+
+    .blog-editor-toolbar select {
+        min-width: 85px;
+        font-size: 12px;
+    }
+
+    .blog-editor-content {
+        min-height: 220px;
+    }
+}
+ </style>
 </head>
 <body>
 
@@ -490,7 +696,7 @@
            onchange="uploadAboutImage(event)">
 </div>
 
-   <button class="btn btn-primary" onclick="saveConfigFields(['about_title_en','about_title_ar','about_title_ms','about_text_en','about_text_ar','about_text_ms'])">💾 Save About Us</button>
+<button class="btn btn-primary" onclick="saveConfigFields(['about_title_en','about_title_ar','about_title_ms','about_text_en','about_text_ar','about_text_ms','about_image'])">💾 Save About Us</button>
                     </div>
                 </div>
             </div>
@@ -698,21 +904,220 @@
                         <button type="button" class="lang-tab" onclick="switchBlogLangTab('ms', this)">🇲🇾 Bahasa Melayu</button>
                     </div>
 
-                    <div id="blogLangBox-ar">
-                        <div class="field"><label>العنوان (عربي)</label><input type="text" id="adminBlogTitleAr"></div>
-                        <div class="field"><label>الوصف المختصر</label><textarea id="adminBlogExcAr" rows="3"></textarea></div>
-                        <div class="field"><label>المحتوى الكامل (HTML)</label><textarea id="adminBlogContAr" rows="6"></textarea></div>
-                    </div>
-                    <div id="blogLangBox-en" style="display:none;" dir="ltr">
-                        <div class="field"><label>Title (English)</label><input type="text" id="adminBlogTitleEn"></div>
-                        <div class="field"><label>Short Excerpt</label><textarea id="adminBlogExcEn" rows="3"></textarea></div>
-                        <div class="field"><label>Full Content (HTML)</label><textarea id="adminBlogContEn" rows="6"></textarea></div>
-                    </div>
-                    <div id="blogLangBox-ms" style="display:none;" dir="ltr">
-                        <div class="field"><label>Tajuk (Malay)</label><input type="text" id="adminBlogTitleMs"></div>
-                        <div class="field"><label>Penerangan Ringkas</label><textarea id="adminBlogExcMs" rows="3"></textarea></div>
-                        <div class="field"><label>Kandungan Penuh (HTML)</label><textarea id="adminBlogContMs" rows="6"></textarea></div>
-                    </div>
+             <div id="blogLangBox-ar">
+    <div class="field">
+        <label>العنوان (عربي)</label>
+        <input type="text" id="adminBlogTitleAr">
+    </div>
+
+    <div class="field">
+        <label>الوصف المختصر</label>
+        <textarea id="adminBlogExcAr" rows="3"></textarea>
+    </div>
+
+    <div class="field">
+        <label>المحتوى الكامل</label>
+
+        <div class="blog-editor">
+            <div class="blog-editor-toolbar">
+                <select onchange="blogFormat('adminBlogContAr','fontName',this.value)">
+                    <option value="">الخط</option>
+                    <option value="Arial">Arial</option>
+                    <option value="Georgia">Georgia</option>
+                    <option value="Verdana">Verdana</option>
+                    <option value="Tahoma">Tahoma</option>
+                    <option value="Times New Roman">Times New Roman</option>
+                </select>
+
+                <select onchange="blogFormat('adminBlogContAr','fontSize',this.value)">
+                    <option value="">الحجم</option>
+                    <option value="1">12px</option>
+                    <option value="2">14px</option>
+                    <option value="3">16px</option>
+                    <option value="4">18px</option>
+                    <option value="5">24px</option>
+                    <option value="6">30px</option>
+                    <option value="7">36px</option>
+                </select>
+
+                <button type="button" onclick="blogFormat('adminBlogContAr','bold')"><b>B</b></button>
+                <button type="button" onclick="blogFormat('adminBlogContAr','italic')"><i>I</i></button>
+                <button type="button" onclick="blogFormat('adminBlogContAr','underline')"><u>U</u></button>
+
+                <button type="button" onclick="blogFormat('adminBlogContAr','justifyRight')">⬅</button>
+                <button type="button" onclick="blogFormat('adminBlogContAr','justifyCenter')">↔</button>
+                <button type="button" onclick="blogFormat('adminBlogContAr','justifyLeft')">➡</button>
+
+                <label class="editor-color">
+                    🎨
+                    <input type="color"
+                           onchange="blogFormat('adminBlogContAr','foreColor',this.value)">
+                </label>
+
+                <button type="button" onclick="blogFormat('adminBlogContAr','insertUnorderedList')">
+                    • قائمة
+                </button>
+
+                <button type="button" onclick="blogFormat('adminBlogContAr','formatBlock','h2')">
+                    H2
+                </button>
+
+                <button type="button" onclick="blogFormat('adminBlogContAr','formatBlock','p')">
+                    P
+                </button>
+            </div>
+
+            <div id="adminBlogContAr"
+                 class="blog-editor-content"
+                 contenteditable="true"
+                 dir="rtl"></div>
+        </div>
+    </div>
+</div>
+
+
+<div id="blogLangBox-en" style="display:none;" dir="ltr">
+    <div class="field">
+        <label>Title (English)</label>
+        <input type="text" id="adminBlogTitleEn">
+    </div>
+
+    <div class="field">
+        <label>Short Excerpt</label>
+        <textarea id="adminBlogExcEn" rows="3"></textarea>
+    </div>
+
+    <div class="field">
+        <label>Full Content</label>
+
+        <div class="blog-editor">
+            <div class="blog-editor-toolbar">
+                <select onchange="blogFormat('adminBlogContEn','fontName',this.value)">
+                    <option value="">Font</option>
+                    <option value="Arial">Arial</option>
+                    <option value="Georgia">Georgia</option>
+                    <option value="Verdana">Verdana</option>
+                    <option value="Tahoma">Tahoma</option>
+                    <option value="Times New Roman">Times New Roman</option>
+                </select>
+
+                <select onchange="blogFormat('adminBlogContEn','fontSize',this.value)">
+                    <option value="">Size</option>
+                    <option value="1">12px</option>
+                    <option value="2">14px</option>
+                    <option value="3">16px</option>
+                    <option value="4">18px</option>
+                    <option value="5">24px</option>
+                    <option value="6">30px</option>
+                    <option value="7">36px</option>
+                </select>
+
+                <button type="button" onclick="blogFormat('adminBlogContEn','bold')"><b>B</b></button>
+                <button type="button" onclick="blogFormat('adminBlogContEn','italic')"><i>I</i></button>
+                <button type="button" onclick="blogFormat('adminBlogContEn','underline')"><u>U</u></button>
+
+                <button type="button" onclick="blogFormat('adminBlogContEn','justifyLeft')">⬅</button>
+                <button type="button" onclick="blogFormat('adminBlogContEn','justifyCenter')">↔</button>
+                <button type="button" onclick="blogFormat('adminBlogContEn','justifyRight')">➡</button>
+
+                <label class="editor-color">
+                    🎨
+                    <input type="color"
+                           onchange="blogFormat('adminBlogContEn','foreColor',this.value)">
+                </label>
+
+                <button type="button" onclick="blogFormat('adminBlogContEn','insertUnorderedList')">
+                    • List
+                </button>
+
+                <button type="button" onclick="blogFormat('adminBlogContEn','formatBlock','h2')">
+                    H2
+                </button>
+
+                <button type="button" onclick="blogFormat('adminBlogContEn','formatBlock','p')">
+                    P
+                </button>
+            </div>
+
+            <div id="adminBlogContEn"
+                 class="blog-editor-content"
+                 contenteditable="true"
+                 dir="ltr"></div>
+        </div>
+    </div>
+</div>
+
+
+<div id="blogLangBox-ms" style="display:none;" dir="ltr">
+    <div class="field">
+        <label>Tajuk (Malay)</label>
+        <input type="text" id="adminBlogTitleMs">
+    </div>
+
+    <div class="field">
+        <label>Penerangan Ringkas</label>
+        <textarea id="adminBlogExcMs" rows="3"></textarea>
+    </div>
+
+    <div class="field">
+        <label>Kandungan Penuh</label>
+
+        <div class="blog-editor">
+            <div class="blog-editor-toolbar">
+                <select onchange="blogFormat('adminBlogContMs','fontName',this.value)">
+                    <option value="">Font</option>
+                    <option value="Arial">Arial</option>
+                    <option value="Georgia">Georgia</option>
+                    <option value="Verdana">Verdana</option>
+                    <option value="Tahoma">Tahoma</option>
+                    <option value="Times New Roman">Times New Roman</option>
+                </select>
+
+                <select onchange="blogFormat('adminBlogContMs','fontSize',this.value)">
+                    <option value="">Size</option>
+                    <option value="1">12px</option>
+                    <option value="2">14px</option>
+                    <option value="3">16px</option>
+                    <option value="4">18px</option>
+                    <option value="5">24px</option>
+                    <option value="6">30px</option>
+                    <option value="7">36px</option>
+                </select>
+
+                <button type="button" onclick="blogFormat('adminBlogContMs','bold')"><b>B</b></button>
+                <button type="button" onclick="blogFormat('adminBlogContMs','italic')"><i>I</i></button>
+                <button type="button" onclick="blogFormat('adminBlogContMs','underline')"><u>U</u></button>
+
+                <button type="button" onclick="blogFormat('adminBlogContMs','justifyLeft')">⬅</button>
+                <button type="button" onclick="blogFormat('adminBlogContMs','justifyCenter')">↔</button>
+                <button type="button" onclick="blogFormat('adminBlogContMs','justifyRight')">➡</button>
+
+                <label class="editor-color">
+                    🎨
+                    <input type="color"
+                           onchange="blogFormat('adminBlogContMs','foreColor',this.value)">
+                </label>
+
+                <button type="button" onclick="blogFormat('adminBlogContMs','insertUnorderedList')">
+                    • List
+                </button>
+
+                <button type="button" onclick="blogFormat('adminBlogContMs','formatBlock','h2')">
+                    H2
+                </button>
+
+                <button type="button" onclick="blogFormat('adminBlogContMs','formatBlock','p')">
+                    P
+                </button>
+            </div>
+
+            <div id="adminBlogContMs"
+                 class="blog-editor-content"
+                 contenteditable="true"
+                 dir="ltr"></div>
+        </div>
+    </div>
+</div>
 
                     <div style="margin-top:20px;display:flex;gap:10px;">
                         <button class="btn" style="background:var(--success);color:#fff;padding:10px 20px;border-radius:var(--radius-sm);font-weight:bold;" onclick="saveAdminBlog()">💾 Save Article</button>
@@ -798,6 +1203,17 @@
         <div class="form-grid">
             <div class="field"><label>URL Slug (e.g. ajwa-madinah)</label><input id="editProdSlug"></div>
             <div class="field"><label>Variety / Region</label><input id="editProdVariety" placeholder="Al Madinah"></div>
+
+<div class="field">
+    <label>Product Category</label>
+    <select id="editProdCategory">
+        <option value="1">Dates — التمور</option>
+        <option value="2">Oils — الزيوت</option>
+        <option value="3">Nuts — المكسرات</option>
+        <option value="4">Honey — العسل</option>
+        <option value="5">Gift Boxes — علب الهدايا</option>
+    </select>
+</div>
         </div>
 
         <div class="lang-tabs">
@@ -885,6 +1301,125 @@
 <script>
 let AUTH_TOKEN = localStorage.getItem('massar_admin_token') || '';
 let CONFIG = {}, PRODUCTS = [], BRANDS = [];
+// ================= TEXT FORMATTER =================
+function applyTextFormat(element, property, value) {
+    if (!element || !value) return;
+
+    if (property === 'fontFamily') {
+        element.style.fontFamily = value;
+        element.dataset.fontFamily = value;
+    }
+
+    if (property === 'fontSize') {
+        element.style.fontSize = value;
+        element.dataset.fontSize = value;
+    }
+
+    if (property === 'fontWeight') {
+        element.style.fontWeight = value;
+        element.dataset.fontWeight = value;
+    }
+
+    if (property === 'textAlign') {
+        element.style.textAlign = value;
+        element.dataset.textAlign = value;
+    }
+
+    if (property === 'color') {
+        element.style.color = value;
+        element.dataset.textColor = value;
+    }
+}
+function createTextFormatter(targetId) {
+    const target = document.getElementById(targetId);
+    if (!target) return;
+
+    const old = document.getElementById('formatter-' + targetId);
+    if (old) old.remove();
+
+    const wrapper = document.createElement('div');
+    wrapper.id = 'formatter-' + targetId;
+
+    wrapper.style.cssText = `
+        margin-top:8px;
+        padding:10px;
+        border:1px solid var(--border);
+        border-radius:10px;
+        background:var(--cream);
+        display:flex;
+        gap:8px;
+        flex-wrap:wrap;
+        align-items:center;
+    `;
+
+    wrapper.innerHTML = `
+        <select class="text-font">
+            <option value="">Font</option>
+            <option value="Arial">Arial</option>
+            <option value="Georgia">Georgia</option>
+            <option value="Verdana">Verdana</option>
+            <option value="Tahoma">Tahoma</option>
+            <option value="Times New Roman">Times New Roman</option>
+            <option value="Courier New">Courier New</option>
+        </select>
+
+        <select class="text-size">
+            <option value="">Size</option>
+            <option value="12px">12px</option>
+            <option value="14px">14px</option>
+            <option value="16px">16px</option>
+            <option value="18px">18px</option>
+            <option value="20px">20px</option>
+            <option value="24px">24px</option>
+            <option value="30px">30px</option>
+            <option value="36px">36px</option>
+            <option value="42px">42px</option>
+        </select>
+
+        <select class="text-weight">
+            <option value="">Weight</option>
+            <option value="400">Normal</option>
+            <option value="500">Medium</option>
+            <option value="600">Semi Bold</option>
+            <option value="700">Bold</option>
+            <option value="800">Extra Bold</option>
+        </select>
+
+        <select class="text-align">
+            <option value="">Align</option>
+            <option value="left">Left</option>
+            <option value="center">Center</option>
+            <option value="right">Right</option>
+        </select>
+
+        <label style="font-size:12px;">
+            Color
+            <input type="color" class="text-color" value="#000000">
+        </label>
+    `;
+
+    target.parentElement.appendChild(wrapper);
+
+    wrapper.querySelector('.text-font').onchange = function () {
+        applyTextFormat(target, 'fontFamily', this.value);
+    };
+
+    wrapper.querySelector('.text-size').onchange = function () {
+        applyTextFormat(target, 'fontSize', this.value);
+    };
+
+    wrapper.querySelector('.text-weight').onchange = function () {
+        applyTextFormat(target, 'fontWeight', this.value);
+    };
+
+    wrapper.querySelector('.text-align').onchange = function () {
+        applyTextFormat(target, 'textAlign', this.value);
+    };
+
+    wrapper.querySelector('.text-color').oninput = function () {
+        applyTextFormat(target, 'color', this.value);
+    };
+}
 
 async function api(url, options = {}) {
     const opts = { ...options, headers: { ...(options.headers || {}) } };
@@ -971,6 +1506,7 @@ async function loadAllData() {
         const el = document.getElementById(f);
         if (el) el.value = CONFIG[f] || '';
     });
+      loadSavedTextFormatting();
 
     const wa2 = document.getElementById('link_whatsapp_2');
     if (wa2) wa2.value = CONFIG.link_whatsapp || '';
@@ -989,7 +1525,174 @@ async function loadAllData() {
     loadBrandsUI();
     loadB2BUI();
     loadTestimonialsUI();
-    loadBrandStoryUI();
+        loadBrandStoryUI();
+
+    // تشغيل محرر تنسيق النصوص
+    initTextFormatters();
+}
+function loadSavedTextFormatting() {
+    const textFields = [
+        'hero_badge_en',
+        'hero_badge_ar',
+        'hero_badge_ms',
+        'hero_title_en',
+        'hero_title_ar',
+        'hero_title_ms',
+        'hero_desc_en',
+        'hero_desc_ar',
+        'hero_desc_ms',
+
+        'wm_sub_en',
+        'wm_sub_ar',
+        'wm_sub_ms',
+        'wm_title_en',
+        'wm_title_ar',
+        'wm_title_ms',
+        'wm_desc_en',
+        'wm_desc_ar',
+        'wm_desc_ms',
+
+        'b2b_subtitle_en',
+        'b2b_subtitle_ar',
+        'b2b_subtitle_ms',
+        'b2b_title_en',
+        'b2b_title_ar',
+        'b2b_title_ms',
+        'b2b_desc_en',
+        'b2b_desc_ar',
+        'b2b_desc_ms',
+        'b2b_button_en',
+        'b2b_button_ar',
+        'b2b_button_ms',
+
+        'about_title_en',
+        'about_title_ar',
+        'about_title_ms',
+        'about_text_en',
+        'about_text_ar',
+        'about_text_ms',
+
+        'detail_tab_en',
+        'detail_tab_ar',
+        'detail_tab_ms',
+        'ship_tab_en',
+        'ship_tab_ar',
+        'ship_tab_ms',
+        'stor_tab_en',
+        'stor_tab_ar',
+        'stor_tab_ms',
+        'ret_tab_en',
+        'ret_tab_ar',
+        'ret_tab_ms',
+
+        'seo_title',
+        'seo_desc'
+    ];
+
+    textFields.forEach(id => {
+        const el = document.getElementById(id);
+        if (!el) return;
+
+        const fontFamily = CONFIG[id + '_font_family'];
+        const fontSize = CONFIG[id + '_font_size'];
+        const fontWeight = CONFIG[id + '_font_weight'];
+        const textAlign = CONFIG[id + '_text_align'];
+        const textColor = CONFIG[id + '_text_color'];
+
+        if (fontFamily) {
+            el.dataset.fontFamily = fontFamily;
+            el.style.fontFamily = fontFamily;
+        }
+
+        if (fontSize) {
+            el.dataset.fontSize = fontSize;
+            el.style.fontSize = fontSize;
+        }
+
+        if (fontWeight) {
+            el.dataset.fontWeight = fontWeight;
+            el.style.fontWeight = fontWeight;
+        }
+
+        if (textAlign) {
+            el.dataset.textAlign = textAlign;
+            el.style.textAlign = textAlign;
+        }
+
+        if (textColor) {
+            el.dataset.textColor = textColor;
+            el.style.color = textColor;
+        }
+    });
+}
+function initTextFormatters() {
+    const textFields = [
+        // HERO
+        'hero_badge_en',
+        'hero_badge_ar',
+        'hero_badge_ms',
+        'hero_title_en',
+        'hero_title_ar',
+        'hero_title_ms',
+        'hero_desc_en',
+        'hero_desc_ar',
+        'hero_desc_ms',
+
+        // WHY MASSAR
+        'wm_sub_en',
+        'wm_sub_ar',
+        'wm_sub_ms',
+        'wm_title_en',
+        'wm_title_ar',
+        'wm_title_ms',
+        'wm_desc_en',
+        'wm_desc_ar',
+        'wm_desc_ms',
+
+        // B2B
+        'b2b_subtitle_en',
+        'b2b_subtitle_ar',
+        'b2b_subtitle_ms',
+        'b2b_title_en',
+        'b2b_title_ar',
+        'b2b_title_ms',
+        'b2b_desc_en',
+        'b2b_desc_ar',
+        'b2b_desc_ms',
+        'b2b_button_en',
+        'b2b_button_ar',
+        'b2b_button_ms',
+
+        // ABOUT
+        'about_title_en',
+        'about_title_ar',
+        'about_title_ms',
+        'about_text_en',
+        'about_text_ar',
+        'about_text_ms',
+
+        // PRODUCT DETAILS
+        'detail_tab_en',
+        'detail_tab_ar',
+        'detail_tab_ms',
+        'ship_tab_en',
+        'ship_tab_ar',
+        'ship_tab_ms',
+        'stor_tab_en',
+        'stor_tab_ar',
+        'stor_tab_ms',
+        'ret_tab_en',
+        'ret_tab_ar',
+        'ret_tab_ms',
+
+        // SEO
+        'seo_title',
+        'seo_desc'
+    ];
+
+    textFields.forEach(id => {
+        createTextFormatter(id);
+    });
 }
 async function saveLogoSize() {
     const width = document.getElementById('logo_width').value || 280;
@@ -1011,12 +1714,50 @@ async function saveLogoSize() {
 
 async function saveConfigFields(fields) {
     const body = {};
-    fields.forEach(f => { const el = document.getElementById(f); if (el) body[f] = el.value; });
-    await api('/api/admin/config', { method: 'PUT', body });
-    Object.assign(CONFIG, body);
-    toast('Saved successfully!');
-}
 
+    fields.forEach(f => {
+        const el = document.getElementById(f);
+        if (!el) return;
+
+        // Save text value
+        body[f] = el.value;
+
+        // Save text formatting
+        if (el.dataset.fontFamily) {
+            body[f + '_font_family'] = el.dataset.fontFamily;
+        }
+
+        if (el.dataset.fontSize) {
+            body[f + '_font_size'] = el.dataset.fontSize;
+        }
+
+        if (el.dataset.fontWeight) {
+            body[f + '_font_weight'] = el.dataset.fontWeight;
+        }
+
+        if (el.dataset.textAlign) {
+            body[f + '_text_align'] = el.dataset.textAlign;
+        }
+
+        if (el.dataset.textColor) {
+            body[f + '_text_color'] = el.dataset.textColor;
+        }
+    });
+
+    try {
+        await api('/api/admin/config', {
+            method: 'PUT',
+            body
+        });
+
+        Object.assign(CONFIG, body);
+
+        toast('Saved successfully!');
+    } catch (error) {
+        console.error('Save config error:', error);
+        toast('Failed to save changes');
+    }
+}
 // ---------------- PRODUCTS ----------------
 function renderProductsTable() {
     document.getElementById('productsTableBody').innerHTML = PRODUCTS.map(p => {
@@ -1046,6 +1787,7 @@ function openProductModal() {
         const el = document.getElementById('editProd' + f); if (el) el.value = '';
     });
     document.getElementById('editProdImage').value = '';
+    document.getElementById('editProdCategory').value = '1';
     document.getElementById('prodImgPreviewBox').innerHTML = '';
     ['100g','250g','500g','1kg','3kg','5kg'].forEach(w => document.getElementById('p_' + w).value = '');
     document.getElementById('editProdActive').checked = true;
@@ -1059,6 +1801,7 @@ function editProductModal(id) {
     document.getElementById('editProdId').value = p.id;
     document.getElementById('editProdSlug').value = p.slug || '';
     document.getElementById('editProdVariety').value = p.variety || '';
+    document.getElementById('editProdCategory').value = String(p.category_id || 1);
     ['en','ar','ms'].forEach(l => {
         document.getElementById('editProdName_' + l).value = p['name_' + l] || '';
         document.getElementById('editProdDesc_' + l).value = p['desc_' + l] || '';
@@ -1097,6 +1840,7 @@ async function saveProductModal() {
         texture_ar: document.getElementById('editProdTexture_ar').value,
         texture_ms: document.getElementById('editProdTexture_ms').value,
         variety: document.getElementById('editProdVariety').value,
+        category_id: Number(document.getElementById('editProdCategory').value),
         image_url: document.getElementById('editProdImage').value,
         active: document.getElementById('editProdActive').checked,
         featured: document.getElementById('editProdFeatured').checked,
@@ -1255,6 +1999,7 @@ async function saveBrandModal() {
     const idx = document.getElementById('editBrandId').value;
     const b = {
         name: document.getElementById('editBrandName').value,
+        category_id: Number(document.getElementById('editProdCategory').value),
         image_url: document.getElementById('editBrandImage').value,
         tagline_en: document.getElementById('editBrandTagline_en').value,
         tagline_ar: document.getElementById('editBrandTagline_ar').value,
@@ -1775,25 +2520,25 @@ function showNativeBlogForm(post) {
     document.getElementById('adminBlogExcAr').value =
         post ? (post.excerpt_ar || '') : '';
 
-    document.getElementById('adminBlogContAr').value =
-        post ? (post.content_ar || '') : '';
+    document.getElementById('adminBlogContAr').innerHTML =
+    post ? (post.content_ar || '') : '';
 
-    document.getElementById('adminBlogTitleEn').value =
-        post ? (post.title_en || '') : '';
+  document.getElementById('adminBlogContEn').innerHTML =
+    post ? (post.content_en || '') : '';
 
     document.getElementById('adminBlogExcEn').value =
         post ? (post.excerpt_en || '') : '';
 
-    document.getElementById('adminBlogContEn').value =
+    document.getElementById('adminBlogContEn').innerHTML =
         post ? (post.content_en || '') : '';
 
-    document.getElementById('adminBlogTitleMs').value =
-        post ? (post.title_ms || '') : '';
+    document.getElementById('adminBlogContMs').innerHTML =
+    post ? (post.content_ms || '') : '';
 
     document.getElementById('adminBlogExcMs').value =
         post ? (post.excerpt_ms || '') : '';
 
-    document.getElementById('adminBlogContMs').value =
+    document.getElementById('adminBlogContMs').innerHTML =
         post ? (post.content_ms || '') : '';
 
     form.scrollIntoView({
@@ -1817,6 +2562,7 @@ async function saveAdminBlog() {
         slug: document.getElementById('adminBlogSlug').value || ('post-' + Date.now()),
         category: document.getElementById('adminBlogCategory').value,
         sort_order: parseInt(document.getElementById('adminBlogSort').value) || 0,
+        category_id: Number(document.getElementById('editProdCategory').value),
         image_url: document.getElementById('adminBlogImg').value,
 
         published: 1,
@@ -1830,9 +2576,12 @@ async function saveAdminBlog() {
         excerpt_en: document.getElementById('adminBlogExcEn').value,
         excerpt_ms: document.getElementById('adminBlogExcMs').value,
 
-        content_ar: document.getElementById('adminBlogContAr').value,
-        content_en: document.getElementById('adminBlogContEn').value,
-        content_ms: document.getElementById('adminBlogContMs').value
+      content_ar:
+document.getElementById('adminBlogContAr').innerHTML,
+content_en:
+document.getElementById('adminBlogContEn').innerHTML,
+content_ms:
+document.getElementById('adminBlogContMs').innerHTML
     };
 
     try {
@@ -1969,6 +2718,7 @@ async function saveAdminDisc() {
     const token = localStorage.getItem('massar_admin_token');
     const id = document.getElementById('adminDiscEditId').value;
     const c = {
+        category_id: Number(document.getElementById('editProdCategory').value),
         image_url: document.getElementById('adminDiscImg').value, active: 1, sort_order: 0,
         title_ar: document.getElementById('adminDiscTitleAr').value,
         title_en: document.getElementById('adminDiscTitleEn').value,
@@ -2018,5 +2768,247 @@ console.log("ADMIN NATIVE SCRIPT LOADED");
 console.log("editNativeBlog:", typeof editNativeBlog);
 </script>
 
+
+<script id="adminNativeScript">
+// Image Upload Helper
+async function uploadAdminImage(input, targetId) {
+    if (!input.files || !input.files[0]) return;
+    const formData = new FormData();
+    formData.append('image', input.files[0]);
+    const token = localStorage.getItem('massar_admin_token');
+    try {
+        const res = await fetch('/api/admin/upload', {
+            method: 'POST',
+            headers: { 'Authorization': 'Bearer ' + token },
+            body: formData
+        });
+        const data = await res.json();
+        if (data.filename) {
+            document.getElementById(targetId).value = '/uploads/' + data.filename;
+        } else if (data.url) {
+            document.getElementById(targetId).value = data.url;
+        }
+    } catch(e) { console.error('Upload Error:', e); }
+}
+
+function switchBlogLangTab(lang, btn) {
+    ['ar','en','ms'].forEach(l => document.getElementById('blogLangBox-'+l).style.display = (l === lang ? 'block' : 'none'));
+    btn.parentNode.querySelectorAll('.lang-tab').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+}
+
+function switchDiscLangTab(lang, btn) {
+    ['ar','en','ms'].forEach(l => document.getElementById('discLangBox-'+l).style.display = (l === lang ? 'block' : 'none'));
+    btn.parentNode.querySelectorAll('.lang-tab').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+}
+
+// Load Blog List
+async function loadAdminBlog() {
+    const token = localStorage.getItem('massar_admin_token');
+    try {
+        const res = await fetch('/api/admin/blog', { headers: { 'Authorization': 'Bearer ' + token } });
+        const posts = await res.json();
+        const wrap = document.getElementById('blogTableWrap');
+        if (!posts || posts.length === 0) {
+            wrap.innerHTML = '<p>No articles found.</p>';
+            return;
+        }
+        wrap.innerHTML = `<table class="table">
+            <thead>
+                <tr>
+                    <th>Title (EN / AR)</th>
+                    <th>Category</th>
+                    <th>Status</th>
+                    <th>Featured</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                ${posts.map(p => `
+                    <tr>
+                        <td><strong>${p.title_en}</strong><br><small style="color:var(--text-light)">${p.title_ar}</small></td>
+                        <td><span style="background:var(--cream-dark);padding:3px 8px;border-radius:4px;font-size:12px;">${p.category}</span></td>
+                        <td>${p.published ? '<span style="color:var(--success);font-weight:bold;">✅ Published</span>' : '<span style="color:var(--danger)">❌ Hidden</span>'}</td>
+                        <td>${p.featured ? '⭐ Yes' : '-'}</td>
+                        <td>
+                            <button class="btn" style="background:var(--cream-dark);padding:4px 10px;font-size:12px;" onclick="editAdminBlog(${p.id})">✏️ Edit</button>
+                            <button class="btn" style="background:var(--cream-dark);padding:4px 10px;font-size:12px;" onclick="toggleAdminBlogPub(${p.id})">${p.published ? '🙈 Hide' : '👁️ Show'}</button>
+                            <button class="btn" style="background:var(--danger);color:#fff;padding:4px 10px;font-size:12px;" onclick="deleteAdminBlog(${p.id})">🗑️ Delete</button>
+                        </td>
+                    </tr>
+                `).join('')}
+            </tbody>
+        </table>`;
+    } catch(e) { console.error('Blog load error:', e); }
+}
+
+function showAdminBlogForm(post) {
+    document.getElementById('blogFormCard').style.display = 'block';
+    document.getElementById('blogFormCardTitle').textContent = post ? 'Edit Article' : 'Add New Article';
+    document.getElementById('adminBlogEditId').value = post ? post.id : '';
+    document.getElementById('adminBlogSlug').value = post ? post.slug : '';
+    document.getElementById('adminBlogCategory').value = post ? post.category : 'types-of-dates';
+    document.getElementById('adminBlogSort').value = post ? (post.sort_order || 0) : 0;
+    document.getElementById('adminBlogImg').value = post ? (post.image_url || '') : '';
+
+    ['Ar','En','Ms'].forEach(l => {
+        document.getElementById('adminBlogTitle'+l).value = post ? (post['title_'+l.toLowerCase()] || '') : '';
+        document.getElementById('adminBlogExc'+l).value = post ? (post['excerpt_'+l.toLowerCase()] || '') : '';
+        document.getElementById('adminBlogCont'+l).innerHTML = post ? (post['content_'+l.toLowerCase()] || '') : '';
+    });
+}
+
+
+
+async function editAdminBlog(id) {
+    const token = localStorage.getItem('massar_admin_token');
+    const res = await fetch('/api/admin/blog', { headers: { 'Authorization': 'Bearer ' + token } });
+    const posts = await res.json();
+    const post = posts.find(p => p.id === id);
+    if (post) showAdminBlogForm(post);
+}
+
+async function toggleAdminBlogPub(id) {
+    const token = localStorage.getItem('massar_admin_token');
+    await fetch('/api/admin/blog/' + id + '/toggle', { method: 'PATCH', headers: { 'Authorization': 'Bearer ' + token } });
+    loadAdminBlog();
+}
+
+async function deleteAdminBlog(id) {
+    if (!confirm('Are you sure you want to delete this article?')) return;
+    const token = localStorage.getItem('massar_admin_token');
+    await fetch('/api/admin/blog/' + id, { method: 'DELETE', headers: { 'Authorization': 'Bearer ' + token } });
+    loadAdminBlog();
+}
+
+// Discover Admin Logic
+async function loadAdminDiscover() {
+    const token = localStorage.getItem('massar_admin_token');
+    try {
+        const res = await fetch('/api/admin/discover', { headers: { 'Authorization': 'Bearer ' + token } });
+        const cards = await res.json();
+        const wrap = document.getElementById('discTableWrap');
+        if (!cards || cards.length === 0) {
+            wrap.innerHTML = '<p>No cards found.</p>';
+            return;
+        }
+        wrap.innerHTML = `<table class="table">
+            <thead>
+                <tr>
+                    <th>Image</th>
+                    <th>Title (EN / AR)</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                ${cards.map(c => `
+                    <tr>
+                        <td><img src="${c.image_url}" style="height:45px;width:75px;object-fit:cover;border-radius:4px;"></td>
+                        <td><strong>${c.title_en}</strong><br><small style="color:var(--text-light)">${c.title_ar}</small></td>
+                        <td>${c.active ? '<span style="color:var(--success);font-weight:bold;">✅ Active</span>' : '<span style="color:var(--danger)">❌ Hidden</span>'}</td>
+                        <td>
+                            <button class="btn" style="background:var(--cream-dark);padding:4px 10px;font-size:12px;" onclick="editAdminDisc(${c.id})">✏️ Edit</button>
+                            <button class="btn" style="background:var(--danger);color:#fff;padding:4px 10px;font-size:12px;" onclick="deleteAdminDisc(${c.id})">🗑️ Delete</button>
+                        </td>
+                    </tr>
+                `).join('')}
+            </tbody>
+        </table>`;
+    } catch(e) { console.error('Discover load error:', e); }
+}
+
+function showAdminDiscForm(card) {
+    document.getElementById('discFormCard').style.display = 'block';
+    document.getElementById('discFormCardTitle').textContent = card ? 'Edit Card' : 'Add New Card';
+    document.getElementById('adminDiscEditId').value = card ? card.id : '';
+    document.getElementById('adminDiscImg').value = card ? (card.image_url || '') : '';
+
+   ['Ar','En','Ms'].forEach(l => {
+    document.getElementById('adminBlogTitle'+l).value =
+        post ? (post['title_'+l.toLowerCase()] || '') : '';
+
+    document.getElementById('adminBlogExc'+l).value =
+        post ? (post['excerpt_'+l.toLowerCase()] || '') : '';
+
+    document.getElementById('adminBlogCont'+l).innerHTML =
+        post ? (post['content_'+l.toLowerCase()] || '') : '';
+});
+}
+
+async function saveAdminDisc() {
+    const token = localStorage.getItem('massar_admin_token');
+    const id = document.getElementById('adminDiscEditId').value;
+    const c = {
+        category_id: Number(document.getElementById('editProdCategory').value),
+        image_url: document.getElementById('adminDiscImg').value, active: 1, sort_order: 0,
+        title_ar: document.getElementById('adminDiscTitleAr').value,
+        title_en: document.getElementById('adminDiscTitleEn').value,
+        title_ms: document.getElementById('adminDiscTitleMs').value,
+        desc_ar: document.getElementById('adminDiscDescAr').value,
+        desc_en: document.getElementById('adminDiscDescEn').value,
+        desc_ms: document.getElementById('adminDiscDescMs').value
+    };
+    await fetch(id ? '/api/admin/discover/' + id : '/api/admin/discover', {
+        method: id ? 'PUT' : 'POST',
+        headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
+        body: JSON.stringify(c)
+    });
+    document.getElementById('discFormCard').style.display = 'none';
+    loadAdminDiscover();
+}
+
+async function editAdminDisc(id) {
+    const token = localStorage.getItem('massar_admin_token');
+    const res = await fetch('/api/admin/discover', { headers: { 'Authorization': 'Bearer ' + token } });
+    const cards = await res.json();
+    const card = cards.find(c => c.id === id);
+    if (card) showAdminDiscForm(card);
+}
+
+async function deleteAdminDisc(id) {
+    if (!confirm('Are you sure you want to delete this card?')) return;
+    const token = localStorage.getItem('massar_admin_token');
+    await fetch('/api/admin/discover/' + id, { method: 'DELETE', headers: { 'Authorization': 'Bearer ' + token } });
+    loadAdminDiscover();
+}
+
+// Hook into native switchPanel
+if (typeof window.switchPanel === 'function') {
+    const origSwitch = window.switchPanel;
+    window.switchPanel = function(panelName, btn) {
+        origSwitch(panelName, btn);
+        if (panelName === 'blog') loadAdminBlog();
+        if (panelName === 'discover') loadAdminDiscover();
+    };
+}
+</script>
+<script>
+function blogFormat(editorId, command, value = null) {
+    const editor = document.getElementById(editorId);
+
+    if (!editor) {
+        console.error('Blog editor not found:', editorId);
+        return;
+    }
+
+    editor.focus();
+
+    try {
+        if (command === 'fontSize') {
+            document.execCommand('fontSize', false, value);
+        } else if (command === 'fontName') {
+            document.execCommand('fontName', false, value);
+        } else if (command === 'foreColor') {
+            document.execCommand('foreColor', false, value);
+        } else {
+            document.execCommand(command, false, value);
+        }
+    } catch (error) {
+        console.error('Blog formatting error:', error);
+    }
+}
+</script>
 </body>
 </html>

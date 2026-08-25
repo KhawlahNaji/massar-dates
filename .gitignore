@@ -47,3 +47,20 @@ public/admin - Copy.html
 public/index - Copy.html
 public/index.html.blog_backup
 public/const fs = require('fs');.txt
+massar_before_product_categories.db
+server-error.log
+
+public/*.backup*
+public/*_backup*
+public/*_before_*
+massar_before_product_categories.db
+server-error.log
+public/*.backup*
+public/*_backup*
+public/*_before_*
+admin_fields.txt
+server_before_product_categories.js
+update_product_categories_server.js
+public/*.before-*
+public/*_before_*
+public/index.html.before_product_details_translation.html

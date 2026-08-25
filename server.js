@@ -1,4 +1,4 @@
-const nodemailer = require('nodemailer');
+﻿const nodemailer = require('nodemailer');
 const express = require('express');
 const path = require('path');
 const cors = require('cors');
@@ -51,7 +51,16 @@ app.get('/api/config', (req, res) => {
 
 // Get active products (public)
 app.get('/api/products', (req, res) => {
-    const products = db.prepare('SELECT * FROM products WHERE active = 1 ORDER BY sort_order ASC').all();
+    const products = db.prepare(`
+        SELECT products.*, product_categories.slug AS category_slug,
+               product_categories.name_en AS category_name_en,
+               product_categories.name_ar AS category_name_ar,
+               product_categories.name_ms AS category_name_ms
+        FROM products
+        LEFT JOIN product_categories ON products.category_id = product_categories.id
+        WHERE products.active = 1
+        ORDER BY products.sort_order ASC
+    `).all();
     const priceStmt = db.prepare('SELECT weight, price FROM product_prices WHERE product_id = ? ORDER BY weight');
     const result = products.map(p => ({
         ...p,
@@ -66,6 +75,117 @@ app.get('/api/products/:slug', (req, res) => {
     if (!product) return res.status(404).json({ error: 'Product not found' });
     const prices = db.prepare('SELECT weight, price FROM product_prices WHERE product_id = ?').all(product.id);
     res.json({ ...product, prices: Object.fromEntries(prices.map(p => [p.weight, p.price])) });
+});
+
+
+// ==================== PRODUCT CATEGORIES ====================
+
+app.get('/api/product-categories', (req, res) => {
+    const categories = db.prepare(`
+        SELECT *
+        FROM product_categories
+        WHERE active = 1
+        ORDER BY sort_order ASC, id ASC
+    `).all();
+
+    res.json(categories);
+});
+
+app.get('/api/admin/product-categories', authMiddleware, (req, res) => {
+    const categories = db.prepare(`
+        SELECT *
+        FROM product_categories
+        ORDER BY sort_order ASC, id ASC
+    `).all();
+
+    res.json(categories);
+});
+
+app.post('/api/admin/product-categories', authMiddleware, (req, res) => {
+    const {
+        slug, name_en, name_ar, name_ms,
+        image_url, description_en, description_ar, description_ms,
+        sort_order, active
+    } = req.body;
+
+    const result = db.prepare(`
+        INSERT INTO product_categories
+        (slug, name_en, name_ar, name_ms, image_url,
+         description_en, description_ar, description_ms,
+         sort_order, active)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+    `).run(
+        slug,
+        name_en,
+        name_ar || '',
+        name_ms || '',
+        image_url || '',
+        description_en || '',
+        description_ar || '',
+        description_ms || '',
+        Number(sort_order) || 0,
+        active === false ? 0 : 1
+    );
+
+    res.json({
+        id: result.lastInsertRowid,
+        message: 'Category created'
+    });
+});
+
+app.put('/api/admin/product-categories/:id', authMiddleware, (req, res) => {
+    const {
+        slug, name_en, name_ar, name_ms,
+        image_url, description_en, description_ar, description_ms,
+        sort_order, active
+    } = req.body;
+
+    db.prepare(`
+        UPDATE product_categories SET
+            slug=?,
+            name_en=?,
+            name_ar=?,
+            name_ms=?,
+            image_url=?,
+            description_en=?,
+            description_ar=?,
+            description_ms=?,
+            sort_order=?,
+            active=?
+        WHERE id=?
+    `).run(
+        slug,
+        name_en,
+        name_ar || '',
+        name_ms || '',
+        image_url || '',
+        description_en || '',
+        description_ar || '',
+        description_ms || '',
+        Number(sort_order) || 0,
+        active ? 1 : 0,
+        req.params.id
+    );
+
+    res.json({ message: 'Category updated' });
+});
+
+app.delete('/api/admin/product-categories/:id', authMiddleware, (req, res) => {
+    const used = db.prepare(
+        'SELECT COUNT(*) AS count FROM products WHERE category_id = ?'
+    ).get(req.params.id);
+
+    if (used.count > 0) {
+        return res.status(400).json({
+            error: 'This category contains products. Move the products first.'
+        });
+    }
+
+    db.prepare(
+        'DELETE FROM product_categories WHERE id = ?'
+    ).run(req.params.id);
+
+    res.json({ message: 'Category deleted' });
 });
 
 // ==================== ADMIN API ====================
@@ -94,22 +214,23 @@ app.get('/api/admin/products', authMiddleware, (req, res) => {
 // Create product
 app.post('/api/admin/products', authMiddleware, (req, res) => {
     const { slug, name_en, name_ar, name_ms, desc_en, desc_ar, desc_ms,
-        variety, brand, origin, type, texture_en, texture_ar, texture_ms,
+        category_id, variety, brand, origin, type, texture_en, texture_ar, texture_ms,
         taste_en, taste_ar, taste_ms, badge_en, badge_ar, badge_ms,
         image_url, active, featured, prices, shopee_url, tiktok_url, lazada_url } = req.body;
 
     const result = db.prepare(`
         INSERT INTO products (
             slug, name_en, name_ar, name_ms, desc_en, desc_ar, desc_ms,
-            variety, brand, origin, type, texture_en, texture_ar, texture_ms,
+            category_id, variety, brand, origin, type, texture_en, texture_ar, texture_ms,
             taste_en, taste_ar, taste_ms, badge_en, badge_ar, badge_ms,
             image_url, active, featured, shopee_url, tiktok_url, lazada_url
         )
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     `).run(
         slug || name_en.toLowerCase().replace(/\s+/g, '-'),
         name_en, name_ar || name_en, name_ms || name_en,
         desc_en, desc_ar || desc_en, desc_ms || desc_en,
+        category_id || 1,
         variety, brand || '', origin || 'Saudi Arabia', type,
         texture_en, texture_ar, texture_ms,
         taste_en, taste_ar, taste_ms,
@@ -134,7 +255,7 @@ app.post('/api/admin/products', authMiddleware, (req, res) => {
 // Update product
 app.put('/api/admin/products/:id', authMiddleware, (req, res) => {
     const { name_en, name_ar, name_ms, desc_en, desc_ar, desc_ms,
-        variety, brand, origin, type, texture_en, texture_ar, texture_ms,
+        category_id, variety, brand, origin, type, texture_en, texture_ar, texture_ms,
         taste_en, taste_ar, taste_ms, badge_en, badge_ar, badge_ms,
         image_url, active, featured, prices, shopee_url, tiktok_url, lazada_url } = req.body;
 
@@ -142,6 +263,7 @@ app.put('/api/admin/products/:id', authMiddleware, (req, res) => {
         UPDATE products SET
             name_en=?, name_ar=?, name_ms=?,
             desc_en=?, desc_ar=?, desc_ms=?,
+            category_id=?,
             variety=?, brand=?, origin=?, type=?,
             texture_en=?, texture_ar=?, texture_ms=?,
             taste_en=?, taste_ar=?, taste_ms=?,
@@ -153,6 +275,7 @@ app.put('/api/admin/products/:id', authMiddleware, (req, res) => {
     `).run(
         name_en, name_ar, name_ms,
         desc_en, desc_ar, desc_ms,
+        category_id || 1,
         variety, brand || '', origin, type,
         texture_en, texture_ar, texture_ms,
         taste_en, taste_ar, taste_ms,
@@ -268,7 +391,7 @@ app.put('/api/admin/password', authMiddleware, (req, res) => {
 });
 // ==================== MESSAGES API (PUBLIC & ADMIN) ====================
 
-// 1. استقبال رسالة جديدة من العميل (عام)
+// 1. Ø§Ø³ØªÙ‚Ø¨Ø§Ù„ Ø±Ø³Ø§Ù„Ø© Ø¬Ø¯ÙŠØ¯Ø© Ù…Ù† Ø§Ù„Ø¹Ù…ÙŠÙ„ (Ø¹Ø§Ù…)
 
 // ==================== EMAIL & MESSAGES HANDLER ====================
 const transporter = nodemailer.createTransport({
@@ -285,7 +408,7 @@ app.post('/api/messages', (req, res) => {
     const email = (req.body && req.body.email) || '';
     const message = (req.body && req.body.message) || '';
 
-    console.log('📩 [MASSAR] استلام رسالة جديدة من:', name, '| بريد:', email);
+    console.log('ðŸ“© [MASSAR] Ø§Ø³ØªÙ„Ø§Ù… Ø±Ø³Ø§Ù„Ø© Ø¬Ø¯ÙŠØ¯Ø© Ù…Ù†:', name, '| Ø¨Ø±ÙŠØ¯:', email);
 
     try {
         db.prepare('INSERT INTO messages (name, email, message, is_read, created_at, updated_at) VALUES (?, ?, ?, 0, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)').run(name, email, message);
@@ -300,29 +423,29 @@ app.post('/api/messages', (req, res) => {
     const mailOptions = {
         from: 'MASSAR DATES <khwlah7712@gmail.com>',
         to: 'khwlah7712@gmail.com',
-        subject: '📬 رسالة جديدة من موقع مسار - من: ' + name,
+        subject: 'ðŸ“¬ Ø±Ø³Ø§Ù„Ø© Ø¬Ø¯ÙŠØ¯Ø© Ù…Ù† Ù…ÙˆÙ‚Ø¹ Ù…Ø³Ø§Ø± - Ù…Ù†: ' + name,
         html: '<div style="font-family:Arial,sans-serif;direction:rtl;text-align:right;padding:20px;background:#f9f7f4;border-radius:10px;color:#2c1810;">' +
-              '<h2 style="color:#b89568;border-bottom:2px solid #b89568;padding-bottom:10px;">🌴 رسالة جديدة من موقع MASSAR DATES</h2>' +
-              '<p><strong>👤 اسم العميل:</strong> ' + name + '</p>' +
-              '<p><strong>📧 البريد الإلكتروني:</strong> <a href="mailto:' + email + '">' + email + '</a></p>' +
-              '<p><strong>🕒 الوقت:</strong> ' + new Date().toLocaleString('ar-SA') + '</p>' +
+              '<h2 style="color:#b89568;border-bottom:2px solid #b89568;padding-bottom:10px;">ðŸŒ´ Ø±Ø³Ø§Ù„Ø© Ø¬Ø¯ÙŠØ¯Ø© Ù…Ù† Ù…ÙˆÙ‚Ø¹ MASSAR DATES</h2>' +
+              '<p><strong>ðŸ‘¤ Ø§Ø³Ù… Ø§Ù„Ø¹Ù…ÙŠÙ„:</strong> ' + name + '</p>' +
+              '<p><strong>ðŸ“§ Ø§Ù„Ø¨Ø±ÙŠØ¯ Ø§Ù„Ø¥Ù„ÙƒØªØ±ÙˆÙ†ÙŠ:</strong> <a href="mailto:' + email + '">' + email + '</a></p>' +
+              '<p><strong>ðŸ•’ Ø§Ù„ÙˆÙ‚Øª:</strong> ' + new Date().toLocaleString('ar-SA') + '</p>' +
               '<div style="background:#fff;padding:15px;border-radius:8px;border-right:4px solid #b89568;margin-top:15px;">' +
-              '<h4 style="margin:0 0 10px 0;color:#2c1810;">💬 نص الرسالة:</h4>' +
+              '<h4 style="margin:0 0 10px 0;color:#2c1810;">ðŸ’¬ Ù†Øµ Ø§Ù„Ø±Ø³Ø§Ù„Ø©:</h4>' +
               '<p style="white-space:pre-wrap;margin:0;color:#444;line-height:1.7;">' + message + '</p>' +
               '</div>' +
               '</div>'
     };
 
     transporter.sendMail(mailOptions)
-        .then(() => console.log('✅ [MASSAR] تم إرسال الإيميل بنجاح إلى: khwlah7712@gmail.com'))
-        .catch(err => console.log('❌ [MASSAR] خطأ في إرسال الإيميل:', err.message));
+        .then(() => console.log('âœ… [MASSAR] ØªÙ… Ø¥Ø±Ø³Ø§Ù„ Ø§Ù„Ø¥ÙŠÙ…ÙŠÙ„ Ø¨Ù†Ø¬Ø§Ø­ Ø¥Ù„Ù‰: khwlah7712@gmail.com'))
+        .catch(err => console.log('âŒ [MASSAR] Ø®Ø·Ø£ ÙÙŠ Ø¥Ø±Ø³Ø§Ù„ Ø§Ù„Ø¥ÙŠÙ…ÙŠÙ„:', err.message));
 
     let waLink = null;
     try {
         const row = db.prepare("SELECT value FROM site_config WHERE key = 'link_whatsapp'").get();
         const wa = (row && row.value) ? row.value.replace(/[^0-9]/g, '') : '';
         if (wa) {
-            waLink = 'https://wa.me/' + wa + '?text=' + encodeURIComponent('📩 رسالة من: ' + name + '\n📧 البريد: ' + email + '\n💬 الرسالة: ' + message);
+            waLink = 'https://wa.me/' + wa + '?text=' + encodeURIComponent('ðŸ“© Ø±Ø³Ø§Ù„Ø© Ù…Ù†: ' + name + '\nðŸ“§ Ø§Ù„Ø¨Ø±ÙŠØ¯: ' + email + '\nðŸ’¬ Ø§Ù„Ø±Ø³Ø§Ù„Ø©: ' + message);
         }
     } catch(e) {}
 
@@ -330,7 +453,7 @@ app.post('/api/messages', (req, res) => {
 });
 
 
-// 2. جلب جميع الرسائل للمشرف
+// 2. Ø¬Ù„Ø¨ Ø¬Ù…ÙŠØ¹ Ø§Ù„Ø±Ø³Ø§Ø¦Ù„ Ù„Ù„Ù…Ø´Ø±Ù
 app.get('/api/admin/messages', authMiddleware, (req, res) => {
     try {
         const { search, filter } = req.query;
@@ -358,7 +481,7 @@ app.get('/api/admin/messages', authMiddleware, (req, res) => {
     }
 });
 
-// 3. تعديل بيانات الرسالة
+// 3. ØªØ¹Ø¯ÙŠÙ„ Ø¨ÙŠØ§Ù†Ø§Øª Ø§Ù„Ø±Ø³Ø§Ù„Ø©
 app.put('/api/admin/messages/:id', authMiddleware, (req, res) => {
     try {
         const { name, email, message } = req.body;
@@ -375,7 +498,7 @@ app.put('/api/admin/messages/:id', authMiddleware, (req, res) => {
     }
 });
 
-// 4. تغيير حالة القراءة
+// 4. ØªØºÙŠÙŠØ± Ø­Ø§Ù„Ø© Ø§Ù„Ù‚Ø±Ø§Ø¡Ø©
 app.patch('/api/admin/messages/:id/toggle-read', authMiddleware, (req, res) => {
     try {
         const msg = db.prepare('SELECT is_read FROM messages WHERE id = ?').get(req.params.id);
@@ -392,7 +515,7 @@ app.patch('/api/admin/messages/:id/toggle-read', authMiddleware, (req, res) => {
     }
 });
 
-// 5. حذف الرسالة
+// 5. Ø­Ø°Ù Ø§Ù„Ø±Ø³Ø§Ù„Ø©
 app.delete('/api/admin/messages/:id', authMiddleware, (req, res) => {
     try {
         db.prepare('DELETE FROM messages WHERE id = ?').run(req.params.id);
@@ -403,7 +526,7 @@ app.delete('/api/admin/messages/:id', authMiddleware, (req, res) => {
     }
 });
 
-// ==================== SPA FALLBACK (يجب أن يكون في النهاية دائماً) ====================
+// ==================== SPA FALLBACK (ÙŠØ¬Ø¨ Ø£Ù† ÙŠÙƒÙˆÙ† ÙÙŠ Ø§Ù„Ù†Ù‡Ø§ÙŠØ© Ø¯Ø§Ø¦Ù…Ø§Ù‹) ====================
 
 // ==================== BLOG APIS ====================
 app.get('/api/blog', (req, res) => {
@@ -486,9 +609,9 @@ app.get(/.*/, (req, res) => {
     }
 });
 
-// تشغيل السيرفر
+// ØªØ´ØºÙŠÙ„ Ø§Ù„Ø³ÙŠØ±ÙØ±
 app.listen(PORT, () => {
-    console.log(`\n🌴 MASSAR DATES Server Running`);
-    console.log(`📍 Website: http://localhost:${PORT}`);
-    console.log(`🔒 Admin:   http://localhost:${PORT}/admin`);
+    console.log(`\nðŸŒ´ MASSAR DATES Server Running`);
+    console.log(`ðŸ“ Website: http://localhost:${PORT}`);
+    console.log(`ðŸ”’ Admin:   http://localhost:${PORT}/admin`);
 });
