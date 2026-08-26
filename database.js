@@ -171,7 +171,7 @@ if (configCount.count === 0) {
         link_tiktok: 'https://www.tiktok.com',
         link_shopee: 'https://shopee.com.my/',
         link_lazada: 'https://www.lazada.com.my/',
-        link_whatsapp: '6011111134716',
+        link_whatsapp: '601111134716',
         contact_email: 'info@massardates.com',
         contact_location_en: 'Kuala Lumpur, Malaysia',
         contact_location_ar: 'ÙƒÙˆØ§Ù„Ø§Ù„Ù…Ø¨ÙˆØ±ØŒ Ù…Ø§Ù„ÙŠØ²ÙŠØ§',
@@ -420,3 +420,4 @@ if (discCheck.count === 0) {
 }
 
 module.exports = db;
+
