@@ -397,8 +397,8 @@ app.put('/api/admin/password', authMiddleware, (req, res) => {
 const transporter = nodemailer.createTransport({
     service: 'gmail',
     auth: {
-        user: 'khwlah7712@gmail.com',
-        pass: 'vzhzqjsjbafhyogz'
+        user: process.env.EMAIL_USER,
+        pass: process.env.EMAIL_PASS
     },
     tls: { rejectUnauthorized: false }
 });
@@ -615,3 +615,4 @@ app.listen(PORT, () => {
     console.log(`ðŸ“ Website: http://localhost:${PORT}`);
     console.log(`ðŸ”’ Admin:   http://localhost:${PORT}/admin`);
 });
+
