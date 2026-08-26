@@ -1668,7 +1668,7 @@ function setLang(l) { document.getElementById("navMobile")?.classList.remove("ac
     updateNavigationLanguage();
     updateTopProductsMenu();
     updateCategoriesText();
-    renderProducts();
+    filterProductsByCategory(selectedCategoryId);
 
     if (selProd) {
         showDetail(selProd.slug || selProd.id);
