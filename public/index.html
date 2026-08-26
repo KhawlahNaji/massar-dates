@@ -1646,7 +1646,7 @@ function updateTopProductsMenu() {
     if (c4) c4.textContent = t.honey;
     if (c5) c5.textContent = t.gifts;
 }
-function setLang(l) {
+function setLang(l) { document.getElementById("navMobile")?.classList.remove("active");
     if (!['en', 'ar', 'ms'].includes(l)) {
         l = 'en';
     }
