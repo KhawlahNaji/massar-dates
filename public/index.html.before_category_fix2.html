@@ -1192,184 +1192,102 @@ async function loadProductCategories() {
 }
 
 async function openProductsCategory(categoryId) {
-    selectedCategoryId = categoryId;
-
     navigateTo('products');
 
-    if (!Array.isArray(products)) {
-        products = [];
-    }
-
-    if (!Array.isArray(window.productCategories)) {
-        window.productCategories = [];
-    }
-
-    if (window.productCategories.length === 0) {
+    if (!window.productCategories || window.productCategories.length === 0) {
         await loadProductCategories();
     }
 
+    selectedCategoryId = categoryId;
     filterProductsByCategory(categoryId);
-}function filterProductsByCategory(categoryId) {
-    selectedCategoryId =
-        categoryId === null || categoryId === undefined || categoryId === ''
-            ? null
-            : Number(categoryId);
+}
+function filterProductsByCategory(categoryId) {
+    selectedCategoryId = categoryId;
 
     document.querySelectorAll('.category-btn').forEach(btn => {
         btn.classList.remove('active');
     });
 
-    const activeBtn = selectedCategoryId === null
+    const activeBtn = categoryId === null
         ? document.getElementById('categoryBtnAll')
-        : document.getElementById('categoryBtn' + selectedCategoryId);
+        : document.getElementById('categoryBtn' + categoryId);
 
-    if (activeBtn) {
-        activeBtn.classList.add('active');
-    }
+    if (activeBtn) activeBtn.classList.add('active');
 
     const pageTitle = document.getElementById('productsPageTitle');
-
     if (pageTitle) {
-        if (selectedCategoryId === null) {
+        if (categoryId === null) {
             pageTitle.textContent =
-                lang === 'ar' ? 'جميع المنتجات' :
+                lang === 'ar' ? '\u062c\u0645\u064a\u0639 \u0627\u0644\u0645\u0646\u062a\u062c\u0627\u062a' :
                 lang === 'ms' ? 'Semua Produk' :
                 'All Products';
         } else {
-            const cat = Array.isArray(window.productCategories)
-                ? window.productCategories.find(
-                    c => Number(c.id) === selectedCategoryId
-                )
+            const cat = window.productCategories
+                ? window.productCategories.find(c => Number(c.id) === Number(categoryId))
                 : null;
 
             if (cat) {
                 pageTitle.textContent =
-                    lang === 'ar'
-                        ? (cat.name_ar || cat.name_en)
-                        : lang === 'ms'
-                            ? (cat.name_ms || cat.name_en)
-                            : (cat.name_en || 'All Products');
-            } else if (activeBtn) {
-                pageTitle.textContent = activeBtn.textContent.trim();
+                    lang === 'ar' ? (cat.name_ar || cat.name_en) :
+                    lang === 'ms' ? (cat.name_ms || cat.name_en) :
+                    (cat.name_en || 'All Products');
+            } else {
+                pageTitle.textContent = activeBtn
+                    ? activeBtn.textContent.trim()
+                    : 'All Products';
             }
         }
     }
 
     renderProducts();
-}function renderProducts() {
+}
+function renderProducts() {
     const featuredEl = document.getElementById('featuredGrid');
     const allEl = document.getElementById('allGrid');
     const statEl = document.getElementById('statCount');
-
-    if (!Array.isArray(products)) {
-        products = [];
-    }
-
-    if (statEl) {
-        statEl.textContent = products.length + '+';
-    }
+    if (statEl) statEl.textContent = products.length + '+';
 
     window.productCardHtml = (p) => {
         const name = getProductName(p, lang);
         const desc = getProductDesc(p, lang);
         const prices = p.prices || {};
-        const pVals = Object.values(prices)
-            .map(Number)
-            .filter(v => v > 0);
-
+        const pVals = Object.values(prices).filter(v => v > 0);
         const minP = pVals.length ? Math.min(...pVals) : '--';
-
-        const img = p.image_url
-            ? `<img src="${p.image_url}" alt="${name}">`
-            : `<div class="fallback">🌰</div>`;
+        const img = p.image_url ? `<img src="${p.image_url}" alt="${name}">` : `<div class="fallback">🌰</div>`;
 
         return `
             <div class="product-card">
                 <div class="product-image-wrap">
-                    <span class="product-badge">
-                        ${p['badge_' + lang] || p.badge_en || p.variety || 'Premium'}
-                    </span>
+                    <span class="product-badge">${p['badge_' + lang] || p.badge_en || p.variety || 'Premium'}</span>
                     ${img}
                 </div>
-
                 <div class="product-info">
-                    <div class="product-variety">
-                        ${p.variety || 'Saudi Arabia'}
-                    </div>
-
+                    <div class="product-variety">${p.variety || 'Saudi Arabia'}</div>
                     <h3 class="product-name">${name}</h3>
-
                     <p class="product-desc">${desc}</p>
-
-                    <div class="product-price">
-                        <span class="from">From</span> RM ${minP}
-                    </div>
-
+                    <div class="product-price"><span class="from">From</span> RM ${minP}</div>
                     <div class="product-weights">
-                        ${Object.keys(prices)
-                            .map(w => `<span class="weight-tag">${w}</span>`)
-                            .join('')}
+                        ${Object.keys(prices).map(w => `<span class="weight-tag">${w}</span>`).join('')}
                     </div>
-
                     <div class="product-actions">
-                        <button
-                            class="btn-view-product"
-                            onclick="showDetail('${p.slug || p.id}')">
-                            View Details
-                        </button>
-
-                        <button
-                            class="btn-buy-now"
-                            onclick="showDetail('${p.slug || p.id}')">
-                            Buy Now
-                        </button>
+                        <button class="btn-view-product" onclick="showDetail('${p.slug || p.id}')">View Details</button>
+                        <button class="btn-buy-now" onclick="showDetail('${p.slug || p.id}')">Buy Now</button>
                     </div>
                 </div>
             </div>
         `;
     };
 
-    // Featured products
-    if (featuredEl) {
-        featuredEl.innerHTML = products
-            .filter(p => Number(p.featured) === 1 || p.featured === true)
-            .map(window.productCardHtml)
-            .join('');
-    }
-
-    // Products page
+    if (featuredEl) featuredEl.innerHTML = products.filter(p => p.featured).map(window.productCardHtml).join('');
     if (allEl) {
+        const visibleProducts = selectedCategoryId === null
+            ? products
+            : products.filter(p => Number(p.category_id) === Number(selectedCategoryId));
 
-        let visibleProducts;
-
-        // ALL PRODUCTS
-        if (
-            selectedCategoryId === null ||
-            selectedCategoryId === undefined ||
-            selectedCategoryId === ''
-        ) {
-            visibleProducts = products;
-        }
-
-        // SELECTED CATEGORY
-        else {
-            visibleProducts = products.filter(p =>
-                Number(p.category_id) === Number(selectedCategoryId)
-            );
-        }
-
-        allEl.innerHTML = visibleProducts
-            .map(window.productCardHtml)
-            .join('');
-
-        console.log(
-            'MASSAR PRODUCTS:',
-            visibleProducts.length,
-            'Category:',
-            selectedCategoryId
-        );
+        allEl.innerHTML = visibleProducts.map(window.productCardHtml).join('');
     }
 }
+
 function showDetail(slugOrId) {
     const p = products.find(x => x.slug === slugOrId || String(x.id) === String(slugOrId));
     if (!p) return;
