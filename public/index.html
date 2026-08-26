@@ -55,7 +55,88 @@
         .lang-switch{display:flex;gap:2px}.lang-btn{padding:5px 10px;font-size:.75rem;font-weight:500;color:var(--text-light);background:transparent;border-radius:var(--radius-sm)}.lang-btn.active{color:var(--gold-dark);background:rgba(184,149,106,.1);font-weight:600}.lang-sep{color:var(--beige);font-size:.75rem}
         .btn-shop-now{padding:10px 28px;background:var(--brown-dark);color:var(--white);font-size:.78rem;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;border-radius:50px;border:1.5px solid var(--brown-dark)}.btn-shop-now:hover{background:transparent;color:var(--brown-dark)}
         .hamburger{display:none;flex-direction:column;gap:5px;background:none;padding:8px;z-index:1001}.hamburger span{width:24px;height:2px;background:var(--brown-dark);transition:var(--transition)}
-        .nav-mobile{display:none;position:fixed;top:0;left:0;width:100%;height:100vh;background:var(--cream);z-index:1000;flex-direction:column;align-items:center;justify-content:center;gap:28px;opacity:0;pointer-events:none;transition:var(--transition)}.nav-mobile.active{opacity:1;pointer-events:all}.nav-mobile a{font-family:var(--font-display);font-size:1.4rem;color:var(--brown-dark)}
+        .nav-mobile{
+    display:none;
+    position:fixed;
+    top:0;
+    right:0;
+    left:auto;
+    width:50vw !important; height:100dvh;
+    background:rgba(250,247,242,.94);
+    backdrop-filter:blur(18px);
+    -webkit-backdrop-filter:blur(18px);
+    border-left:1px solid rgba(184,149,106,.28);
+    box-shadow:-12px 0 40px rgba(0,0,0,.14);
+    z-index:1000;
+    flex-direction:column;
+    align-items:stretch;
+    justify-content:flex-start;
+    gap:0;
+    padding:110px 26px 35px;
+    overflow-y:auto;
+    overflow-x:hidden;
+    opacity:0;
+    pointer-events:none;
+    transform:translateX(100%);
+    transition:opacity .3s ease,transform .3s ease;
+}
+
+.nav-mobile.active{
+    opacity:1;
+    pointer-events:auto;
+    transform:translateX(0);
+}
+
+.nav-mobile a{
+    font-family:var(--font-display);
+    font-size:1.15rem;
+    color:var(--brown-dark);
+    width:100%;
+    padding:17px 12px;
+    border-bottom:1px solid rgba(184,149,106,.16);
+    text-align:left;
+    transition:all .2s ease;
+}
+
+.nav-mobile a:hover{
+    color:var(--gold-dark);
+    background:rgba(184,149,106,.08);
+    padding-left:18px;
+}
+
+.nav-mobile > div{
+    margin-top:24px;
+    padding:8px 4px;
+    justify-content:center;
+}
+
+html[dir="rtl"] .nav-mobile{
+    right:auto;
+    left:0;
+    transform:translateX(-100%);
+    border-left:0;
+    border-right:1px solid rgba(184,149,106,.28);
+    box-shadow:12px 0 40px rgba(0,0,0,.14);
+}
+
+html[dir="rtl"] .nav-mobile.active{
+    transform:translateX(0);
+}
+
+html[dir="rtl"] .nav-mobile a{
+    text-align:right;
+}
+
+html[dir="rtl"] .nav-mobile a:hover{
+    padding-left:12px;
+    padding-right:18px;
+}
+
+@media(max-width:900px){
+    .nav-mobile{
+        display:flex;
+    }
+}
         .hero{margin-top:var(--header-height);min-height:calc(100vh - var(--header-height));display:flex;align-items:center;background:linear-gradient(135deg,var(--cream),var(--cream-dark),var(--beige));position:relative;overflow:hidden}
         .hero-inner{display:grid;grid-template-columns:1fr 1fr;gap:60px;align-items:center;max-width:1400px;margin:0 auto;padding:60px 30px;width:100%;position:relative;z-index:2}
         .hero-badge{display:inline-flex;align-items:center;gap:8px;padding:8px 20px;background:rgba(184,149,106,.12);border-radius:50px;margin-bottom:28px;border:1px solid rgba(184,149,106,.2)}.hero-badge-dot{width:6px;height:6px;background:var(--gold);border-radius:50%}.hero-badge span{font-size:.72rem;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:var(--gold-dark)}
@@ -243,6 +324,65 @@
 }
 </style>
 
+<style id="mobileProductsMenuStyle">
+.mobile-products-menu{
+    width:100%;
+}
+
+.mobile-products-menu > a{
+    display:flex !important;
+    align-items:center;
+    justify-content:space-between;
+}
+
+.mobile-products-arrow{
+    font-size:18px;
+    transition:transform .25s ease;
+}
+
+.mobile-product-categories{
+    display:none;
+    width:100%;
+    padding:6px 0 6px 14px;
+    border-bottom:1px solid rgba(184,149,106,.16);
+}
+
+.mobile-product-categories.active{
+    display:block;
+}
+
+.mobile-product-categories button{
+    display:block;
+    width:100%;
+    border:0;
+    background:transparent;
+    color:var(--text-light);
+    text-align:left;
+    padding:11px 12px;
+    font-family:var(--font-body);
+    font-size:.92rem;
+    cursor:pointer;
+}
+
+.mobile-product-categories button:hover{
+    color:var(--gold-dark);
+    background:rgba(184,149,106,.07);
+}
+
+html[dir="rtl"] .mobile-product-categories{
+    padding:6px 14px 6px 0;
+}
+
+html[dir="rtl"] .mobile-product-categories button{
+    text-align:right;
+}
+
+@media(max-width:900px){
+    .mobile-products-menu{
+        display:block;
+    }
+}
+</style>
 </head>
 <body>
 
@@ -259,12 +399,12 @@
         Products
     </a>
     <div class="products-dropdown-menu">
-        <button onclick="openProductsCategory(null)">All Products</button>
-        <button onclick="openProductsCategory(1)">Dates</button>
-        <button onclick="openProductsCategory(2)">Oils</button>
-        <button onclick="openProductsCategory(3)">Nuts</button>
-        <button onclick="openProductsCategory(4)">Honey</button>
-        <button onclick="openProductsCategory(5)">Gift Boxes</button>
+        <button id="topCatAll" onclick="document.getElementById('navMobile').classList.remove('active'); openProductsCategory(null)">All Products</button>
+        <button id="topCat1" onclick="document.getElementById('navMobile').classList.remove('active'); openProductsCategory(1)">Dates</button>
+        <button id="topCat2" onclick="document.getElementById('navMobile').classList.remove('active'); openProductsCategory(2)">Oils</button>
+        <button id="topCat3" onclick="document.getElementById('navMobile').classList.remove('active'); openProductsCategory(3)">Nuts</button>
+        <button id="topCat4" onclick="document.getElementById('navMobile').classList.remove('active'); openProductsCategory(4)">Honey</button>
+        <button id="topCat5" onclick="document.getElementById('navMobile').classList.remove('active'); openProductsCategory(5)">Gift Boxes</button>
     </div>
 </div>
             <a href="#" onclick="navigateTo('about'); return false;" id="navAbout">About Us</a>
@@ -284,11 +424,25 @@
         </div>
         <button class="hamburger" id="hamburger" onclick="document.getElementById('navMobile').classList.toggle('active')"><span></span><span></span><span></span></button>
     </div>
-    <nav class="nav-mobile" id="navMobile">
-        <a href="#" onclick="navigateTo('home'); return false;">Home</a>
-        <a href="#" onclick="navigateTo('products'); return false;">Products</a>
-        <a href="#" onclick="navigateTo('about'); return false;">About Us</a>
-        <a href="#" onclick="navigateTo('contact'); return false;">Contact</a>
+    <nav class="nav-mobile" id="navMobile" onclick="if(event.target.tagName === 'A' && !event.target.closest('.mobile-products-menu')){this.classList.remove('active');}">
+        <a href="#" id="navHomeMobile" onclick="navigateTo('home'); return false;">Home</a>
+        <div class="mobile-products-menu">
+    <a href="#" onclick="document.getElementById('mobileProductCategories').classList.toggle('active'); return false;">
+        <span id="navProductsMobile">Products</span>
+        <span class="mobile-products-arrow">⌄</span>
+    </a>
+
+    <div id="mobileProductCategories" class="mobile-product-categories">
+        <button type="button" id="mobileCatAll" onclick="document.getElementById('navMobile').classList.remove('active'); openProductsCategory(null)">All Products</button>
+        <button type="button" id="mobileCat1" onclick="document.getElementById('navMobile').classList.remove('active'); openProductsCategory(1)">Dates</button>
+        <button type="button" id="mobileCat2" onclick="document.getElementById('navMobile').classList.remove('active'); openProductsCategory(2)">Oils</button>
+        <button type="button" id="mobileCat3" onclick="document.getElementById('navMobile').classList.remove('active'); openProductsCategory(3)">Nuts</button>
+        <button type="button" id="mobileCat4" onclick="document.getElementById('navMobile').classList.remove('active'); openProductsCategory(4)">Honey</button>
+        <button type="button" id="mobileCat5" onclick="document.getElementById('navMobile').classList.remove('active'); openProductsCategory(5)">Gift Boxes</button>
+    </div>
+</div>
+        <a href="#" id="navAboutMobile" onclick="navigateTo('about'); return false;">About Us</a>
+        <a href="#" id="navContactMobile" onclick="navigateTo('contact'); return false;">Contact</a>
         <a href="#" onclick="navigateTo('blog'); return false;" id="navBlogMobile">Blog</a>
         <div style="display:flex;gap:10px"><button class="lang-btn" onclick="setLang('en')">EN</button><button class="lang-btn" onclick="setLang('ar')">العربية</button><button class="lang-btn" onclick="setLang('ms')">BM</button></div>
     </nav>
@@ -486,11 +640,11 @@
         <div class="category-section" id="productCategoriesSection">
             <div style="text-align:center;margin-bottom:24px">
                 <h2 style="font-family:var(--font-display);color:var(--brown-dark);margin-bottom:8px">
-                    Explore Our Categories
+                    <span id="categoriesTitle">Explore Our Categories</span>
                 </h2>
                 <div class="gold-line" style="margin:0 auto 12px"></div>
                 <p style="color:var(--text-light)">
-                    Discover our premium selection
+                    <span id="categoriesSubtitle">Discover our premium selection</span>
                 </p>
             </div>
 
@@ -507,7 +661,21 @@
 
 <!-- PRODUCT DETAIL -->
 <div class="page-section" id="page-detail"><div style="margin-top:var(--header-height)"><section class="section-padding"><div class="container">
-    <div class="breadcrumb"><a href="#" onclick="navigateTo('home'); return false;">Home</a> / <a href="#" onclick="navigateTo('products'); return false;">Products</a> / <span class="current" id="detBreadcrumb">Product</span></div>
+    <div class="breadcrumb"><a href="#" id="navHomeMobile" onclick="navigateTo('home'); return false;">Home</a> / <div class="mobile-products-menu">
+    <a href="#" onclick="document.getElementById('mobileProductCategories').classList.toggle('active'); return false;">
+        <span id="navProductsMobile">Products</span>
+        <span class="mobile-products-arrow">⌄</span>
+    </a>
+
+    <div id="mobileProductCategories" class="mobile-product-categories">
+        <button type="button" id="mobileCatAll" onclick="document.getElementById('navMobile').classList.remove('active'); openProductsCategory(null)">All Products</button>
+        <button type="button" id="mobileCat1" onclick="document.getElementById('navMobile').classList.remove('active'); openProductsCategory(1)">Dates</button>
+        <button type="button" id="mobileCat2" onclick="document.getElementById('navMobile').classList.remove('active'); openProductsCategory(2)">Oils</button>
+        <button type="button" id="mobileCat3" onclick="document.getElementById('navMobile').classList.remove('active'); openProductsCategory(3)">Nuts</button>
+        <button type="button" id="mobileCat4" onclick="document.getElementById('navMobile').classList.remove('active'); openProductsCategory(4)">Honey</button>
+        <button type="button" id="mobileCat5" onclick="document.getElementById('navMobile').classList.remove('active'); openProductsCategory(5)">Gift Boxes</button>
+    </div>
+</div> / <span class="current" id="detBreadcrumb">Product</span></div>
     <div class="detail-grid">
         <div class="detail-main-image" id="detImg"><div style="font-size:80px;opacity:.2">🌰</div></div>
         <div>
@@ -515,12 +683,12 @@
             <h1 class="detail-name" id="detName"></h1>
             <p class="detail-description" id="detDesc"></p>
             <div class="detail-meta">
-                <div><div class="meta-label">Origin</div><div class="meta-value" id="detOrigin"></div></div>
-                <div><div class="meta-label">Type</div><div class="meta-value" id="detType"></div></div>
-                <div><div class="meta-label">Texture</div><div class="meta-value" id="detTexture"></div></div>
-                <div><div class="meta-label">Taste</div><div class="meta-value" id="detTaste"></div></div>
+                <div><div class="meta-label" id="detOriginLabel">Origin</div><div class="meta-value" id="detOrigin"></div></div>
+                <div><div class="meta-label" id="detTypeLabel">Type</div><div class="meta-value" id="detType"></div></div>
+                <div><div class="meta-label" id="detTextureLabel">Texture</div><div class="meta-value" id="detTexture"></div></div>
+                <div><div class="meta-label" id="detTasteLabel">Taste</div><div class="meta-value" id="detTaste"></div></div>
             </div>
-            <div class="meta-label" style="margin-bottom:12px">Select Weight</div>
+            <div class="meta-label" id="detWeightLabel" style="margin-bottom:12px">Select Weight</div>
             <div class="weight-options" id="detWeights"></div>
             <div class="detail-price" id="detPrice">RM --</div>
             <div class="quantity-selector"><button class="qty-btn" onclick="chgQty(-1)">−</button><span class="qty-value" id="detQty">1</span><button class="qty-btn" onclick="chgQty(1)">+</button></div>
@@ -652,7 +820,21 @@
             <span>💬</span><span id="footerContactWAText">Contact via WhatsApp</span>
         </a>
     </div>
-    <div><h4>Quick Links</h4><ul class="footer-links"><li><a href="#" onclick="navigateTo('home'); return false;">Home</a></li><li><a href="#" onclick="navigateTo('products'); return false;">Products</a></li><li><a href="#" onclick="navigateTo('about'); return false;">About</a></li><li><a href="#" onclick="navigateTo('contact'); return false;">Contact</a></li></ul></div>
+    <div><h4>Quick Links</h4><ul class="footer-links"><li><a href="#" id="navHomeMobile" onclick="navigateTo('home'); return false;">Home</a></li><li><div class="mobile-products-menu">
+    <a href="#" onclick="document.getElementById('mobileProductCategories').classList.toggle('active'); return false;">
+        <span id="navProductsMobile">Products</span>
+        <span class="mobile-products-arrow">⌄</span>
+    </a>
+
+    <div id="mobileProductCategories" class="mobile-product-categories">
+        <button type="button" id="mobileCatAll" onclick="document.getElementById('navMobile').classList.remove('active'); openProductsCategory(null)">All Products</button>
+        <button type="button" id="mobileCat1" onclick="document.getElementById('navMobile').classList.remove('active'); openProductsCategory(1)">Dates</button>
+        <button type="button" id="mobileCat2" onclick="document.getElementById('navMobile').classList.remove('active'); openProductsCategory(2)">Oils</button>
+        <button type="button" id="mobileCat3" onclick="document.getElementById('navMobile').classList.remove('active'); openProductsCategory(3)">Nuts</button>
+        <button type="button" id="mobileCat4" onclick="document.getElementById('navMobile').classList.remove('active'); openProductsCategory(4)">Honey</button>
+        <button type="button" id="mobileCat5" onclick="document.getElementById('navMobile').classList.remove('active'); openProductsCategory(5)">Gift Boxes</button>
+    </div>
+</div></li><li><a href="#" onclick="navigateTo('about'); return false;">About</a></li><li><a href="#" id="navContactMobile" onclick="navigateTo('contact'); return false;">Contact</a></li></ul></div>
     <div><h4>Shop On</h4><ul class="footer-links"><li><a href="#" id="fTikTok" target="_blank">TikTok Shop</a></li><li><a href="#" id="fShopee" target="_blank">Shopee</a></li><li><a href="#" id="fWA" target="_blank">WhatsApp</a></li></ul></div>
     <div><h4>Admin</h4><ul class="footer-links"><li><a href="/admin" style="color:var(--gold)">🔒 Admin Panel</a></li></ul></div>
 </div><div class="footer-bottom"><p>&copy; 2024 MASSAR DATES. All rights reserved.</p></div></div></footer>
@@ -986,6 +1168,7 @@ async function loadProductCategories() {
     try {
         const res = await fetch('/api/product-categories');
         const categories = await res.json();
+        window.productCategories = categories;
 
         grid.innerHTML = `
             <button
@@ -1029,9 +1212,27 @@ function filterProductsByCategory(categoryId) {
 
     const pageTitle = document.getElementById('productsPageTitle');
     if (pageTitle) {
-        pageTitle.textContent = activeBtn
-            ? activeBtn.textContent.trim()
-            : 'All Products';
+        if (categoryId === null) {
+            pageTitle.textContent =
+                lang === 'ar' ? '\u062c\u0645\u064a\u0639 \u0627\u0644\u0645\u0646\u062a\u062c\u0627\u062a' :
+                lang === 'ms' ? 'Semua Produk' :
+                'All Products';
+        } else {
+            const cat = window.productCategories
+                ? window.productCategories.find(c => Number(c.id) === Number(categoryId))
+                : null;
+
+            if (cat) {
+                pageTitle.textContent =
+                    lang === 'ar' ? (cat.name_ar || cat.name_en) :
+                    lang === 'ms' ? (cat.name_ms || cat.name_en) :
+                    (cat.name_en || 'All Products');
+            } else {
+                pageTitle.textContent = activeBtn
+                    ? activeBtn.textContent.trim()
+                    : 'All Products';
+            }
+        }
     }
 
     renderProducts();
@@ -1086,6 +1287,7 @@ function renderProducts() {
 function showDetail(slugOrId) {
     const p = products.find(x => x.slug === slugOrId || String(x.id) === String(slugOrId));
     if (!p) return;
+
     selProd = p;
     qty = 1;
 
@@ -1095,27 +1297,115 @@ function showDetail(slugOrId) {
     document.getElementById('detBreadcrumb').textContent = name;
     document.getElementById('detName').textContent = name;
     document.getElementById('detDesc').textContent = desc;
-    document.getElementById('detVariety').textContent = p.variety || 'Saudi Arabia';
-    document.getElementById('detOrigin').textContent = p.origin || 'Saudi Arabia';
-    const productType =
-    p.type ||
-    (p.name_en || '').match(/Ajwa|Safawi|Sukkari|Sukkary|Medjool|Khalas|Saghai|Barhi|Anbara|Mabroom/i)?.[0] ||
-    'Dates';
 
-document.getElementById('detType').textContent = productType;
-    document.getElementById('detTexture').textContent = p['texture_' + lang] || p.texture_en || 'Soft & Chewy';
-    document.getElementById('detTaste').textContent = p['taste_' + lang] || p.taste_en || 'Rich & Sweet';
+    // Product detail labels
+    const detailLabels = {
+        en: {
+            origin: 'Origin',
+            type: 'Type',
+            texture: 'Texture',
+            taste: 'Taste',
+            selectWeight: 'Select Weight',
+            saudiArabia: 'Saudi Arabia',
+            dates: 'Dates',
+            softChewy: 'Soft & Chewy',
+            richSweet: 'Rich & Sweet'
+        },
+        ar: {
+            origin: '\u0627\u0644\u0645\u0646\u0634\u0623',
+            type: '\u0627\u0644\u0646\u0648\u0639',
+            texture: '\u0627\u0644\u0642\u0648\u0627\u0645',
+            taste: '\u0627\u0644\u0645\u0630\u0627\u0642',
+            selectWeight: '\u0627\u062e\u062a\u0631 \u0627\u0644\u0648\u0632\u0646',
+            saudiArabia: '\u0627\u0644\u0633\u0639\u0648\u062f\u064a\u0629',
+            dates: '\u062a\u0645\u0648\u0631',
+            softChewy: '\u0646\u0627\u0639\u0645 \u0648\u0645\u0637\u0627\u0637\u064a',
+            richSweet: '\u063a\u0646\u064a \u0648\u062d\u0644\u0648'
+        },
+        ms: {
+            origin: 'Asal',
+            type: 'Jenis',
+            texture: 'Tekstur',
+            taste: 'Rasa',
+            selectWeight: 'Pilih Berat',
+            saudiArabia: 'Arab Saudi',
+            dates: 'Kurma',
+            softChewy: 'Lembut dan Kenyal',
+            richSweet: 'Kaya dan Manis'
+        }
+    };
+
+    const t = detailLabels[lang] || detailLabels.en;
+
+    // Update labels on the product detail page
+    const originLabel = document.getElementById('detOriginLabel');
+    const typeLabel = document.getElementById('detTypeLabel');
+    const textureLabel = document.getElementById('detTextureLabel');
+    const tasteLabel = document.getElementById('detTasteLabel');
+    const weightLabel = document.getElementById('detWeightLabel');
+
+    if (originLabel) originLabel.textContent = t.origin;
+    if (typeLabel) typeLabel.textContent = t.type;
+    if (textureLabel) textureLabel.textContent = t.texture;
+    if (tasteLabel) tasteLabel.textContent = t.taste;
+    if (weightLabel) weightLabel.textContent = t.selectWeight;
+
+    // Origin
+    const origin =
+        (lang === 'ar' ? p.origin_ar :
+         lang === 'ms' ? p.origin_ms :
+         p.origin_en || p.origin) ||
+        t.saudiArabia;
+
+    document.getElementById('detOrigin').textContent = origin;
+
+    // Variety
+    const variety =
+        (lang === 'ar' ? p.variety_ar :
+         lang === 'ms' ? p.variety_ms :
+         p.variety_en || p.variety) ||
+        t.saudiArabia;
+
+    document.getElementById('detVariety').textContent = variety;
+
+    // Product type
+    const productType =
+        (lang === 'ar' ? p.type_ar :
+         lang === 'ms' ? p.type_ms :
+         p.type_en || p.type) ||
+        (p.name_en || '').match(/Ajwa|Safawi|Sukkari|Sukkary|Medjool|Khalas|Saghai|Barhi|Anbara|Mabroom/i)?.[0] ||
+        t.dates;
+
+    document.getElementById('detType').textContent = productType;
+
+    // Texture
+    const texture =
+        p['texture_' + lang] ||
+        p.texture_en ||
+        t.softChewy;
+
+    document.getElementById('detTexture').textContent = texture;
+
+    // Taste
+    const taste =
+        p['taste_' + lang] ||
+        p.taste_en ||
+        t.richSweet;
+
+    document.getElementById('detTaste').textContent = taste;
 
     const imgWrap = document.getElementById('detImg');
-    imgWrap.innerHTML = p.image_url ? `<img src="${p.image_url}" alt="${name}">` : `<div style="font-size:80px;opacity:.2">🌰</div>`;
+    imgWrap.innerHTML = p.image_url
+        ? `<img src="${p.image_url}" alt="${name}">`
+        : `<div style="font-size:80px;opacity:.2">🌴</div>`;
 
     const pKeys = Object.keys(p.prices || {});
     selWeight = pKeys.includes('500g') ? '500g' : (pKeys[0] || '500g');
+
     renderDetailWeights();
     updateDetailPrice();
     navigateTo('detail');
 }
-
 function renderDetailWeights() {
     if (!selProd) return;
     const wEl = document.getElementById('detWeights');
@@ -1254,15 +1544,107 @@ function updateNavigationLanguage() {
     setText("navShopNow", t.shop);
 
     setText("navHomeMobile", t.home);
-    setText("navProductsMobile", t.products);
+    setText("navHomeMobile", t.home);
+setText("navProductsMobile", t.products);
+setText("navAboutMobile", t.about);
+setText("navContactMobile", t.contact);
+setText("navBlogMobile", t.blog);
     setText("navAboutMobile", t.about);
     setText("navContactMobile", t.contact);
-    setText("navBlogMobile", t.blog);
+    setText("navHomeMobile", t.home);
+setText("navProductsMobile", t.products);
+setText("navAboutMobile", t.about);
+setText("navContactMobile", t.contact);
+setText("navBlogMobile", t.blog);
+setText("navBlogMobile", t.blog);
+
+const mobileCatText = {
+    en: ["All Products","Dates","Oils","Nuts","Honey","Gift Boxes"],
+    ar: ["جميع المنتجات","التمور","الزيوت","المكسرات","العسل","علب الهدايا"],
+    ms: ["Semua Produk","Kurma","Minyak","Kacang","Madu","Kotak Hadiah"]
+};
+
+const mc = mobileCatText[lang] || mobileCatText.en;
+
+setText("mobileCatAll", mc[0]);
+setText("mobileCat1", mc[1]);
+setText("mobileCat2", mc[2]);
+setText("mobileCat3", mc[3]);
+setText("mobileCat4", mc[4]);
+setText("mobileCat5", mc[5]);
 
     const mobile = document.getElementById("navMobile");
     if (mobile) {
         mobile.dir = lang === "ar" ? "rtl" : "ltr";
     }
+}
+function updateCategoriesText() {
+    const texts = {
+        en: {
+            title: "Explore Our Categories",
+            subtitle: "Discover our premium selection"
+        },
+        ar: {
+            title: "\u0627\u0633\u062a\u0643\u0634\u0641 \u0641\u0626\u0627\u062a\u0646\u0627",
+            subtitle: "\u0627\u0643\u062a\u0634\u0641 \u062a\u0634\u0643\u064a\u0644\u062a\u0646\u0627 \u0627\u0644\u0641\u0627\u062e\u0631\u0629"
+        },
+        ms: {
+            title: "Terokai Kategori Kami",
+            subtitle: "Temui pilihan premium kami"
+        }
+    };
+
+    const t = texts[lang] || texts.en;
+
+    const title = document.getElementById("categoriesTitle");
+    const subtitle = document.getElementById("categoriesSubtitle");
+
+    if (title) title.textContent = t.title;
+    if (subtitle) subtitle.textContent = t.subtitle;
+}
+function updateTopProductsMenu() {
+    const labels = {
+        en: {
+            all: "All Products",
+            dates: "Dates",
+            oils: "Oils",
+            nuts: "Nuts",
+            honey: "Honey",
+            gifts: "Gift Boxes"
+        },
+        ar: {
+            all: "\u062C\u0645\u064A\u0639 \u0627\u0644\u0645\u0646\u062A\u062C\u0627\u062A",
+            dates: "\u0627\u0644\u062A\u0645\u0648\u0631",
+            oils: "\u0627\u0644\u0632\u064A\u0648\u062A",
+            nuts: "\u0627\u0644\u0645\u0643\u0633\u0631\u0627\u062A",
+            honey: "\u0627\u0644\u0639\u0633\u0644",
+            gifts: "\u0639\u0644\u0628 \u0627\u0644\u0647\u062F\u0627\u064A\u0627"
+        },
+        ms: {
+            all: "Semua Produk",
+            dates: "Kurma",
+            oils: "Minyak",
+            nuts: "Kekacang",
+            honey: "Madu",
+            gifts: "Kotak Hadiah"
+        }
+    };
+
+    const t = labels[lang] || labels.en;
+
+    const c0 = document.getElementById("topCatAll");
+    const c1 = document.getElementById("topCat1");
+    const c2 = document.getElementById("topCat2");
+    const c3 = document.getElementById("topCat3");
+    const c4 = document.getElementById("topCat4");
+    const c5 = document.getElementById("topCat5");
+
+    if (c0) c0.textContent = t.all;
+    if (c1) c1.textContent = t.dates;
+    if (c2) c2.textContent = t.oils;
+    if (c3) c3.textContent = t.nuts;
+    if (c4) c4.textContent = t.honey;
+    if (c5) c5.textContent = t.gifts;
 }
 function setLang(l) {
     if (!['en', 'ar', 'ms'].includes(l)) {
@@ -1284,6 +1666,8 @@ function setLang(l) {
 
     applyConfig();
     updateNavigationLanguage();
+    updateTopProductsMenu();
+    updateCategoriesText();
     renderProducts();
 
     if (selProd) {
@@ -1560,5 +1944,225 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 </script>
 
+<style>
+#globalBackButton{
+    position:fixed;
+    top:calc(var(--header-height) + 14px);
+    left:20px;
+    z-index:900;
+    display:none;
+    align-items:center;
+    gap:8px;
+    padding:9px 18px;
+    border:1px solid rgba(184,149,106,.35);
+    border-radius:25px;
+    background:rgba(250,247,242,.96);
+    color:var(--brown-dark);
+    font-size:.85rem;
+    font-weight:600;
+    cursor:pointer;
+    box-shadow:0 4px 15px rgba(0,0,0,.08);
+    transition:.2s ease;
+    backdrop-filter:blur(8px);
+}
+
+#globalBackButton:hover{
+    transform:translateX(-2px);
+    box-shadow:0 6px 20px rgba(0,0,0,.12);
+}
+
+html[dir="rtl"] #globalBackButton{
+    left:auto;
+    right:20px;
+}
+
+@media(max-width:900px){
+    #globalBackButton{
+        top:calc(var(--header-height) + 10px);
+        left:12px;
+        right:auto;
+        padding:8px 14px;
+        font-size:.8rem;
+    }
+
+    html[dir="rtl"] #globalBackButton{
+        left:auto;
+        right:12px;
+    }
+}
+</style>
+
+<button id="globalBackButton" type="button" onclick="globalBack()">
+    <span id="globalBackIcon">←</span>
+    <span id="globalBackText">Back</span>
+</button>
+
+<script>
+(function(){
+
+    let pageHistory = [];
+    let isGoingBack = false;
+
+    const backLabels = {
+        en: {
+            back: 'Back',
+            home: 'Home'
+        },
+        ar: {
+            back: '\u0631\u062C\u0648\u0639',
+            home: '\u0627\u0644\u0631\u0626\u064A\u0633\u064A\u0629'
+        },
+        ms: {
+            back: 'Kembali',
+            home: 'Laman Utama'
+        }
+    };
+
+    function updateGlobalBackButton(){
+
+        const btn = document.getElementById('globalBackButton');
+        const txt = document.getElementById('globalBackText');
+        const icon = document.getElementById('globalBackIcon');
+
+        if(!btn) return;
+
+        const current =
+            typeof window.currentPage !== 'undefined'
+            ? window.currentPage
+            : null;
+
+        const langNow =
+            typeof window.lang !== 'undefined'
+            ? window.lang
+            : 'en';
+
+        const t = backLabels[langNow] || backLabels.en;
+
+        if(txt) txt.textContent = t.back;
+
+        if(icon){
+            icon.textContent = langNow === 'ar' ? '→' : '←';
+        }
+
+        if(current === 'home' || !pageHistory.length){
+            btn.style.display = 'none';
+        }else{
+            btn.style.display = 'flex';
+        }
+    }
+
+    window.globalBack = function(){
+
+        if(isGoingBack) return;
+
+        if(pageHistory.length > 0){
+
+            const previousPage = pageHistory.pop();
+
+            isGoingBack = true;
+
+            if(typeof window.navigateTo === 'function'){
+                window.navigateTo(previousPage);
+            }
+
+            setTimeout(function(){
+                isGoingBack = false;
+                updateGlobalBackButton();
+            },100);
+
+        }else{
+
+            if(typeof window.navigateTo === 'function'){
+                window.navigateTo('home');
+            }
+
+            updateGlobalBackButton();
+        }
+    };
+
+    function getCurrentPage(){
+
+        const active = document.querySelector('.page-section.active');
+
+        if(!active) return 'home';
+
+        return (active.id || '').replace('page-','') || 'home';
+    }
+
+    function installBackSystem(){
+
+        if(typeof window.navigateTo !== 'function'){
+            setTimeout(installBackSystem,200);
+            return;
+        }
+
+        const oldNavigateTo = window.navigateTo;
+
+        if(oldNavigateTo.__massarBackWrapped){
+            updateGlobalBackButton();
+            return;
+        }
+
+        function newNavigateTo(pageId){
+
+            const currentPage = getCurrentPage();
+
+            if(
+                !isGoingBack &&
+                pageId &&
+                pageId !== currentPage
+            ){
+                pageHistory.push(currentPage);
+            }
+
+            oldNavigateTo(pageId);
+
+            setTimeout(updateGlobalBackButton,20);
+        }
+
+        newNavigateTo.__massarBackWrapped = true;
+
+        window.navigateTo = newNavigateTo;
+
+        updateGlobalBackButton();
+    }
+
+    window.updateGlobalBackButton = updateGlobalBackButton;
+
+    document.addEventListener('DOMContentLoaded',function(){
+
+        setTimeout(function(){
+            installBackSystem();
+            updateGlobalBackButton();
+        },300);
+
+    });
+
+    setInterval(function(){
+
+        const btn=document.getElementById('globalBackButton');
+
+        if(btn){
+
+            const currentLang =
+                typeof window.lang !== 'undefined'
+                ? window.lang
+                : 'en';
+
+            const t=backLabels[currentLang] || backLabels.en;
+
+            const txt=document.getElementById('globalBackText');
+            const icon=document.getElementById('globalBackIcon');
+
+            if(txt) txt.textContent=t.back;
+            if(icon) icon.textContent=currentLang === 'ar' ? '→' : '←';
+
+            updateGlobalBackButton();
+        }
+
+    },500);
+
+})();
+</script>
 </body>
 </html>
