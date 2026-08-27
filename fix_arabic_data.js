@@ -1,4 +1,4 @@
-﻿const db = require("./database");
+const db = require("./database");
 
 console.log("Starting Arabic data repair...");
 
@@ -176,6 +176,7 @@ const blogPosts = {
     "how-to-keep-dates-fresh": {
         title_ar: "كيف تحافظ على التمور طازجة؟",
         excerpt_ar: "طرق ونصائح عملية لحفظ التمور لفترات طويلة مع الحفاظ على طعمها ورطوبتها الأصلية.",
+        excerpt_ms: "Tips penting penyimpanan untuk memastikan kurma anda kekal segar, lembut dan berkualiti.",
         content_ar: "<p>للحفاظ على جودة التمر، يُنصح بتخزينه في وعاء محكم الإغلاق في مكان بارد وجاف. للاستخدام اليومي تكفي درجة حرارة الغرفة المعتدلة، بينما يُفضل وضع التمور الرطبة مثل السكري في الثلاجة للحفاظ على نضارتها.</p>"
     },
 
