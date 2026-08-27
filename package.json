@@ -4,7 +4,7 @@
   "description": "MASSAR DATES - Premium Saudi Dates",
   "main": "server.js",
   "scripts": {
-    "start": "node create_product_categories.js && node server.js"
+"start": "node create_product_categories.js && node fix_arabic_data.js && node server.js"
   },
   "keywords": [],
   "author": "",
