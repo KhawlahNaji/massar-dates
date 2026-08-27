@@ -601,7 +601,7 @@ app.put('/api/admin/discover/:id', authMiddleware, (req, res) => { try { const b
 app.delete('/api/admin/discover/:id', authMiddleware, (req, res) => { try { db.prepare('DELETE FROM discover_cards WHERE id=?').run(req.params.id); res.json({message:'Deleted'}); } catch(e) { res.status(500).json({error:e.message}) } });
 
 
-app.get(/.*/, (req, res) => {
+app.get('/{*splat}', (req, res) => {
     if (req.path.startsWith('/admin')) {
         res.sendFile(path.join(__dirname, 'public', 'admin.html'));
     } else {
@@ -615,4 +615,5 @@ app.listen(PORT, () => {
     console.log(`ðŸ“ Website: http://localhost:${PORT}`);
     console.log(`ðŸ”’ Admin:   http://localhost:${PORT}/admin`);
 });
+
 
