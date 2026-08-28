@@ -1,0 +1,38 @@
+﻿[
+    {
+        "image_url":  "/uploads/discover/premium-ajwa.jpg",
+        "title_ar":  "تمر العجوة الفاخر",
+        "title_en":  "Premium Ajwa Dates",
+        "title_ms":  "Kurma Ajwa Premium",
+        "desc_ar":  "من بساتين المدينة المنورة المباركة",
+        "desc_en":  "From the blessed orchards of Al Madinah",
+        "desc_ms":  "Dari ladang-ladang berkat Al Madinah",
+        "link":  "#",
+        "active":  1,
+        "sort_order":  0
+    },
+    {
+        "image_url":  "/uploads/discover/golden-sukkari.jpg",
+        "title_ar":  "السكري الذهبي",
+        "title_en":  "Golden Sukkari",
+        "title_ms":  "Sukkari Keemasan",
+        "desc_ar":  "حلاوة كراميلية ملكية",
+        "desc_en":  "Royal caramel sweetness",
+        "desc_ms":  "Kemanisan karamel diraja",
+        "link":  "#",
+        "active":  1,
+        "sort_order":  0
+    },
+    {
+        "image_url":  "/uploads/discover/saudi-palm-farms.png",
+        "title_ar":  "مزارع نخيل سعودية",
+        "title_en":  "Saudi Palm Farms",
+        "title_ms":  "Ladang Palma Saudi",
+        "desc_ar":  "حيث تبدأ رحلة أجود التمور...................",
+        "desc_en":  "Where the finest dates journey begins",
+        "desc_ms":  "Di sinilah bermulanya perjalanan kurma terbaik",
+        "link":  "#",
+        "active":  1,
+        "sort_order":  0
+    }
+]

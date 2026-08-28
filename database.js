@@ -451,6 +451,51 @@ const syncBlogSeed = db.transaction(() => {
 });
 
 syncBlogSeed();
+/* Sync Discover cards for fresh Render databases */
+const discoverSeed = require('./discover-seed.json');
+
+const updateDiscoverSeed = db.prepare(`
+    UPDATE discover_cards SET
+        image_url=@image_url,
+        title_ar=@title_ar,
+        title_en=@title_en,
+        title_ms=@title_ms,
+        desc_ar=@desc_ar,
+        desc_en=@desc_en,
+        desc_ms=@desc_ms,
+        link=@link,
+        active=@active,
+        sort_order=@sort_order
+    WHERE id=@id
+`);
+
+const insertDiscoverSeed = db.prepare(`
+    INSERT INTO discover_cards (
+        image_url,title_ar,title_en,title_ms,
+        desc_ar,desc_en,desc_ms,link,active,sort_order
+    )
+    VALUES (
+        @image_url,@title_ar,@title_en,@title_ms,
+        @desc_ar,@desc_en,@desc_ms,@link,@active,@sort_order
+    )
+`);
+
+const syncDiscoverSeed = db.transaction(() => {
+    discoverSeed.forEach((card,index) => {
+        const row={
+            ...card,
+            id:index+1
+        };
+
+        const result=updateDiscoverSeed.run(row);
+
+        if(result.changes===0){
+            insertDiscoverSeed.run(row);
+        }
+    });
+});
+
+syncDiscoverSeed();
 // Seed Discover Cards
 const discCheck = db.prepare('SELECT COUNT(*) as count FROM discover_cards').get();
 if (discCheck.count === 0) {
