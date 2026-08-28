@@ -301,8 +301,79 @@
     }
 }
  </style>
-</head>
-<body>
+<style id="mobile-sidebar-style">
+.mobile-menu-btn {
+    display:none;
+    position:fixed;
+    top:15px;
+    left:15px;
+    z-index:10001;
+    width:46px;
+    height:46px;
+    border:none;
+    border-radius:10px;
+    background:var(--brown-dark,#3b2418);
+    color:#fff;
+    font-size:24px;
+    cursor:pointer;
+    box-shadow:0 4px 15px rgba(0,0,0,.2);
+}
+
+.mobile-sidebar-overlay {
+    display:none;
+    position:fixed;
+    inset:0;
+    z-index:9998;
+    background:rgba(0,0,0,.45);
+}
+
+@media (max-width: 900px) {
+    .mobile-menu-btn {
+        display:flex;
+        align-items:center;
+        justify-content:center;
+    }
+
+    .sidebar {
+        position:fixed !important;
+        left:0;
+        top:0;
+        bottom:0;
+        width:280px !important;
+        max-width:85vw;
+        z-index:10000;
+        transform:translateX(-105%);
+        transition:transform .28s ease;
+        overflow-y:auto;
+    }
+
+    .sidebar.mobile-open {
+        transform:translateX(0);
+    }
+
+    .mobile-sidebar-overlay.mobile-open {
+        display:block;
+    }
+
+    .main-wrap {
+        margin-left:0 !important;
+        width:100% !important;
+    }
+
+    .topbar {
+        padding-left:75px !important;
+    }
+}
+
+@media (min-width: 901px) {
+    .mobile-menu-btn,
+    .mobile-sidebar-overlay {
+        display:none !important;
+    }
+}
+</style></head>
+<body><button id="mobileMenuBtn" class="mobile-menu-btn" type="button" onclick="toggleMobileSidebar()" aria-label="Open menu">☰</button>
+<div id="mobileSidebarOverlay" class="mobile-sidebar-overlay" onclick="closeMobileSidebar()"></div>
 
 <!-- LOGIN VIEW -->
 <div class="login-view" id="loginView">
@@ -330,6 +401,7 @@
             <div class="nav-category">Main</div>
             <button class="nav-item active" onclick="switchPanel('dashboard', this)"><span>📊</span> Dashboard Overview</button>
             <button class="nav-item" onclick="switchPanel('products', this)"><span>🌰</span> Products Catalog</button>
+            <button class="nav-item" onclick="switchPanel('categories', this)"><span>🗂️</span> Product Categories</button>
             
             <div class="nav-category">Homepage Sections</div>
             <button class="nav-item" onclick="switchPanel('hero', this)"><span>🏠</span> Hero & Banner</button>
@@ -405,7 +477,104 @@
             </div>
 
             <!-- ============================================== -->
-            <!-- 3. HERO & BANNER -->
+            <!-- ============================================== -->
+<!-- PRODUCT CATEGORIES MANAGEMENT -->
+<!-- ============================================== -->
+<div class="panel" id="panel-categories">
+    <div class="card">
+        <div class="card-header">
+            <div>
+                <h3>Product Categories</h3>
+                <p>Manage product categories, names, descriptions, images, order, and visibility.</p>
+            </div>
+            <button class="btn btn-primary" onclick="showCategoryManagerForm()">+ Add Category</button>
+        </div>
+
+        <div class="card-body">
+            <div id="categoryManagerFormCard" style="display:none;margin-bottom:25px;">
+                <div class="card">
+                    <div class="card-header">
+                        <h3 id="categoryManagerFormTitle">Add Category</h3>
+                        <button class="btn" onclick="closeCategoryManagerForm()">? Close</button>
+                    </div>
+
+                    <div class="card-body">
+                        <input type="hidden" id="categoryManagerEditId">
+
+                        <div class="form-group">
+                            <label>Category Slug</label>
+                            <input id="categoryManagerSlug" class="form-control">
+                        </div>
+
+                        <div class="form-group">
+                            <label>Image URL</label>
+                            <input id="categoryManagerImage" class="form-control">
+                        </div>
+
+                        <div class="form-group">
+                            <label>Sort Order</label>
+                            <input id="categoryManagerSort" class="form-control" type="number" value="0">
+                        </div>
+
+                        <div class="lang-tabs">
+                            <button class="lang-tab active" onclick="switchCategoryManagerLang('en',this)">English</button>
+                            <button class="lang-tab" onclick="switchCategoryManagerLang('ar',this)">العربية</button>
+                            <button class="lang-tab" onclick="switchCategoryManagerLang('ms',this)">Malay</button>
+                        </div>
+
+                        <div id="categoryManagerLang-en">
+                            <div class="form-group">
+                                <label>English Name</label>
+                                <input id="categoryManagerNameEn" class="form-control">
+                            </div>
+                            <div class="form-group">
+                                <label>English Description</label>
+                                <textarea id="categoryManagerDescEn" class="form-control"></textarea>
+                            </div>
+                        </div>
+
+                        <div id="categoryManagerLang-ar" style="display:none;">
+                            <div class="form-group">
+                                <label>Arabic Name</label>
+                                <input id="categoryManagerNameAr" class="form-control" dir="rtl">
+                            </div>
+                            <div class="form-group">
+                                <label>Arabic Description</label>
+                                <textarea id="categoryManagerDescAr" class="form-control" dir="rtl"></textarea>
+                            </div>
+                        </div>
+
+                        <div id="categoryManagerLang-ms" style="display:none;">
+                            <div class="form-group">
+                                <label>Malay Name</label>
+                                <input id="categoryManagerNameMs" class="form-control">
+                            </div>
+                            <div class="form-group">
+                                <label>Malay Description</label>
+                                <textarea id="categoryManagerDescMs" class="form-control"></textarea>
+                            </div>
+                        </div>
+
+                        <label>
+                            <input type="checkbox" id="categoryManagerActive" checked>
+                            Active
+                        </label>
+
+                        <br><br>
+
+                        <button class="btn btn-primary" onclick="saveCategoryManager()">?? Save Category</button>
+                        <button class="btn" onclick="closeCategoryManagerForm()">Cancel</button>
+                    </div>
+                </div>
+            </div>
+
+            <div id="categoryManagerTable">
+                <p>Loading categories...</p>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- 3. HERO & BANNER -->
             <!-- ============================================== -->
             <div class="panel" id="panel-hero">
                 <div class="card">
@@ -1203,17 +1372,7 @@
         <div class="form-grid">
             <div class="field"><label>URL Slug (e.g. ajwa-madinah)</label><input id="editProdSlug"></div>
             <div class="field"><label>Variety / Region</label><input id="editProdVariety" placeholder="Al Madinah"></div>
-
-<div class="field">
-    <label>Product Category</label>
-    <select id="editProdCategory">
-        <option value="1">Dates — التمور</option>
-        <option value="2">Oils — الزيوت</option>
-        <option value="3">Nuts — المكسرات</option>
-        <option value="4">Honey — العسل</option>
-        <option value="5">Gift Boxes — علب الهدايا</option>
-    </select>
-</div>
+            <div class="field"><label>Product Category</label><select id="editProdCategory"><option value="1">Dates — التمور</option><option value="2">Oils — الزيوت</option><option value="3">Nuts — المكسرات</option><option value="4">Honey — العسل</option><option value="5">Gift Boxes — علب الهدايا</option></select></div>
         </div>
 
         <div class="lang-tabs">
@@ -1999,7 +2158,6 @@ async function saveBrandModal() {
     const idx = document.getElementById('editBrandId').value;
     const b = {
         name: document.getElementById('editBrandName').value,
-        category_id: Number(document.getElementById('editProdCategory').value),
         image_url: document.getElementById('editBrandImage').value,
         tagline_en: document.getElementById('editBrandTagline_en').value,
         tagline_ar: document.getElementById('editBrandTagline_ar').value,
@@ -2562,7 +2720,6 @@ async function saveAdminBlog() {
         slug: document.getElementById('adminBlogSlug').value || ('post-' + Date.now()),
         category: document.getElementById('adminBlogCategory').value,
         sort_order: parseInt(document.getElementById('adminBlogSort').value) || 0,
-        category_id: Number(document.getElementById('editProdCategory').value),
         image_url: document.getElementById('adminBlogImg').value,
 
         published: 1,
@@ -2718,7 +2875,6 @@ async function saveAdminDisc() {
     const token = localStorage.getItem('massar_admin_token');
     const id = document.getElementById('adminDiscEditId').value;
     const c = {
-        category_id: Number(document.getElementById('editProdCategory').value),
         image_url: document.getElementById('adminDiscImg').value, active: 1, sort_order: 0,
         title_ar: document.getElementById('adminDiscTitleAr').value,
         title_en: document.getElementById('adminDiscTitleEn').value,
@@ -2941,7 +3097,6 @@ async function saveAdminDisc() {
     const token = localStorage.getItem('massar_admin_token');
     const id = document.getElementById('adminDiscEditId').value;
     const c = {
-        category_id: Number(document.getElementById('editProdCategory').value),
         image_url: document.getElementById('adminDiscImg').value, active: 1, sort_order: 0,
         title_ar: document.getElementById('adminDiscTitleAr').value,
         title_en: document.getElementById('adminDiscTitleEn').value,
@@ -2981,6 +3136,7 @@ if (typeof window.switchPanel === 'function') {
         origSwitch(panelName, btn);
         if (panelName === 'blog') loadAdminBlog();
         if (panelName === 'discover') loadAdminDiscover();
+        if (panelName === 'categories' && typeof window.loadCategoryManager === 'function') window.loadCategoryManager();
     };
 }
 </script>
@@ -3010,5 +3166,46 @@ function blogFormat(editorId, command, value = null) {
     }
 }
 </script>
-</body>
+<script src="/category-manager.js"></script><script id="mobile-sidebar-script">
+function toggleMobileSidebar() {
+    const sidebar = document.querySelector('.sidebar');
+    const overlay = document.getElementById('mobileSidebarOverlay');
+
+    if (!sidebar || !overlay) return;
+
+    sidebar.classList.toggle('mobile-open');
+    overlay.classList.toggle('mobile-open');
+
+    document.body.style.overflow =
+        sidebar.classList.contains('mobile-open') ? 'hidden' : '';
+}
+
+function closeMobileSidebar() {
+    const sidebar = document.querySelector('.sidebar');
+    const overlay = document.getElementById('mobileSidebarOverlay');
+
+    if (!sidebar || !overlay) return;
+
+    sidebar.classList.remove('mobile-open');
+    overlay.classList.remove('mobile-open');
+    document.body.style.overflow = '';
+}
+
+document.addEventListener('DOMContentLoaded', function () {
+    document.querySelectorAll('.sidebar .nav-item').forEach(function (item) {
+        item.addEventListener('click', function () {
+            closeMobileSidebar();
+        });
+    });
+
+    window.addEventListener('resize', function () {
+        if (window.innerWidth > 900) {
+            closeMobileSidebar();
+        }
+    });
+});
+</script></body>
 </html>
+
+
+
