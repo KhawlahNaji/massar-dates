@@ -1,4 +1,4 @@
-﻿const Database = require('better-sqlite3');
+const Database = require('better-sqlite3');
 const bcrypt = require('bcryptjs');
 const path = require('path');
 
@@ -402,6 +402,55 @@ if (blogCheck.count === 0) {
     initialPosts.forEach(p => insertBlog.run(p));
 }
 
+/* Sync current blog content so fresh Render databases receive all posts */
+const blogSeed = require('./blog-seed.json');
+
+const updateBlogSeed = db.prepare(`
+    UPDATE blog_posts SET
+        title_ar=@title_ar,
+        title_en=@title_en,
+        title_ms=@title_ms,
+        excerpt_ar=@excerpt_ar,
+        excerpt_en=@excerpt_en,
+        excerpt_ms=@excerpt_ms,
+        content_ar=@content_ar,
+        content_en=@content_en,
+        content_ms=@content_ms,
+        image_url=@image_url,
+        category=@category,
+        published=@published,
+        featured=@featured,
+        sort_order=@sort_order,
+        updated_at=CURRENT_TIMESTAMP
+    WHERE slug=@slug
+`);
+
+const insertBlogSeed = db.prepare(`
+    INSERT INTO blog_posts (
+        slug,title_ar,title_en,title_ms,
+        excerpt_ar,excerpt_en,excerpt_ms,
+        content_ar,content_en,content_ms,
+        image_url,category,published,featured,sort_order
+    )
+    VALUES (
+        @slug,@title_ar,@title_en,@title_ms,
+        @excerpt_ar,@excerpt_en,@excerpt_ms,
+        @content_ar,@content_en,@content_ms,
+        @image_url,@category,@published,@featured,@sort_order
+    )
+`);
+
+const syncBlogSeed = db.transaction(() => {
+    for (const post of blogSeed) {
+        const result = updateBlogSeed.run(post);
+
+        if (result.changes === 0) {
+            insertBlogSeed.run(post);
+        }
+    }
+});
+
+syncBlogSeed();
 // Seed Discover Cards
 const discCheck = db.prepare('SELECT COUNT(*) as count FROM discover_cards').get();
 if (discCheck.count === 0) {
