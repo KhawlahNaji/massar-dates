@@ -15,8 +15,8 @@ const JWT_SECRET = process.env.JWT_SECRET || 'massar-dates-secret-key-change-in-
 app.use(cors());
 app.use(express.json({ limit: '10mb' }));
 app.use(express.static(path.join(__dirname, 'public')));
-app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 app.use('/uploads', express.static(path.join(__dirname, 'public', 'uploads')));
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 // File upload config
 const storage = multer.diskStorage({
