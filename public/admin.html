@@ -371,6 +371,29 @@
         display:none !important;
     }
 }
+</style><style id="admin-back-button-style">
+.admin-internal-back{
+    display:none;
+    align-items:center;
+    gap:8px;
+    margin-bottom:18px;
+    padding:10px 18px;
+    border:1.5px solid var(--border);
+    border-radius:999px;
+    background:var(--white);
+    color:var(--brown-dark);
+    font-size:.78rem;
+    font-weight:700;
+    letter-spacing:.6px;
+    cursor:pointer;
+    box-shadow:var(--shadow-sm);
+}
+.admin-internal-back:hover{
+    background:var(--brown-dark);
+    color:var(--white);
+    border-color:var(--brown-dark);
+    transform:translateX(-2px);
+}
 </style></head>
 <body><button id="mobileMenuBtn" class="mobile-menu-btn" type="button" onclick="toggleMobileSidebar()" aria-label="Open menu">☰</button>
 <div id="mobileSidebarOverlay" class="mobile-sidebar-overlay" onclick="closeMobileSidebar()"></div>
@@ -433,6 +456,14 @@
 
     <!-- MAIN CONTENT AREA -->
     <main class="main-wrap">
+    <div style="padding:18px 30px 0;">
+        <button id="adminInternalBack"
+                type="button"
+                class="admin-internal-back"
+                onclick="adminGoBack()">
+            ← Back
+        </button>
+    </div>
         <header class="topbar">
             <h2 style="font-family:var(--font-display);font-size:1.3rem;color:var(--brown-dark)" id="pageTitle">Dashboard Overview</h2>
             <a href="/" target="_blank" class="btn btn-outline btn-sm">👁 View Public Site</a>
@@ -1626,13 +1657,28 @@ async function enterApp() {
 }
 
 function switchPanel(name, btn) {
+    const currentPanel =
+        document.querySelector('.panel.active')?.id?.replace('panel-', '') || 'dashboard';
+
+    if (name !== currentPanel) {
+        adminPreviousPanel = currentPanel;
+    }
+
     document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
     document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-    document.getElementById('panel-' + name).classList.add('active');
+
+    const target = document.getElementById('panel-' + name);
+    if (target) target.classList.add('active');
+
     if (btn) btn.classList.add('active');
-    document.getElementById('pageTitle').textContent = name.toUpperCase();
+
+    const pageTitle = document.getElementById('pageTitle');
+    if (pageTitle) pageTitle.textContent = name.toUpperCase();
+
     window.scrollTo(0,0);
+    setTimeout(showAdminBackButton, 50);
 }
+
 function switchPanelByName(name) {
     const btn = document.querySelector(`.nav-item[onclick*="${name}"]`);
     switchPanel(name, btn);
@@ -3204,6 +3250,27 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     });
 });
+</script><script id="admin-internal-back-script">
+let adminPreviousPanel = 'dashboard';
+
+function showAdminBackButton(){
+    const btn = document.getElementById('adminInternalBack');
+    if(btn) btn.style.display = adminPreviousPanel && adminPreviousPanel !== 'dashboard' ? 'inline-flex' : 'none';
+}
+
+function adminGoBack(){
+    const target = adminPreviousPanel || 'dashboard';
+    switchPanelByName(target);
+}
+
+function rememberAdminPanel(panelId){
+    const current = window.currentAdminPanel || 'dashboard';
+    if(panelId && panelId !== current){
+        adminPreviousPanel = current;
+    }
+    window.currentAdminPanel = panelId || 'dashboard';
+    setTimeout(showAdminBackButton,50);
+}
 </script></body>
 </html>
 
