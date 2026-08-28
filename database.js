@@ -339,7 +339,7 @@ if (blogCheck.count === 0) {
             content_ar: '<p>ÙŠØ¹ØªØ¨Ø± ØªÙ…Ø± Ø§Ù„Ø¹Ø¬ÙˆØ© Ù…Ù† Ø£Ø±Ù‚Ù‰ ÙˆØ£Ø«Ù…Ù† Ø£Ù†ÙˆØ§Ø¹ Ø§Ù„ØªÙ…ÙˆØ± Ø§Ù„Ø³Ø¹ÙˆØ¯ÙŠØ©ØŒ ÙˆÙ„Ù‡ Ù…ÙƒØ§Ù†Ø© Ø®Ø§ØµØ© ÙÙŠ Ø§Ù„ØªØ±Ø§Ø« Ø§Ù„Ø¥Ø³Ù„Ø§Ù…ÙŠ. ÙŠØªÙ…ÙŠØ² Ø¨Ø­Ø¨ØªÙ‡ Ø§Ù„Ø¯Ø§ÙƒÙ†Ø© Ø°Ø§Øª Ø§Ù„Ø®Ø·ÙˆØ· Ø§Ù„Ø¯Ù‚ÙŠÙ‚Ø© ÙˆÙ…Ù„Ù…Ø³Ù‡ Ø§Ù„Ù†Ø§Ø¹Ù… ÙˆØ­Ù„Ø§ÙˆØªÙ‡ Ø§Ù„Ù…ØªÙˆØ§Ø²Ù†Ø© ØºÙŠØ± Ø§Ù„Ù…ÙØ±Ø·Ø©.</p><p>ØªÙØ²Ø±Ø¹ Ø§Ù„Ø¹Ø¬ÙˆØ© ÙÙŠ Ø§Ù„Ù…Ø¯ÙŠÙ†Ø© Ø§Ù„Ù…Ù†ÙˆØ±Ø© Ø§Ù„Ù…Ø¨Ø§Ø±ÙƒØ© ØªØ­Øª Ø±Ø¹Ø§ÙŠØ© Ø®Ø§ØµØ© Ù„Ø¶Ù…Ø§Ù† Ø§Ù„Ø­ØµÙˆÙ„ Ø¹Ù„Ù‰ Ø£Ø¹Ù„Ù‰ Ø¯Ø±Ø¬Ø§Øª Ø§Ù„Ø¬ÙˆØ¯Ø© ÙˆØ§Ù„Ù†Ø¶Ø§Ø±Ø© Ø§Ù„ØºÙ†ÙŠØ© Ø¨Ø§Ù„Ù…Ø¹Ø§Ø¯Ù† ÙˆØ§Ù„Ø£Ù„ÙŠØ§Ù Ø§Ù„Ø·Ø¨ÙŠØ¹ÙŠØ©.</p>',
             content_en: '<p>Ajwa dates are among the most revered varieties in the world, celebrated for their unique soft texture, dark shade with fine white lines, and delightful, subtle sweetness.</p><p>Harvested directly from Al Madinah orchards, our Ajwa dates embody centuries of heritage, providing high nutritional value and natural antioxidants.</p>',
             content_ms: '<p>Kurma Ajwa adalah salah satu jenis kurma paling istimewa di dunia, terkenal dengan teksturnya yang lembut, warnanya yang gelap dan kemanisan yang sederhana.</p><p>Dituai terus dari kebun Madinah, kurma ini kaya dengan antioksidan dan mineral penting untuk tenaga sepanjang hari.</p>',
-            image_url: 'https://images.unsplash.com/photo-1596704017254-9b121068fb31?w=800&auto=format&fit=crop&q=80',
+            image_url: '/uploads/blog/blank.png',
             category: 'types-of-dates', featured: 1, sort_order: 1
         },
         {
@@ -496,6 +496,17 @@ const syncDiscoverSeed = db.transaction(() => {
 });
 
 syncDiscoverSeed();
+/* Fix legacy Ajwa blog post image on existing databases */
+try {
+    db.prepare(`
+        UPDATE blog_posts
+        SET image_url = '/uploads/blog/blank.png',
+            updated_at = CURRENT_TIMESTAMP
+        WHERE slug = 'ajwa-dates-al-madinah-benefits'
+    `).run();
+} catch (e) {
+    console.log('Legacy Ajwa image fix:', e.message);
+}
 // Seed Discover Cards
 const discCheck = db.prepare('SELECT COUNT(*) as count FROM discover_cards').get();
 if (discCheck.count === 0) {
