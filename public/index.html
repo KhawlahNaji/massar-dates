@@ -911,7 +911,7 @@ html[dir="rtl"] .mobile-product-categories button{
         <span id="detailCatBadge" style="display: inline-block; background: rgba(197, 155, 39, 0.15); color: #c59b27; padding: 5px 14px; border-radius: 20px; font-weight: 700; font-size: 13px; text-transform: uppercase; margin-bottom: 12px;">Category</span>
         <h1 id="detailTitle" style="font-size: 2.3rem; color: #1a1a1a; line-height: 1.3; margin-bottom: 15px;">Article Title</h1>
         <div style="color: #888; font-size: 14px; margin-bottom: 25px;" id="detailDate">Date</div>
-        <div id="detailImageWrap" style="width: 100%; height: 380px; border-radius: 12px; overflow: hidden; margin-bottom: 30px; background: #eee;">
+        <div id="detailImageWrap" style="display:none;width:100%;height:380px;border-radius:12px;overflow:hidden;margin-bottom:30px;background:#eee;">
             <img id="detailImage" src="" alt="" style="width: 100%; height: 100%; object-fit: cover;">
         </div>
         <div id="detailContent" style="font-size: 1.1rem; line-height: 1.9; color: #333; margin-bottom: 50px;"></div>
@@ -3376,22 +3376,35 @@ async function openBlogPost(slug) {
         document.getElementById('detailTitle').textContent = getPostLocalized(post, 'title');
         document.getElementById('detailDate').textContent = new Date(post.created_at).toLocaleDateString(l === 'ar' ? 'ar-SA' : 'en-US', { year: 'numeric', month: 'long', day: 'numeric' });
         const detailImage = document.getElementById('detailImage');
-if (detailImage) {
-    if (!post.image_url || post.image_url.includes('/blank.png')) {
-        detailImage.removeAttribute('src');
-        detailImage.style.display = 'none';
-    } else {
-        detailImage.src = post.image_url;
-        detailImage.style.display = 'block';
-    }
-}
+        const detailImageWrap = document.getElementById('detailImageWrap');
+
+        if (detailImageWrap) {
+            if (!post.image_url || post.image_url.includes('/blank.png')) {
+                detailImageWrap.innerHTML = '';
+                detailImageWrap.style.display = 'none';
+            } else {
+                detailImageWrap.innerHTML =
+                    '<img id="detailImage" src="' +
+                    post.image_url +
+                    '" alt="" style="width:100%;height:100%;object-fit:cover;">';
+                detailImageWrap.style.display = 'block';
+            }
+        }
         document.getElementById('detailContent').innerHTML = getPostLocalized(post, 'content');
         document.getElementById('blogBackBtn').textContent = dict.backBtn;
         document.getElementById('detailRelatedHeading').textContent = dict.relatedTitle;
 
         const relGrid = document.getElementById('detailRelatedGrid');
         if (post.related && post.related.length > 0) {
-            relGrid.innerHTML = post.related.map(createBlogCardHTML).join('');
+            relGrid.innerHTML = post.related
+    .map(function(relatedPost){
+        const card = createBlogCardHTML(relatedPost);
+        return card.replace(
+            /<div class="blog-card-img-wrap">[\s\S]*?<\/div>/,
+            '<div class="blog-card-img-wrap" style="display:none"></div>'
+        );
+    })
+    .join('');
             document.getElementById('detailRelatedWrap').style.display = 'block';
         } else {
             document.getElementById('detailRelatedWrap').style.display = 'none';
@@ -3490,6 +3503,10 @@ html[dir="rtl"] #globalBackButton{
         left:auto;
         right:12px;
     }
+}
+</style><style>
+#detailRelatedGrid .blog-card-img-wrap{
+    display:none !important;
 }
 </style>
 
