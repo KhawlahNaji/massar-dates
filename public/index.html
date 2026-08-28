@@ -3375,7 +3375,16 @@ async function openBlogPost(slug) {
         document.getElementById('detailCatBadge').textContent = getCategoryName(post.category);
         document.getElementById('detailTitle').textContent = getPostLocalized(post, 'title');
         document.getElementById('detailDate').textContent = new Date(post.created_at).toLocaleDateString(l === 'ar' ? 'ar-SA' : 'en-US', { year: 'numeric', month: 'long', day: 'numeric' });
-        document.getElementById('detailImage').src = post.image_url || 'https://images.unsplash.com/photo-1596704017254-9b121068fb31?w=800';
+        const detailImage = document.getElementById('detailImage');
+if (detailImage) {
+    if (!post.image_url || post.image_url.includes('/blank.png')) {
+        detailImage.removeAttribute('src');
+        detailImage.style.display = 'none';
+    } else {
+        detailImage.src = post.image_url;
+        detailImage.style.display = 'block';
+    }
+}
         document.getElementById('detailContent').innerHTML = getPostLocalized(post, 'content');
         document.getElementById('blogBackBtn').textContent = dict.backBtn;
         document.getElementById('detailRelatedHeading').textContent = dict.relatedTitle;
