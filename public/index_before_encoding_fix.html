@@ -149,7 +149,7 @@ html[dir="rtl"] .nav-mobile a:hover{
         .hero-stats{display:flex;gap:40px;margin-top:40px;padding-top:24px;border-top:1px solid var(--beige)}.stat-item{text-align:center}.stat-number{font-family:var(--font-display);font-size:1.5rem;font-weight:700;color:var(--gold-dark)}.stat-label{font-size:.72rem;color:var(--text-light);text-transform:uppercase;letter-spacing:1px;margin-top:4px}
         .products-nav-dropdown{position:relative;display:inline-block}
         .products-nav-dropdown>a{display:flex;align-items:center;gap:5px}
-        .products-nav-dropdown>a::after{content:'âŒ„';font-size:12px;transition:.2s}
+        .products-nav-dropdown>a::after{content:'�R';font-size:12px;transition:.2s}
         .products-nav-dropdown:hover>a::after{transform:rotate(180deg)}
         .products-dropdown-menu{
             position:absolute;
@@ -236,7 +236,7 @@ html[dir="rtl"] .nav-mobile a:hover{
         .breadcrumb{display:flex;gap:8px;font-size:.82rem;color:var(--text-light);margin-bottom:40px;flex-wrap:wrap}.breadcrumb a:hover{color:var(--gold-dark)}.breadcrumb .current{color:var(--brown-dark);font-weight:500}
         @media(max-width:900px){.nav-desktop,.btn-shop-now,.lang-switch{display:none}.hamburger{display:flex}.nav-mobile{display:flex}.hero-inner,.about-grid,.contact-grid,.detail-grid,.purchase-channels-grid,.footer-grid{grid-template-columns:1fr}.hero-inner{text-align:center}.hero-desc{margin:0 auto 40px}.hero-buttons{justify-content:center}.hero-stats{justify-content:center}}
     
-    /* Ø¥Ø®ÙØ§Ø¡ Ø§Ù„Ø£Ø³Ø¹Ø§Ø± Ù…Ù† Ø§Ù„ÙƒØªØ§Ù„ÙˆØ¬ ÙˆØµÙØ­Ø© Ø§Ù„Ø¹Ø±Ø¶ */
+    /* إخفاء ا�أسعار �&�  ا�ْتا���ج ��صفحة ا�عرض */
     .product-price, #detPrice { display: none !important; }
     .category-btn {
     border: 1px solid var(--gold);
@@ -416,7 +416,7 @@ html[dir="rtl"] .mobile-product-categories button{
             <div class="lang-switch">
                 <button class="lang-btn active" onclick="setLang('en')">EN</button>
                 <span class="lang-sep">|</span>
-                <button class="lang-btn" onclick="setLang('ar')">Ø§Ù„Ø¹Ø±Ø¨ÙŠØ©</button>
+                <button class="lang-btn" onclick="setLang('ar')">ا�عرب�`ة</button>
                 <span class="lang-sep">|</span>
                 <button class="lang-btn" onclick="setLang('ms')">BM</button>
             </div>
@@ -429,7 +429,7 @@ html[dir="rtl"] .mobile-product-categories button{
         <div class="mobile-products-menu">
     <a href="#" onclick="document.getElementById('mobileProductCategories').classList.toggle('active'); return false;">
         <span id="navProductsMobile">Products</span>
-        <span class="mobile-products-arrow">âŒ„</span>
+        <span class="mobile-products-arrow">�R</span>
     </a>
 
     <div id="mobileProductCategories" class="mobile-product-categories">
@@ -444,7 +444,7 @@ html[dir="rtl"] .mobile-product-categories button{
         <a href="#" id="navAboutMobile" onclick="navigateTo('about'); return false;">About Us</a>
         <a href="#" id="navContactMobile" onclick="navigateTo('contact'); return false;">Contact</a>
         <a href="#" onclick="navigateTo('blog'); return false;" id="navBlogMobile">Blog</a>
-        <div style="display:flex;gap:10px"><button class="lang-btn" onclick="setLang('en')">EN</button><button class="lang-btn" onclick="setLang('ar')">Ø§Ù„Ø¹Ø±Ø¨ÙŠØ©</button><button class="lang-btn" onclick="setLang('ms')">BM</button></div>
+        <div style="display:flex;gap:10px"><button class="lang-btn" onclick="setLang('en')">EN</button><button class="lang-btn" onclick="setLang('ar')">ا�عرب�`ة</button><button class="lang-btn" onclick="setLang('ms')">BM</button></div>
     </nav>
 </header>
 
@@ -477,7 +477,7 @@ html[dir="rtl"] .mobile-product-categories button{
 <!-- BLOG DETAIL PAGE -->
 <div class="page-section" id="page-blog-detail" style="padding-top: 120px; min-height: 80vh;">
     <div style="max-width: 850px; margin: 0 auto; padding: 20px;">
-        <button onclick="navigateTo('blog')" id="blogBackBtn" style="background: none; border: none; color: #c59b27; font-weight: 700; font-size: 16px; cursor: pointer; margin-bottom: 20px;">â† Back to Articles</button>
+        <button onclick="navigateTo('blog')" id="blogBackBtn" style="background: none; border: none; color: #c59b27; font-weight: 700; font-size: 16px; cursor: pointer; margin-bottom: 20px;">� � Back to Articles</button>
         <span id="detailCatBadge" style="display: inline-block; background: rgba(197, 155, 39, 0.15); color: #c59b27; padding: 5px 14px; border-radius: 20px; font-weight: 700; font-size: 13px; text-transform: uppercase; margin-bottom: 12px;">Category</span>
         <h1 id="detailTitle" style="font-size: 2.3rem; color: #1a1a1a; line-height: 1.3; margin-bottom: 15px;">Article Title</h1>
         <div style="color: #888; font-size: 14px; margin-bottom: 25px;" id="detailDate">Date</div>
@@ -505,7 +505,7 @@ html[dir="rtl"] .mobile-product-categories button{
                 <h1 class="hero-title" id="heroTitle">Loading...</h1>
                 <p class="hero-desc" id="heroDesc">Loading...</p>
                 <div class="hero-buttons">
-                    <a href="#" class="btn-primary" onclick="navigateTo('products'); return false;">Explore Products â†’</a>
+                    <a href="#" class="btn-primary" onclick="navigateTo('products'); return false;">Explore Products � </a>
                     <a href="#" class="btn-secondary" onclick="navigateTo('about'); return false;">Our Story</a>
                 </div>
                 <div class="hero-stats">
@@ -514,7 +514,7 @@ html[dir="rtl"] .mobile-product-categories button{
                     <div class="stat-item"><div class="stat-number">Saudi</div><div class="stat-label">Origin</div></div>
                 </div>
             </div>
-            <div class="hero-image-main" id="heroImgWrap"><div style="font-size:120px;opacity:.15">ðŸŒ´</div></div>
+            <div class="hero-image-main" id="heroImgWrap"><div style="font-size:120px;opacity:.15">�xR�</div></div>
         </div>
     </section>
 
@@ -528,9 +528,9 @@ html[dir="rtl"] .mobile-product-categories button{
     <section class="purchase-section section-padding"><div class="container">
         <div class="section-header"><span class="section-subtitle">Where to Buy</span><h2 class="section-title" style="color:var(--cream)">Shop Our Dates</h2><div class="gold-line"></div></div>
         <div class="purchase-channels-grid">
-            <div class="purchase-channel-card"><div class="purchase-channel-icon">ðŸŽµ</div><h3 class="purchase-channel-name">TikTok Shop</h3><p class="purchase-channel-desc">Browse and buy live on TikTok Shop.</p><a href="#" id="linkTikTok" class="btn-channel-link" target="_blank">Shop Now â†’</a></div>
-            <div class="purchase-channel-card"><div class="purchase-channel-icon">ðŸ›’</div><h3 class="purchase-channel-name">Shopee</h3><p class="purchase-channel-desc">Secure checkout & nationwide delivery.</p><a href="#" id="linkShopee" class="btn-channel-link" target="_blank">Shop Now â†’</a></div>
-            <div class="purchase-channel-card"><div class="purchase-channel-icon">ðŸ’¬</div><h3 class="purchase-channel-name">WhatsApp</h3><p class="purchase-channel-desc">Chat for personal & bulk orders.</p><a href="#" id="linkWA" class="btn-channel-link" target="_blank">Order Now â†’</a></div>
+            <div class="purchase-channel-card"><div class="purchase-channel-icon">�x}�</div><h3 class="purchase-channel-name">TikTok Shop</h3><p class="purchase-channel-desc">Browse and buy live on TikTok Shop.</p><a href="#" id="linkTikTok" class="btn-channel-link" target="_blank">Shop Now � </a></div>
+            <div class="purchase-channel-card"><div class="purchase-channel-icon">�x:</div><h3 class="purchase-channel-name">Shopee</h3><p class="purchase-channel-desc">Secure checkout & nationwide delivery.</p><a href="#" id="linkShopee" class="btn-channel-link" target="_blank">Shop Now � </a></div>
+            <div class="purchase-channel-card"><div class="purchase-channel-icon">=�</div><h3 class="purchase-channel-name">WhatsApp</h3><p class="purchase-channel-desc">Chat for personal & bulk orders.</p><a href="#" id="linkWA" class="btn-channel-link" target="_blank">Order Now � </a></div>
         </div>
     </div></section>
 
@@ -572,7 +572,7 @@ html[dir="rtl"] .mobile-product-categories button{
             <div>
                 <a href="#" id="b2bBtnLink" class="btn-primary" target="_blank" rel="noopener">
                     <span id="b2bBtnText">Get Wholesale Quote</span>
-                    <span>â†’</span>
+                    <span>� </span>
                 </a>
             </div>
         </div>
@@ -588,19 +588,19 @@ html[dir="rtl"] .mobile-product-categories button{
             </div>
             <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 28px; max-width: 1200px; margin: 0 auto;">
                 <div style="background: var(--cream); border-radius: var(--radius-lg); padding: 32px 28px; border: 1px solid rgba(184, 149, 106, 0.15); box-shadow: var(--shadow-sm);">
-                    <div style="color: var(--gold); font-size: 1.1rem; letter-spacing: 3px; margin-bottom: 16px;">â˜…â˜…â˜…â˜…â˜…</div>
-                    <p id="testiQuote1" style="font-size: 0.95rem; line-height: 1.8; color: var(--text); font-style: italic; margin-bottom: 24px;">â€œExcellent quality dates with a delicious taste. The packaging was beautiful and the delivery was fast.â€</p>
-                    <div style="border-top: 1px solid rgba(184, 149, 106, 0.2); padding-top: 16px;"><strong id="testiAuthor1" style="display:block;font-family:var(--font-display);font-size:1.05rem;color:var(--brown-dark);">Aisha M.</strong><span id="testiRole1" style="font-size:0.78rem;color:var(--text-light);text-transform:uppercase;letter-spacing:1px;">Customer â€” Kuala Lumpur</span></div>
+                    <div style="color: var(--gold); font-size: 1.1rem; letter-spacing: 3px; margin-bottom: 16px;">��&��&��&��&��&</div>
+                    <p id="testiQuote1" style="font-size: 0.95rem; line-height: 1.8; color: var(--text); font-style: italic; margin-bottom: 24px;">�SExcellent quality dates with a delicious taste. The packaging was beautiful and the delivery was fast.⬝</p>
+                    <div style="border-top: 1px solid rgba(184, 149, 106, 0.2); padding-top: 16px;"><strong id="testiAuthor1" style="display:block;font-family:var(--font-display);font-size:1.05rem;color:var(--brown-dark);">Aisha M.</strong><span id="testiRole1" style="font-size:0.78rem;color:var(--text-light);text-transform:uppercase;letter-spacing:1px;">Customer � Kuala Lumpur</span></div>
                 </div>
                 <div style="background: var(--cream); border-radius: var(--radius-lg); padding: 32px 28px; border: 1px solid rgba(184, 149, 106, 0.15); box-shadow: var(--shadow-sm);">
-                    <div style="color: var(--gold); font-size: 1.1rem; letter-spacing: 3px; margin-bottom: 16px;">â˜…â˜…â˜…â˜…â˜…</div>
-                    <p id="testiQuote2" style="font-size: 0.95rem; line-height: 1.8; color: var(--text); font-style: italic; margin-bottom: 24px;">â€œThe Ajwa dates were fresh, soft, and exactly as described. I will definitely order again.â€</p>
-                    <div style="border-top: 1px solid rgba(184, 149, 106, 0.2); padding-top: 16px;"><strong id="testiAuthor2" style="display:block;font-family:var(--font-display);font-size:1.05rem;color:var(--brown-dark);">Mohammed A.</strong><span id="testiRole2" style="font-size:0.78rem;color:var(--text-light);text-transform:uppercase;letter-spacing:1px;">Customer â€” Selangor</span></div>
+                    <div style="color: var(--gold); font-size: 1.1rem; letter-spacing: 3px; margin-bottom: 16px;">��&��&��&��&��&</div>
+                    <p id="testiQuote2" style="font-size: 0.95rem; line-height: 1.8; color: var(--text); font-style: italic; margin-bottom: 24px;">�SThe Ajwa dates were fresh, soft, and exactly as described. I will definitely order again.⬝</p>
+                    <div style="border-top: 1px solid rgba(184, 149, 106, 0.2); padding-top: 16px;"><strong id="testiAuthor2" style="display:block;font-family:var(--font-display);font-size:1.05rem;color:var(--brown-dark);">Mohammed A.</strong><span id="testiRole2" style="font-size:0.78rem;color:var(--text-light);text-transform:uppercase;letter-spacing:1px;">Customer � Selangor</span></div>
                 </div>
                 <div style="background: var(--cream); border-radius: var(--radius-lg); padding: 32px 28px; border: 1px solid rgba(184, 149, 106, 0.15); box-shadow: var(--shadow-sm);">
-                    <div style="color: var(--gold); font-size: 1.1rem; letter-spacing: 3px; margin-bottom: 16px;">â˜…â˜…â˜…â˜…â˜…</div>
-                    <p id="testiQuote3" style="font-size: 0.95rem; line-height: 1.8; color: var(--text); font-style: italic; margin-bottom: 24px;">â€œVery good quality and excellent service. The dates arrived well packed and fresh.â€</p>
-                    <div style="border-top: 1px solid rgba(184, 149, 106, 0.2); padding-top: 16px;"><strong id="testiAuthor3" style="display:block;font-family:var(--font-display);font-size:1.05rem;color:var(--brown-dark);">Sara H.</strong><span id="testiRole3" style="font-size:0.78rem;color:var(--text-light);text-transform:uppercase;letter-spacing:1px;">Customer â€” Johor Bahru</span></div>
+                    <div style="color: var(--gold); font-size: 1.1rem; letter-spacing: 3px; margin-bottom: 16px;">��&��&��&��&��&</div>
+                    <p id="testiQuote3" style="font-size: 0.95rem; line-height: 1.8; color: var(--text); font-style: italic; margin-bottom: 24px;">�SVery good quality and excellent service. The dates arrived well packed and fresh.⬝</p>
+                    <div style="border-top: 1px solid rgba(184, 149, 106, 0.2); padding-top: 16px;"><strong id="testiAuthor3" style="display:block;font-family:var(--font-display);font-size:1.05rem;color:var(--brown-dark);">Sara H.</strong><span id="testiRole3" style="font-size:0.78rem;color:var(--text-light);text-transform:uppercase;letter-spacing:1px;">Customer � Johor Bahru</span></div>
                 </div>
             </div>
         </div>
@@ -615,7 +615,7 @@ html[dir="rtl"] .mobile-product-categories button{
             <p class="section-desc" id="ourBrandDesc" style="max-width: 700px; margin: 0 auto 32px; font-size: 1.02rem; line-height: 1.9; color: var(--text-light);">
                 Dedicated to bringing the finest harvest of authentic Saudi dates directly from the blessed orchards of Al Madinah and Al-Qassim to your table.
             </p>
-            <div><a href="#" class="btn-primary" onclick="navigateTo('about'); return false;"><span id="ourBrandBtnText">Learn More</span> <span>â†’</span></a></div>
+            <div><a href="#" class="btn-primary" onclick="navigateTo('about'); return false;"><span id="ourBrandBtnText">Learn More</span> <span>� </span></a></div>
         </div>
     </section>
 <!-- HOME BLOG PREVIEW -->
@@ -664,7 +664,7 @@ html[dir="rtl"] .mobile-product-categories button{
     <div class="breadcrumb"><a href="#" id="navHomeMobile" onclick="navigateTo('home'); return false;">Home</a> / <div class="mobile-products-menu">
     <a href="#" onclick="document.getElementById('mobileProductCategories').classList.toggle('active'); return false;">
         <span id="navProductsMobile">Products</span>
-        <span class="mobile-products-arrow">âŒ„</span>
+        <span class="mobile-products-arrow">�R</span>
     </a>
 
     <div id="mobileProductCategories" class="mobile-product-categories">
@@ -677,7 +677,7 @@ html[dir="rtl"] .mobile-product-categories button{
     </div>
 </div> / <span class="current" id="detBreadcrumb">Product</span></div>
     <div class="detail-grid">
-        <div class="detail-main-image" id="detImg"><div style="font-size:80px;opacity:.2">ðŸŒ°</div></div>
+        <div class="detail-main-image" id="detImg"><div style="font-size:80px;opacity:.2">�xR�</div></div>
         <div>
             <div class="detail-variety" id="detVariety"></div>
             <h1 class="detail-name" id="detName"></h1>
@@ -691,23 +691,23 @@ html[dir="rtl"] .mobile-product-categories button{
             <div class="meta-label" id="detWeightLabel" style="margin-bottom:12px">Select Weight</div>
             <div class="weight-options" id="detWeights"></div>
             <div class="detail-price" id="detPrice">RM --</div>
-            <div class="quantity-selector"><button class="qty-btn" onclick="chgQty(-1)">âˆ’</button><span class="qty-value" id="detQty">1</span><button class="qty-btn" onclick="chgQty(1)">+</button></div>
+            <div class="quantity-selector"><button class="qty-btn" onclick="chgQty(-1)">��</button><span class="qty-value" id="detQty">1</span><button class="qty-btn" onclick="chgQty(1)">+</button></div>
             <div class="detail-actions">
                 <div style="margin-bottom: 15px; width: 100%;">
                     <div class="meta-label" id="lblBuyWith" style="margin-bottom: 10px; font-weight: bold; color: var(--brown-dark); font-size: 0.95rem;">BUY WITH</div>
                     <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(110px, 1fr)); gap: 10px;">
                         <a href="#" id="detShopeeBtn" class="btn-buy-large" style="background:#ff5722; color:#fff; text-align:center; display:none; text-decoration:none; padding:10px; border-radius:6px; font-weight:bold; font-size:0.85rem;" target="_blank">
-                            ðŸ§¡ Shopee
+                            �x�� Shopee
                         </a>
                         <a href="#" id="detTikTokBtn" class="btn-buy-large" style="background:#000000; color:#fff; text-align:center; display:none; text-decoration:none; padding:10px; border-radius:6px; font-weight:bold; font-size:0.85rem;" target="_blank">
-                            ðŸ–¤ TikTok
+                            �x� TikTok
                         </a>
                         <a href="#" id="detLazadaBtn" class="btn-buy-large" style="background:#1a1a82; color:#fff; text-align:center; display:none; text-decoration:none; padding:10px; border-radius:6px; font-weight:bold; font-size:0.85rem;" target="_blank">
-                            ðŸ’™ Lazada
+                            �x" Lazada
                         </a>
                     </div>
                 </div>
-                <a href="#" id="detWABtn" class="btn-whatsapp" target="_blank" style="width:100%; display:flex; justify-content:center; align-items:center;">ðŸ’¬ ORDER VIA WHATSAPP</a>
+                <a href="#" id="detWABtn" class="btn-whatsapp" target="_blank" style="width:100%; display:flex; justify-content:center; align-items:center;">=� ORDER VIA WHATSAPP</a>
             </div>
         </div>
     </div>
@@ -746,16 +746,16 @@ html[dir="rtl"] .mobile-product-categories button{
     <section class="section-padding"><div class="container"><div class="contact-grid">
         <div class="contact-info-card">
             <h3 style="font-family:var(--font-display);margin-bottom:24px">Contact Information</h3>
-            <div class="contact-item"><div class="contact-icon">ðŸ’¬</div><div><h4>WhatsApp</h4><p id="cPhone">--</p></div></div>
-            <div class="contact-item"><div class="contact-icon">ðŸ“§</div><div><h4>Email</h4><p id="cEmail">--</p></div></div>
-            <div class="contact-item"><div class="contact-icon">ðŸ“</div><div><h4>Location</h4><p id="cLoc">--</p></div></div>
+            <div class="contact-item"><div class="contact-icon">=�</div><div><h4>WhatsApp</h4><p id="cPhone">--</p></div></div>
+            <div class="contact-item"><div class="contact-icon">=�</div><div><h4>Email</h4><p id="cEmail">--</p></div></div>
+            <div class="contact-item"><div class="contact-icon">�x�</div><div><h4>Location</h4><p id="cLoc">--</p></div></div>
         </div>
         <div><h3 style="font-family:var(--font-display);margin-bottom:24px">Send Message</h3>
             <form id="contactForm" style="display:flex;flex-direction:column;gap:14px;">
-        <div class="form-group"><label>Name / Ø§Ù„Ø§Ø³Ù…</label><input id="c_name" required style="width:100%;padding:10px;border:1px solid #ccc;border-radius:6px;"></div>
-        <div class="form-group"><label>Email / Ø§Ù„Ø¨Ø±ÙŠØ¯</label><input type="email" id="c_email" required style="width:100%;padding:10px;border:1px solid #ccc;border-radius:6px;"></div>
-        <div class="form-group"><label>Message / Ø§Ù„Ø±Ø³Ø§Ù„Ø©</label><textarea id="c_msg" rows="4" required style="width:100%;padding:10px;border:1px solid #ccc;border-radius:6px;font-family:inherit;"></textarea></div>
-        <button type="submit" id="c_btn" class="btn-primary" style="width:100%;justify-content:center;padding:12px;cursor:pointer;">Send Message / Ø¥Ø±Ø³Ø§Ù„ Ø§Ù„Ø±Ø³Ø§Ù„Ø©</button>
+        <div class="form-group"><label>Name / =d 'D'3E:</label><input id="c_name" required style="width:100%;padding:10px;border:1px solid #ccc;border-radius:6px;"></div>
+        <div class="form-group"><label>Email / =� 'D(1J/:</label><input type="email" id="c_email" required style="width:100%;padding:10px;border:1px solid #ccc;border-radius:6px;"></div>
+        <div class="form-group"><label>Message / =� 'D13'D):</label><textarea id="c_msg" rows="4" required style="width:100%;padding:10px;border:1px solid #ccc;border-radius:6px;font-family:inherit;"></textarea></div>
+        <button type="submit" id="c_btn" class="btn-primary" style="width:100%;justify-content:center;padding:12px;cursor:pointer;">Send Message / إرسا� =� 'D13'D):</button>
         <div id="c_status" style="margin-top:10px;font-weight:bold;display:none;padding:10px;border-radius:6px;"></div>
     </form>
     <script>
@@ -771,11 +771,11 @@ html[dir="rtl"] .mobile-product-categories button{
                 const message = document.getElementById('c_msg').value.trim();
 
                 btn.disabled = true;
-                btn.textContent = '... Ø¬Ø§Ø±ÙŠ Ø§Ù„Ø¥Ø±Ø³Ø§Ù„';
+                btn.textContent = '... جار�` ا�إرسا�';
                 st.style.display = 'block';
                 st.style.background = '#fff3cd';
                 st.style.color = '#856404';
-                st.textContent = 'â³ Ø¬Ø§Ø±ÙŠ Ø¥Ø±Ø³Ø§Ù„ Ø§Ù„Ø±Ø³Ø§Ù„Ø© ÙˆØ§Ù„Ø¥Ø´Ø¹Ø§Ø±...';
+                st.textContent = '⏳ جار�` إرسا� =� 'D13'D): ��ا�إشعار...';
 
                 try {
                     const res = await fetch('/api/messages', {
@@ -787,7 +787,7 @@ html[dir="rtl"] .mobile-product-categories button{
                     if(data.success){
                         st.style.background = '#d4edda';
                         st.style.color = '#155724';
-                        st.textContent = 'âœ… ØªÙ… Ø¥Ø±Ø³Ø§Ù„ Ø±Ø³Ø§Ù„ØªÙƒ Ø¨Ù†Ø¬Ø§Ø­ ÙˆÙˆØµÙ„ Ø¥Ø´Ø¹Ø§Ø± Ø¨Ø§Ù„Ø¨Ø±ÙŠØ¯!';
+                        st.textContent = '�S& ت�& إرسا� رسا�تْ ب� جاح ����ص� إشعار ب=� 'D(1J/:!';
                         form.reset();
                         if(data.waLink){
                             window.open(data.waLink, '_blank');
@@ -798,10 +798,10 @@ html[dir="rtl"] .mobile-product-categories button{
                 } catch(err){
                     st.style.background = '#f8d7da';
                     st.style.color = '#721c24';
-                    st.textContent = 'âŒ Ø­Ø¯Ø« Ø®Ø·Ø£ØŒ Ø­Ø§ÙˆÙ„ Ø«Ø§Ù†ÙŠØ©.';
+                    st.textContent = '�R حدث خطأ�R حا��� ثا� �`ة.';
                 } finally {
                     btn.disabled = false;
-                    btn.textContent = 'Send Message / Ø¥Ø±Ø³Ø§Ù„ Ø§Ù„Ø±Ø³Ø§Ù„Ø©';
+                    btn.textContent = 'Send Message / إرسا� =� 'D13'D):';
                 }
             });
         }
@@ -817,13 +817,13 @@ html[dir="rtl"] .mobile-product-categories button{
         <div style="font-family:var(--font-display);font-size:1.3rem;margin-bottom:6px">MASSAR DATES</div>
         <p style="font-size:.85rem;color:rgba(250,247,242,.6);margin-bottom:12px">Premium Saudi Dates delivered to your door.</p>
         <a href="#" id="footerContactWA" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;gap:8px;color:var(--gold);font-size:0.85rem;font-weight:600;">
-            <span>ðŸ’¬</span><span id="footerContactWAText">Contact via WhatsApp</span>
+            <span>=�</span><span id="footerContactWAText">Contact via WhatsApp</span>
         </a>
     </div>
     <div><h4>Quick Links</h4><ul class="footer-links"><li><a href="#" id="navHomeMobile" onclick="navigateTo('home'); return false;">Home</a></li><li><div class="mobile-products-menu">
     <a href="#" onclick="document.getElementById('mobileProductCategories').classList.toggle('active'); return false;">
         <span id="navProductsMobile">Products</span>
-        <span class="mobile-products-arrow">âŒ„</span>
+        <span class="mobile-products-arrow">�R</span>
     </a>
 
     <div id="mobileProductCategories" class="mobile-product-categories">
@@ -836,24 +836,24 @@ html[dir="rtl"] .mobile-product-categories button{
     </div>
 </div></li><li><a href="#" onclick="navigateTo('about'); return false;">About</a></li><li><a href="#" id="navContactMobile" onclick="navigateTo('contact'); return false;">Contact</a></li></ul></div>
     <div><h4>Shop On</h4><ul class="footer-links"><li><a href="#" id="fTikTok" target="_blank">TikTok Shop</a></li><li><a href="#" id="fShopee" target="_blank">Shopee</a></li><li><a href="#" id="fWA" target="_blank">WhatsApp</a></li></ul></div>
-    <div><h4>Admin</h4><ul class="footer-links"><li><a href="/admin" style="color:var(--gold)">ðŸ”’ Admin Panel</a></li></ul></div>
+    <div><h4>Admin</h4><ul class="footer-links"><li><a href="/admin" style="color:var(--gold)">�x Admin Panel</a></li></ul></div>
 </div><div class="footer-bottom"><p>&copy; 2024 MASSAR DATES. All rights reserved.</p></div></div></footer>
-<a href="#" id="floatWA" class="whatsapp-float" target="_blank">ðŸ’¬</a>
+<a href="#" id="floatWA" class="whatsapp-float" target="_blank">=�</a>
 
 <script>
 let lang = 'en', config = {}, products = [], selProd = null, selWeight = '500g', qty = 1;
 
 const contactTranslations = {
     ar: {
-        title: "ØªÙˆØ§ØµÙ„ Ù…Ø¹Ù†Ø§",
-        infoTitle: "Ù…Ø¹Ù„ÙˆÙ…Ø§Øª Ø§Ù„Ø§ØªØµØ§Ù„",
-        sendTitle: "Ø£Ø±Ø³Ù„ Ø±Ø³Ø§Ù„Ø©",
-        name: "Ø§Ù„Ø§Ø³Ù…",
-        email: "Ø§Ù„Ø¨Ø±ÙŠØ¯ Ø§Ù„Ø¥Ù„ÙƒØªØ±ÙˆÙ†ÙŠ",
-        message: "Ø§Ù„Ø±Ø³Ø§Ù„Ø©",
-        submit: "Ø¥Ø±Ø³Ø§Ù„ Ø§Ù„Ø±Ø³Ø§Ù„Ø©",
-        success: "âœ… ØªÙ… Ø­ÙØ¸ ÙˆØ¥Ø±Ø³Ø§Ù„ Ø±Ø³Ø§Ù„ØªÙƒ Ø¨Ù†Ø¬Ø§Ø­!",
-        error: "âŒ Ø­Ø¯Ø« Ø®Ø·Ø£ØŒ ÙŠØ±Ø¬Ù‰ Ø§Ù„Ù…Ø­Ø§ÙˆÙ„Ø© Ù…Ø±Ø© Ø£Ø®Ø±Ù‰."
+        title: "ت��اص� �&ع� ا",
+        infoTitle: "�&ع����&ات ا�اتصا�",
+        sendTitle: "أرس� رسا�ة",
+        name: "=d 'D'3E:",
+        email: "=� 'D(1J/: ا�إ�ْتر��� �`",
+        message: "=� 'D13'D):",
+        submit: "إرسا� =� 'D13'D):",
+        success: "�S& ت�& حفظ ��إرسا� رسا�تْ ب� جاح!",
+        error: "�R حدث خطأ�R �`رج�0 ا��&حا���ة �&رة أخر�0."
     },
     en: {
         title: "Contact Us",
@@ -863,8 +863,8 @@ const contactTranslations = {
         email: "Email",
         message: "Message",
         submit: "Send Message",
-        success: "âœ… Your message has been sent successfully!",
-        error: "âŒ Something went wrong. Please try again."
+        success: "�S& Your message has been sent successfully!",
+        error: "�R Something went wrong. Please try again."
     },
     ms: {
         title: "Hubungi Kami",
@@ -874,8 +874,8 @@ const contactTranslations = {
         email: "E-mel",
         message: "Mesej",
         submit: "Hantar Mesej",
-        success: "âœ… Mesej anda berjaya dihantar!",
-        error: "âŒ Ralat berlaku. Sila cuba lagi."
+        success: "�S& Mesej anda berjaya dihantar!",
+        error: "�R Ralat berlaku. Sila cuba lagi."
     }
 };
 
@@ -892,7 +892,7 @@ async function handleContactSubmit(event) {
     errorEl.style.display = 'none';
     btnSubmit.disabled = true;
     const origText = btnSubmit.textContent;
-    btnSubmit.textContent = (lang === 'ar') ? 'Ø¬Ø§Ø±ÙŠ Ø§Ù„Ø¥Ø±Ø³Ø§Ù„...' : (lang === 'ms') ? 'Menghantar...' : 'Sending...';
+    btnSubmit.textContent = (lang === 'ar') ? 'جار�` ا�إرسا�...' : (lang === 'ms') ? 'Menghantar...' : 'Sending...';
 
     try {
         const res = await fetch('/api/messages', {
@@ -907,10 +907,10 @@ async function handleContactSubmit(event) {
             document.getElementById('contactActualForm').reset();
             const now = new Date();
             const dateStr = now.toLocaleDateString() + ' ' + now.toLocaleTimeString();
-            const waText = `ðŸ“© *New Website Message | Ø±Ø³Ø§Ù„Ø© Ù…ÙˆÙ‚Ø¹ Ø¬Ø¯ÙŠØ¯Ø©*\n\nðŸ‘¤ *Name:* ${name}\nðŸ“§ *Email:* ${email || 'N/A'}\nðŸ’¬ *Message:* ${message}\n\nðŸ•’ *Date & Time:* ${dateStr}`;
+            const waText = `=� *New Website Message | رسا�ة �&���ع جد�`دة*\n\n�x� *Name:* ${name}\n=� *Email:* ${email || 'N/A'}\n=� *Message:* ${message}\n\n�x" *Date & Time:* ${dateStr}`;
             const cleanPhone = (config.link_whatsapp || '').replace(/[^0-9]/g, '');
             if (cleanPhone) {
-                const waUrl = `https://wa.me/${cleanPhone}?text=${encodeURIComponent(waText)}`;
+                const waUrl = `https://wa.me/${cleanPhone}?text=%24%7BencodeURIComponent(waText)%7D`;
                 window.open(waUrl, '_blank');
             }
         } else { throw new Error(); }
@@ -985,7 +985,7 @@ if (tagline) {
 
     document.getElementById('heroBadge').textContent = c['hero_badge_' + lang] || c.hero_badge_en || '';
     const title = c['hero_title_' + lang] || c.hero_title_en || '';
-    document.getElementById('heroTitle').innerHTML = title.replace(/Saudi Dates|Ø§Ù„ØªÙ…ÙˆØ± Ø§Ù„Ø³Ø¹ÙˆØ¯ÙŠØ©|Kurma Saudi/i, '<span class="gold">$&</span>');
+    document.getElementById('heroTitle').innerHTML = title.replace(/Saudi Dates|ا�ت�&��ر ا�سع��د�`ة|Kurma Saudi/i, '<span class="gold">$&</span>');
     document.getElementById('heroDesc').textContent = c['hero_desc_' + lang] || c.hero_desc_en || '';
     
     if (c.hero_img) {
@@ -999,7 +999,7 @@ if (tagline) {
     ['linkWA', 'fWA', 'floatWA', 'footerContactWA'].forEach(id => { const el = document.getElementById(id); if (el) el.href = waUrl; });
 
     const fWaText = document.getElementById('footerContactWAText');
-    if (fWaText) fWaText.textContent = (lang === 'ar') ? 'ØªÙˆØ§ØµÙ„ Ù…Ø¹Ù†Ø§ Ø¹Ø¨Ø± ÙˆØ§ØªØ³Ø§Ø¨' : (lang === 'ms') ? 'Hubungi melalui WhatsApp' : 'Contact via WhatsApp';
+    if (fWaText) fWaText.textContent = (lang === 'ar') ? 'ت��اص� �&ع� ا عبر ��اتساب' : (lang === 'ms') ? 'Hubungi melalui WhatsApp' : 'Contact via WhatsApp';
 
     const abTitle = document.getElementById('aboutTitle'); if (abTitle) abTitle.textContent = c['about_title_' + lang] || c.about_title_en || 'About Us';
     const abText = document.getElementById('aboutText'); if (abText) abText.textContent = c['about_text_' + lang] || c.about_text_en || '';
@@ -1028,7 +1028,7 @@ if (aboutImage && aboutImageContainer) {
     renderB2BSection();
     renderTabs();
     
-    // ØªØ·Ø¨ÙŠÙ‚ Ø§Ù„ØªØ±Ø¬Ù…Ø© Ø§Ù„ÙÙˆØ±ÙŠØ© Ù„Ù„ØªÙˆØ§ØµÙ„
+    // تطب�`� ا�ترج�&ة ا�ف��ر�`ة ��ت��اص�
     const ct = contactTranslations[lang] || contactTranslations.en;
     if (document.getElementById('contactInfoTitle')) document.getElementById('contactInfoTitle').textContent = ct.infoTitle;
     if (document.getElementById('contactSendTitle')) document.getElementById('contactSendTitle').textContent = ct.sendTitle;
@@ -1044,12 +1044,12 @@ function renderB2BSection() {
 
     let b2b = {
         active: true,
-        subtitle_en: 'For Businesses', subtitle_ar: 'Ù„Ù„Ø´Ø±ÙƒØ§Øª ÙˆØ§Ù„Ø£Ø¹Ù…Ø§Ù„', subtitle_ms: 'Untuk Perniagaan',
-        title_en: 'Premium Saudi Dates for Businesses', title_ar: 'ØªÙ…ÙˆØ± Ø³Ø¹ÙˆØ¯ÙŠØ© ÙØ§Ø®Ø±Ø© Ù„Ù„Ø´Ø±ÙƒØ§Øª ÙˆØ§Ù„Ø£Ù†Ø´Ø·Ø© Ø§Ù„ØªØ¬Ø§Ø±ÙŠØ©', title_ms: 'Kurma Saudi Premium untuk Perniagaan',
+        subtitle_en: 'For Businesses', subtitle_ar: '��شرْات ��ا�أع�&ا�', subtitle_ms: 'Untuk Perniagaan',
+        title_en: 'Premium Saudi Dates for Businesses', title_ar: 'ت�&��ر سع��د�`ة فاخرة ��شرْات ��ا�أ� شطة ا�تجار�`ة', title_ms: 'Kurma Saudi Premium untuk Perniagaan',
         desc_en: 'Looking for premium Saudi dates in bulk? We offer competitive wholesale pricing, flexible minimum order quantities, and reliable supply for retailers, restaurants, hotels, and businesses across Malaysia.',
-        desc_ar: 'Ù‡Ù„ ØªØ¨Ø­Ø« Ø¹Ù† ØªÙ…ÙˆØ± Ø³Ø¹ÙˆØ¯ÙŠØ© ÙØ§Ø®Ø±Ø© Ø¨Ø§Ù„Ø¬Ù…Ù„Ø©ØŸ Ù†Ù‚Ø¯Ù… Ø£Ø³Ø¹Ø§Ø± Ø¬Ù…Ù„Ø© ØªÙ†Ø§ÙØ³ÙŠØ©ØŒ ÙƒÙ…ÙŠØ§Øª Ø·Ù„Ø¨ Ù…Ø±Ù†Ø©ØŒ ÙˆØªÙˆØ±ÙŠØ¯Ø§Ù‹ Ù…ÙˆØ«ÙˆÙ‚Ø§Ù‹ Ù„ØªØ¬Ø§Ø± Ø§Ù„ØªØ¬Ø²Ø¦Ø©ØŒ Ø§Ù„Ù…Ø·Ø§Ø¹Ù…ØŒ Ø§Ù„ÙÙ†Ø§Ø¯Ù‚ØŒ ÙˆØ§Ù„Ø´Ø±ÙƒØ§Øª ÙÙŠ Ø¬Ù…ÙŠØ¹ Ø£Ù†Ø­Ø§Ø¡ Ù…Ø§Ù„ÙŠØ²ÙŠØ§.',
+        desc_ar: '�!� تبحث ع�  ت�&��ر سع��د�`ة فاخرة با�ج�&�ة�x � �د�& أسعار ج�&�ة ت� افس�`ة�R ْ�&�`ات ط�ب �&ر� ة�R ��ت��ر�`دا�9 �&��ث���ا�9 �تجار ا�تجزئة�R ا��&طاع�&�R ا�ف� اد��R ��ا�شرْات ف�` ج�&�`ع أ� حاء �&ا��`ز�`ا.',
         desc_ms: 'Mencari kurma Saudi premium secara pukal? Kami menawarkan harga borong yang kompetitif, kuantiti pesanan minimum yang fleksibel, dan bekalan yang boleh dipercayai untuk peruncit, restoran, hotel, dan perniagaan di seluruh Malaysia.',
-        button_en: 'Get Wholesale Quote', button_ar: 'Ø·Ù„Ø¨ ØªØ³Ø¹ÙŠØ±Ø© Ø¬Ù…Ù„Ø©', button_ms: 'Dapatkan Sebut Harga Borong'
+        button_en: 'Get Wholesale Quote', button_ar: 'ط�ب تسع�`رة ج�&�ة', button_ms: 'Dapatkan Sebut Harga Borong'
     };
 
     if (config && config.b2b_data) {
@@ -1067,9 +1067,9 @@ function renderB2BSection() {
     if (document.getElementById('b2bBtnText')) document.getElementById('b2bBtnText').textContent = b2b['button_' + lang] || b2b.button_en || 'Get Wholesale Quote';
 
     const cleanPhoneB2B = (config.link_whatsapp || '').replace(/[^0-9]/g, '');
-    let b2bMsg = (lang === 'ar') ? 'Ù…Ø±Ø­Ø¨Ø§Ù‹ Ù…Ø³Ø§Ø± Ù„Ù„ØªÙ…ÙˆØ±ØŒ Ø£ÙˆØ¯ Ø§Ù„Ø§Ø³ØªÙØ³Ø§Ø± ÙˆØ§Ù„Ø­ØµÙˆÙ„ Ø¹Ù„Ù‰ ØªØ³Ø¹ÙŠØ±Ø© Ù„Ø·Ù„Ø¨Ø§Øª Ø§Ù„Ø¬Ù…Ù„Ø© ÙˆØ§Ù„Ø´Ø±ÙƒØ§Øª.' : (lang === 'ms') ? 'Halo MASSAR DATES, saya ingin mendapatkan sebut harga borong untuk perniagaan.' : 'Hello MASSAR DATES, I would like to request a wholesale quote for businesses.';
+    let b2bMsg = (lang === 'ar') ? '�&رحبا�9 �&سار ��ت�&��ر�R أ��د ا�استفسار ��ا�حص��� ع��0 تسع�`رة �ط�بات ا�ج�&�ة ��ا�شرْات.' : (lang === 'ms') ? 'Halo MASSAR DATES, saya ingin mendapatkan sebut harga borong untuk perniagaan.' : 'Hello MASSAR DATES, I would like to request a wholesale quote for businesses.';
     const b2bLink = document.getElementById('b2bBtnLink');
-    if (b2bLink) b2bLink.href = cleanPhoneB2B ? `https://wa.me/${cleanPhoneB2B}?text=${encodeURIComponent(b2bMsg)}` : '#';
+    if (b2bLink) b2bLink.href = cleanPhoneB2B ? `https://wa.me/${cleanPhoneB2B}?text=%24%7BencodeURIComponent(b2bMsg)%7D` : '#';
 }
 
 function renderWhyMassar() {
@@ -1079,16 +1079,16 @@ function renderWhyMassar() {
 
     let data = {
         active: true,
-        subtitle_en: "Why Choose Us", subtitle_ar: "Ù„Ù…Ø§Ø°Ø§ ØªØ®ØªØ§Ø±Ù†Ø§", subtitle_ms: "Kenapa Pilih Kami",
-        title_en: "WHY MASSAR?", title_ar: "Ù„Ù…Ø§Ø°Ø§ Ù…Ø³Ø§Ø±ØŸ", title_ms: "KENAPA MASSAR?",
+        subtitle_en: "Why Choose Us", subtitle_ar: "��&اذا تختار� ا", subtitle_ms: "Kenapa Pilih Kami",
+        title_en: "WHY MASSAR?", title_ar: "��&اذا �&سار�x", title_ms: "KENAPA MASSAR?",
         desc_en: "Discover why dates connoisseurs and wholesale partners across Malaysia trust MASSAR DATES.",
-        desc_ar: "Ø§ÙƒØªØ´Ù Ù„Ù…Ø§Ø°Ø§ ÙŠØ«Ù‚ Ø®Ø¨Ø±Ø§Ø¡ Ø§Ù„ØªÙ…ÙˆØ± ÙˆØ´Ø±ÙƒØ§Ø¡ Ø§Ù„Ø¬Ù…Ù„Ø© ÙÙŠ Ø¬Ù…ÙŠØ¹ Ø£Ù†Ø­Ø§Ø¡ Ù…Ø§Ù„ÙŠØ²ÙŠØ§ Ø¨ØªÙ…ÙˆØ± Ù…Ø³Ø§Ø±.",
+        desc_ar: "اْتشف ��&اذا �`ث� خبراء ا�ت�&��ر ��شرْاء ا�ج�&�ة ف�` ج�&�`ع أ� حاء �&ا��`ز�`ا بت�&��ر �&سار.",
         desc_ms: "Ketahui sebab pencinta kurma dan rakan kongsi borong di seluruh Malaysia mempercayai MASSAR DATES.",
         cards: [
-            { icon: "ðŸ†", title_en: "Premium Quality", title_ar: "Ø¬ÙˆØ¯Ø© ÙØ§Ø¦Ù‚Ø©", title_ms: "Kualiti Premium", desc_en: "Carefully selected Saudi dates of exceptional quality.", desc_ar: "ØªÙ…ÙˆØ± Ø³Ø¹ÙˆØ¯ÙŠØ© Ù…Ù†ØªÙ‚Ø§Ø© Ø¨Ø¹Ù†Ø§ÙŠØ© ÙØ§Ø¦Ù‚Ø© ØªØ¶Ù…Ù† Ø¬ÙˆØ¯Ø© Ø§Ø³ØªØ«Ù†Ø§Ø¦ÙŠØ©.", desc_ms: "Kurma Saudi pilihan yang dipilih rapi bagi menjamin kualiti luar biasa.", active: true },
-            { icon: "ðŸ‡¸ðŸ‡¦", title_en: "Authentic Saudi Origin", title_ar: "Ù…Ù†Ø´Ø£ Ø³Ø¹ÙˆØ¯ÙŠ Ø£ØµÙŠÙ„", title_ms: "Asal Saudi Tulen", desc_en: "Authentic dates sourced from renowned date-growing regions in Saudi Arabia.", desc_ar: "ØªÙ…ÙˆØ± Ø£ØµÙŠÙ„Ø© Ù…Ø³ØªÙˆØ±Ø¯Ø© Ù…Ø¨Ø§Ø´Ø±Ø© Ù…Ù† Ø£Ø´Ù‡Ø± Ù…Ù†Ø§Ø·Ù‚ Ø²Ø±Ø§Ø¹Ø© Ø§Ù„ØªÙ…ÙˆØ±.", desc_ms: "Kurma asli dibekalkan terus dari kawasan penanaman kurma terkenal.", active: true },
-            { icon: "ðŸ“¦", title_en: "Fresh & Carefully Packed", title_ar: "Ø·Ø§Ø²Ø¬Ø© ÙˆÙ…Ø¹Ø¨Ø£Ø© Ø¨Ø¹Ù†Ø§ÙŠØ©", title_ms: "Segar & Dibungkus Rapi", desc_en: "Packed with care to preserve freshness, taste, and quality.", desc_ar: "ØªØ¹Ø¨Ø¦Ø© Ø±Ø§Ù‚ÙŠØ© ÙˆØ§Ø­ØªØ±Ø§ÙÙŠØ© ØªØ¶Ù…Ù† Ø§Ù„Ø­ÙØ§Ø¸ Ø¹Ù„Ù‰ Ø·Ø±Ø§ÙˆØ© ÙˆÙ…Ø°Ø§Ù‚ Ø§Ù„ØªÙ…Ø±.", desc_ms: "Dibungkus rapi untuk mengekalkan kesegaran dan rasa.", active: true },
-            { icon: "ðŸ¤", title_en: "Trusted Service", title_ar: "Ø®Ø¯Ù…Ø© Ù…ÙˆØ«ÙˆÙ‚Ø©", title_ms: "Perkhidmatan Dipercayai", desc_en: "Reliable service for customers, retailers, and wholesale partners.", desc_ar: "Ø´Ø±ÙŠÙƒÙƒÙ… Ø§Ù„Ù…ÙˆØ«ÙˆÙ‚ Ù„ØªÙˆØ±ÙŠØ¯ Ø§Ù„ØªÙ…ÙˆØ± Ù„Ù„Ø£ÙØ±Ø§Ø¯ ÙˆØ§Ù„Ù…ÙˆØ²Ø¹ÙŠÙ† ÙˆØ§Ù„Ø´Ø±ÙƒØ§Øª.", desc_ms: "Perkhidmatan boleh dipercayai untuk pelanggan dan rakan kongsi.", active: true }
+            { icon: "�x� ", title_en: "Premium Quality", title_ar: "ج��دة فائ�ة", title_ms: "Kualiti Premium", desc_en: "Carefully selected Saudi dates of exceptional quality.", desc_ar: "ت�&��ر سع��د�`ة �&� ت�اة بع� ا�`ة فائ�ة تض�&�  ج��دة استث� ائ�`ة.", desc_ms: "Kurma Saudi pilihan yang dipilih rapi bagi menjamin kualiti luar biasa.", active: true },
+            { icon: "�x!��x!�", title_en: "Authentic Saudi Origin", title_ar: "�&� شأ سع��د�` أص�`�", title_ms: "Asal Saudi Tulen", desc_en: "Authentic dates sourced from renowned date-growing regions in Saudi Arabia.", desc_ar: "ت�&��ر أص�`�ة �&ست��ردة �&باشرة �&�  أش�!ر �&� اط� زراعة ا�ت�&��ر.", desc_ms: "Kurma asli dibekalkan terus dari kawasan penanaman kurma terkenal.", active: true },
+            { icon: "=�", title_en: "Fresh & Carefully Packed", title_ar: "طازجة ���&عبأة بع� ا�`ة", title_ms: "Segar & Dibungkus Rapi", desc_en: "Packed with care to preserve freshness, taste, and quality.", desc_ar: "تعبئة را��`ة ��احتراف�`ة تض�&�  ا�حفاظ ع��0 طرا��ة ���&ذا� ا�ت�&ر.", desc_ms: "Dibungkus rapi untuk mengekalkan kesegaran dan rasa.", active: true },
+            { icon: "�x��", title_en: "Trusted Service", title_ar: "خد�&ة �&��ث���ة", title_ms: "Perkhidmatan Dipercayai", desc_en: "Reliable service for customers, retailers, and wholesale partners.", desc_ar: "شر�`ْْ�& ا��&��ث��� �ت��ر�`د ا�ت�&��ر ��أفراد ��ا��&��زع�`�  ��ا�شرْات.", desc_ms: "Perkhidmatan boleh dipercayai untuk pelanggan dan rakan kongsi.", active: true }
         ]
     };
 
@@ -1106,7 +1106,7 @@ function renderWhyMassar() {
 
     grid.innerHTML = (data.cards || []).filter(c => c.active !== false).map(c => `
         <div style="background: var(--white); border-radius: var(--radius-md); padding: 32px 24px; border: 1px solid rgba(184,149,106,0.12); box-shadow: var(--shadow-sm); text-align: center;">
-            <div style="width: 56px; height: 56px; border-radius: 50%; background: rgba(184,149,106,0.08); display: flex; align-items: center; justify-content: center; font-size: 1.6rem; margin: 0 auto 18px;">${c.icon || 'âœ¨'}</div>
+            <div style="width: 56px; height: 56px; border-radius: 50%; background: rgba(184,149,106,0.08); display: flex; align-items: center; justify-content: center; font-size: 1.6rem; margin: 0 auto 18px;">${c.icon || '�S�'}</div>
             <h3 style="font-family: var(--font-display); font-size: 1.2rem; color: var(--brown-dark); font-weight:600; margin-bottom: 10px;">${c['title_' + lang] || c.title_en || ''}</h3>
             <p style="font-size: 0.88rem; line-height: 1.7; color: var(--text-light);">${c['desc_' + lang] || c.desc_en || ''}</p>
         </div>
@@ -1144,7 +1144,7 @@ function renderBrandsSection() {
                     <p style="font-size: 0.9rem; line-height: 1.8; color: var(--text-light); margin-bottom: 20px;">${b['desc_' + lang] || b.desc_en || ''}</p>
                 </div>
                 <div style="padding-top: 16px; border-top: 1px solid rgba(184, 149, 106, 0.15);">
-                    <button onclick="navigateTo('products'); return false;" class="btn-secondary" style="padding: 8px 24px; font-size: 0.72rem; width: 100%;">View Products â†’</button>
+                    <button onclick="navigateTo('products'); return false;" class="btn-secondary" style="padding: 8px 24px; font-size: 0.72rem; width: 100%;">View Products � </button>
                 </div>
             </div>
         `;
@@ -1249,7 +1249,7 @@ function renderProducts() {
         const prices = p.prices || {};
         const pVals = Object.values(prices).filter(v => v > 0);
         const minP = pVals.length ? Math.min(...pVals) : '--';
-        const img = p.image_url ? `<img src="${p.image_url}" alt="${name}">` : `<div class="fallback">ðŸŒ°</div>`;
+        const img = p.image_url ? `<img src="${p.image_url}" alt="${name}">` : `<div class="fallback">�xR�</div>`;
 
         return `
             <div class="product-card">
@@ -1397,7 +1397,7 @@ function showDetail(slugOrId) {
     const imgWrap = document.getElementById('detImg');
     imgWrap.innerHTML = p.image_url
         ? `<img src="${p.image_url}" alt="${name}">`
-        : `<div style="font-size:80px;opacity:.2">ðŸŒ´</div>`;
+        : `<div style="font-size:80px;opacity:.2">�xR�</div>`;
 
     const pKeys = Object.keys(p.prices || {});
     selWeight = pKeys.includes('500g') ? '500g' : (pKeys[0] || '500g');
@@ -1435,18 +1435,18 @@ function updateDetailPrice() {
 
     const buyWithLabel = document.getElementById('lblBuyWith');
     if (buyWithLabel) {
-        buyWithLabel.textContent = (lang === 'ar') ? 'Ø§Ù„Ø´Ø±Ø§Ø¡ Ø¹Ø¨Ø± Ù…ÙŽØªØ§Ø¬Ø±Ù†Ø§:' : (lang === 'ms') ? 'BELI DENGAN:' : 'BUY WITH:';
+        buyWithLabel.textContent = (lang === 'ar') ? 'ا�شراء عبر �&�}تاجر� ا:' : (lang === 'ms') ? 'BELI DENGAN:' : 'BUY WITH:';
     }
 
     const prodName = getProductName(selProd, lang);
     let msgText = (lang === 'ar') 
-        ? `Ù…Ø±Ø­Ø¨Ø§Ù‹ Ù…Ø³Ø§Ø± Ù„Ù„ØªÙ…ÙˆØ±ØŒ\nØ£ÙˆØ¯ Ø·Ù„Ø¨:\n- Ø§Ù„Ù…Ù†ØªØ¬: ${prodName}\n- Ø§Ù„ÙˆØ²Ù†: ${selWeight}\n- Ø§Ù„ÙƒÙ…ÙŠØ©: ${qty}\n- Ø§Ù„Ø¥Ø¬Ù…Ø§Ù„ÙŠ: RM ${total}`
+        ? `�&رحبا�9 �&سار ��ت�&��ر�R\nأ��د ط�ب:\n- ا��&� تج: ${prodName}\n- ا���ز� : ${selWeight}\n- ا�ْ�&�`ة: ${qty}\n- ا�إج�&ا��`: RM ${total}`
         : (lang === 'ms')
         ? `Halo MASSAR DATES,\nSaya ingin membuat pesanan:\n- Produk: ${prodName}\n- Berat: ${selWeight}\n- Kuantiti: ${qty}\n- Jumlah: RM ${total}`
         : `Hello MASSAR DATES,\nI would like to order:\n- Product: ${prodName}\n- Weight: ${selWeight}\n- Quantity: ${qty}\n- Total: RM ${total}`;
 
     const cleanPhone = (config.link_whatsapp || '').replace(/[^0-9]/g, '');
-    const waUrl = `https://wa.me/${cleanPhone}?text=${encodeURIComponent(msgText)}`;
+    const waUrl = `https://wa.me/${cleanPhone}?text=%24%7BencodeURIComponent(msgText)%7D`;
     document.getElementById('detWABtn').href = waUrl;
 
     const shopeeBtn = document.getElementById('detShopeeBtn');
@@ -1512,12 +1512,12 @@ function updateNavigationLanguage() {
             shop: "SHOP NOW"
         },
         ar: {
-            home: "Ø§Ù„Ø±Ø¦ÙŠØ³ÙŠØ©",
-            products: "Ø§Ù„Ù…Ù†ØªØ¬Ø§Øª",
-            about: "Ù…Ù† Ù†Ø­Ù†",
-            contact: "Ø§ØªØµÙ„ Ø¨Ù†Ø§",
-            blog: "Ø§Ù„Ù…Ø¯ÙˆÙ†Ø©",
-            shop: "ØªØ³ÙˆÙ‚ Ø§Ù„Ø¢Ù†"
+            home: "ا�رئ�`س�`ة",
+            products: "ا��&� تجات",
+            about: "�&�  � ح� ",
+            contact: "اتص� ب� ا",
+            blog: "ا��&د��� ة",
+            shop: "تس��� ا�آ� "
         },
         ms: {
             home: "Laman Utama",
@@ -1560,7 +1560,7 @@ setText("navBlogMobile", t.blog);
 
 const mobileCatText = {
     en: ["All Products","Dates","Oils","Nuts","Honey","Gift Boxes"],
-    ar: ["Ø¬Ù…ÙŠØ¹ Ø§Ù„Ù…Ù†ØªØ¬Ø§Øª","Ø§Ù„ØªÙ…ÙˆØ±","Ø§Ù„Ø²ÙŠÙˆØª","Ø§Ù„Ù…ÙƒØ³Ø±Ø§Øª","Ø§Ù„Ø¹Ø³Ù„","Ø¹Ù„Ø¨ Ø§Ù„Ù‡Ø¯Ø§ÙŠØ§"],
+    ar: ["ج�&�`ع ا��&� تجات","ا�ت�&��ر","ا�ز�`��ت","ا��&ْسرات","ا�عس�","ع�ب ا��!دا�`ا"],
     ms: ["Semua Produk","Kurma","Minyak","Kacang","Madu","Kotak Hadiah"]
 };
 
@@ -1841,7 +1841,7 @@ document.addEventListener('click',function(e){
 function updateStoreBtn(){
     const txt=document.getElementById('storeBtnText');
     if(!txt)return;
-    if(lang==='ar')txt.textContent='Ø²ÙˆØ± Ù…ØªØ§Ø¬Ø±Ù†Ø§';
+    if(lang==='ar')txt.textContent='ز��ر �&تاجر� ا';
     else if(lang==='ms')txt.textContent='Lawati Kedai Kami';
     else txt.textContent='Visit Our Stores';
     if(typeof config!=='undefined'){
@@ -1875,19 +1875,19 @@ const blogI18n = {
     en: {
         blog: "Blog", homeTitle: "From Our Blog", homeSubtitle: "Discover the rich heritage, nutritional secrets, and storage guides of Saudi dates.",
         pageTitle: "Discover the World of Saudi Dates", pageDesc: "Explore premium varieties, farm stories, and authentic date recipes.",
-        viewAll: "View All Articles", readMore: "Read Article â†’", backBtn: "â† Back to Articles", relatedTitle: "Related Articles",
+        viewAll: "View All Articles", readMore: "Read Article � ", backBtn: "� � Back to Articles", relatedTitle: "Related Articles",
         categories: { "types-of-dates": "Types of Dates", "saudi-farms": "Saudi Date Farms", "dates-guide": "Dates Guide", "nutrition": "Dates & Nutrition", "recipes": "Date Recipes", "news": "MASSAR DATES News" }
     },
     ar: {
-        blog: "Ø§Ù„Ù…Ø¯ÙˆÙ†Ø©", homeTitle: "Ù…Ù† Ù…Ø¯ÙˆÙ†ØªÙ†Ø§", homeSubtitle: "Ø§ÙƒØªØ´Ù Ø£Ù†ÙˆØ§Ø¹ Ø§Ù„ØªÙ…ÙˆØ± Ø§Ù„Ø³Ø¹ÙˆØ¯ÙŠØ©ØŒ Ø£Ø³Ø±Ø§Ø± Ø§Ø®ØªÙŠØ§Ø±Ù‡Ø§ ÙˆØ­ÙØ¸Ù‡Ø§ØŒ ÙˆÙ‚ØµØµØ§Ù‹ Ù…Ù† Ø£ÙØ¶Ù„ Ù…Ø²Ø§Ø±Ø¹ Ø§Ù„ØªÙ…ÙˆØ±.",
-        pageTitle: "Ø§ÙƒØªØ´Ù Ø¹Ø§Ù„Ù… Ø§Ù„ØªÙ…ÙˆØ± Ø§Ù„Ø³Ø¹ÙˆØ¯ÙŠØ©", pageDesc: "Ø§Ø³ØªÙƒØ´Ù Ù…Ø²Ø§Ø±Ø¹ Ø§Ù„ØªÙ…ÙˆØ± Ø§Ù„Ø³Ø¹ÙˆØ¯ÙŠØ©ØŒ Ø£ØµÙ†Ø§ÙÙ‡Ø§ Ø§Ù„ÙØ§Ø®Ø±Ø© ÙˆÙ‚ØµØµ Ø§Ø®ØªÙŠØ§Ø±Ù‡Ø§ ÙˆØªØ¹Ø¨Ø¦ØªÙ‡Ø§.",
-        viewAll: "Ø¹Ø±Ø¶ Ø¬Ù…ÙŠØ¹ Ø§Ù„Ù…Ù‚Ø§Ù„Ø§Øª", readMore: "Ø§Ù‚Ø±Ø£ Ø§Ù„Ù…Ù‚Ø§Ù„ â†", backBtn: "â†’ Ø§Ù„Ø¹ÙˆØ¯Ø© Ø¥Ù„Ù‰ Ø§Ù„Ù…Ù‚Ø§Ù„Ø§Øª", relatedTitle: "Ù…Ù‚Ø§Ù„Ø§Øª Ø°Ø§Øª ØµÙ„Ø©",
-        categories: { "types-of-dates": "Ø£Ù†ÙˆØ§Ø¹ Ø§Ù„ØªÙ…ÙˆØ±", "saudi-farms": "Ù…Ø²Ø§Ø±Ø¹ Ø§Ù„ØªÙ…ÙˆØ± Ø§Ù„Ø³Ø¹ÙˆØ¯ÙŠØ©", "dates-guide": "Ø¯Ù„ÙŠÙ„ Ø§Ù„ØªÙ…ÙˆØ±", "nutrition": "ÙÙˆØ§Ø¦Ø¯ Ø§Ù„ØªÙ…ÙˆØ±", "recipes": "ÙˆØµÙØ§Øª Ø¨Ø§Ù„ØªÙ…ÙˆØ±", "news": "Ø£Ø®Ø¨Ø§Ø± MASSAR DATES" }
+        blog: "ا��&د��� ة", homeTitle: "�&�  �&د��� ت� ا", homeSubtitle: "اْتشف أ� ��اع ا�ت�&��ر ا�سع��د�`ة�R أسرار اخت�`ار�!ا ��حفظ�!ا�R ���صصا�9 �&�  أفض� �&زارع ا�ت�&��ر.",
+        pageTitle: "اْتشف عا��& ا�ت�&��ر ا�سع��د�`ة", pageDesc: "استْشف �&زارع ا�ت�&��ر ا�سع��د�`ة�R أص� اف�!ا ا�فاخرة ���صص اخت�`ار�!ا ��تعبئت�!ا.",
+        viewAll: "عرض ج�&�`ع ا��&�ا�ات", readMore: "ا�رأ ا��&�ا� � �", backBtn: "�  ا�ع��دة إ��0 ا��&�ا�ات", relatedTitle: "�&�ا�ات ذات ص�ة",
+        categories: { "types-of-dates": "أ� ��اع ا�ت�&��ر", "saudi-farms": "�&زارع ا�ت�&��ر ا�سع��د�`ة", "dates-guide": "د��`� ا�ت�&��ر", "nutrition": "ف��ائد ا�ت�&��ر", "recipes": "��صفات با�ت�&��ر", "news": "أخبار MASSAR DATES" }
     },
     ms: {
         blog: "Blog", homeTitle: "Daripada Blog Kami", homeSubtitle: "Temui pelbagai jenis kurma Saudi, cara memilih dan menyimpannya serta kisah dari ladang kurma terbaik.",
         pageTitle: "Terokai Dunia Kurma Saudi", pageDesc: "Terokai varieti premium, kisah ladang dan resipi kurma yang asli.",
-        viewAll: "Lihat Semua Artikel", readMore: "Baca Artikel â†’", backBtn: "â† Kembali ke Artikel", relatedTitle: "Artikel Berkaitan",
+        viewAll: "Lihat Semua Artikel", readMore: "Baca Artikel � ", backBtn: "� � Kembali ke Artikel", relatedTitle: "Artikel Berkaitan",
         categories: { "types-of-dates": "Jenis Kurma", "saudi-farms": "Ladang Kurma Saudi", "dates-guide": "Panduan Kurma", "nutrition": "Khasiat & Nutrisi", "recipes": "Resipi Kurma", "news": "Berita MASSAR DATES" }
     }
 };
@@ -2146,7 +2146,7 @@ html[dir="rtl"] #globalBackButton{
 </style>
 
 <button id="globalBackButton" type="button" onclick="globalBack()">
-    <span id="globalBackIcon">â†</span>
+    <span id="globalBackIcon">� �</span>
     <span id="globalBackText">Back</span>
 </button>
 
@@ -2194,7 +2194,7 @@ html[dir="rtl"] #globalBackButton{
         if(txt) txt.textContent = t.back;
 
         if(icon){
-            icon.textContent = langNow === 'ar' ? 'â†’' : 'â†';
+            icon.textContent = langNow === 'ar' ? '� ' : '� �';
         }
 
         if(current === 'home' || !pageHistory.length){
@@ -2308,7 +2308,7 @@ html[dir="rtl"] #globalBackButton{
             const icon=document.getElementById('globalBackIcon');
 
             if(txt) txt.textContent=t.back;
-            if(icon) icon.textContent=currentLang === 'ar' ? 'â†’' : 'â†';
+            if(icon) icon.textContent=currentLang === 'ar' ? '� ' : '� �';
 
             updateGlobalBackButton();
         }

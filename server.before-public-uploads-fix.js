@@ -1,4 +1,4 @@
-﻿const nodemailer = require('nodemailer');
+�const nodemailer = require('nodemailer');
 const express = require('express');
 const path = require('path');
 const cors = require('cors');
@@ -391,7 +391,7 @@ app.put('/api/admin/password', authMiddleware, (req, res) => {
 });
 // ==================== MESSAGES API (PUBLIC & ADMIN) ====================
 
-// 1. Ø§Ø³ØªÙ‚Ø¨Ø§Ù„ Ø±Ø³Ø§Ù„Ø© Ø¬Ø¯ÙŠØ¯Ø© Ù…Ù† Ø§Ù„Ø¹Ù…ÙŠÙ„ (Ø¹Ø§Ù…)
+// 1. است�با� 13'D) ,/J/) �&�  ا�ع�&�`� (عا�&)
 
 // ==================== EMAIL & MESSAGES HANDLER ====================
 const transporter = nodemailer.createTransport({
@@ -408,7 +408,7 @@ app.post('/api/messages', (req, res) => {
     const email = (req.body && req.body.email) || '';
     const message = (req.body && req.body.message) || '';
 
-    console.log('ðŸ“© [MASSAR] Ø§Ø³ØªÙ„Ø§Ù… Ø±Ø³Ø§Ù„Ø© Ø¬Ø¯ÙŠØ¯Ø© Ù…Ù†:', name, '| Ø¨Ø±ÙŠØ¯:', email);
+    console.log('=� [MASSAR] است�ا�& 13'D) ,/J/) �&� :', name, '| بر�`د:', email);
 
     try {
         db.prepare('INSERT INTO messages (name, email, message, is_read, created_at, updated_at) VALUES (?, ?, ?, 0, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)').run(name, email, message);
@@ -423,29 +423,29 @@ app.post('/api/messages', (req, res) => {
     const mailOptions = {
         from: 'MASSAR DATES <khwlah7712@gmail.com>',
         to: 'khwlah7712@gmail.com',
-        subject: 'ðŸ“¬ Ø±Ø³Ø§Ù„Ø© Ø¬Ø¯ÙŠØ¯Ø© Ù…Ù† Ù…ÙˆÙ‚Ø¹ Ù…Ø³Ø§Ø± - Ù…Ù†: ' + name,
+        subject: '�x� 13'D) ,/J/) �&�  �&���ع �&سار - �&� : ' + name,
         html: '<div style="font-family:Arial,sans-serif;direction:rtl;text-align:right;padding:20px;background:#f9f7f4;border-radius:10px;color:#2c1810;">' +
-              '<h2 style="color:#b89568;border-bottom:2px solid #b89568;padding-bottom:10px;">ðŸŒ´ Ø±Ø³Ø§Ù„Ø© Ø¬Ø¯ÙŠØ¯Ø© Ù…Ù† Ù…ÙˆÙ‚Ø¹ MASSAR DATES</h2>' +
-              '<p><strong>ðŸ‘¤ Ø§Ø³Ù… Ø§Ù„Ø¹Ù…ÙŠÙ„:</strong> ' + name + '</p>' +
-              '<p><strong>ðŸ“§ Ø§Ù„Ø¨Ø±ÙŠØ¯ Ø§Ù„Ø¥Ù„ÙƒØªØ±ÙˆÙ†ÙŠ:</strong> <a href="mailto:' + email + '">' + email + '</a></p>' +
-              '<p><strong>ðŸ•’ Ø§Ù„ÙˆÙ‚Øª:</strong> ' + new Date().toLocaleString('ar-SA') + '</p>' +
+              '<h2 style="color:#b89568;border-bottom:2px solid #b89568;padding-bottom:10px;">�xR� 13'D) ,/J/) �&�  �&���ع MASSAR DATES</h2>' +
+              '<p><strong>�x� اس�& ا�ع�&�`�:</strong> ' + name + '</p>' +
+              '<p><strong>=� 'D(1J/ ا�إ�ْتر��� �`:</strong> <a href="mailto:' + email + '">' + email + '</a></p>' +
+              '<p><strong>�x" ا����ت:</strong> ' + new Date().toLocaleString('ar-SA') + '</p>' +
               '<div style="background:#fff;padding:15px;border-radius:8px;border-right:4px solid #b89568;margin-top:15px;">' +
-              '<h4 style="margin:0 0 10px 0;color:#2c1810;">ðŸ’¬ Ù†Øµ Ø§Ù„Ø±Ø³Ø§Ù„Ø©:</h4>' +
+              '<h4 style="margin:0 0 10px 0;color:#2c1810;">=� � ص 'D13'D):</h4>' +
               '<p style="white-space:pre-wrap;margin:0;color:#444;line-height:1.7;">' + message + '</p>' +
               '</div>' +
               '</div>'
     };
 
     transporter.sendMail(mailOptions)
-        .then(() => console.log('âœ… [MASSAR] ØªÙ… Ø¥Ø±Ø³Ø§Ù„ Ø§Ù„Ø¥ÙŠÙ…ÙŠÙ„ Ø¨Ù†Ø¬Ø§Ø­ Ø¥Ù„Ù‰: khwlah7712@gmail.com'))
-        .catch(err => console.log('âŒ [MASSAR] Ø®Ø·Ø£ ÙÙŠ Ø¥Ø±Ø³Ø§Ù„ Ø§Ù„Ø¥ÙŠÙ…ÙŠÙ„:', err.message));
+        .then(() => console.log('�S& [MASSAR] ت�& إرسا� ا�إ�`�&�`� ب� جاح إ��0: khwlah7712@gmail.com'))
+        .catch(err => console.log('�R [MASSAR] خطأ ف�` إرسا� ا�إ�`�&�`�:', err.message));
 
     let waLink = null;
     try {
         const row = db.prepare("SELECT value FROM site_config WHERE key = 'link_whatsapp'").get();
         const wa = (row && row.value) ? row.value.replace(/[^0-9]/g, '') : '';
         if (wa) {
-            waLink = 'https://wa.me/' + wa + '?text=' + encodeURIComponent('ðŸ“© Ø±Ø³Ø§Ù„Ø© Ù…Ù†: ' + name + '\nðŸ“§ Ø§Ù„Ø¨Ø±ÙŠØ¯: ' + email + '\nðŸ’¬ Ø§Ù„Ø±Ø³Ø§Ù„Ø©: ' + message);
+            waLink = 'https://wa.me/' + wa + '?text=' + encodeURIComponent('=� 13'D) EF: ' + name + '\n=� 'D(1J/: ' + email + '\n=� 'D13'D): ' + message);
         }
     } catch(e) {}
 
@@ -453,7 +453,7 @@ app.post('/api/messages', (req, res) => {
 });
 
 
-// 2. Ø¬Ù„Ø¨ Ø¬Ù…ÙŠØ¹ Ø§Ù„Ø±Ø³Ø§Ø¦Ù„ Ù„Ù„Ù…Ø´Ø±Ù
+// 2. ج�ب ج�&�`ع ا�رسائ� ���&شرف
 app.get('/api/admin/messages', authMiddleware, (req, res) => {
     try {
         const { search, filter } = req.query;
@@ -481,7 +481,7 @@ app.get('/api/admin/messages', authMiddleware, (req, res) => {
     }
 });
 
-// 3. ØªØ¹Ø¯ÙŠÙ„ Ø¨ÙŠØ§Ù†Ø§Øª Ø§Ù„Ø±Ø³Ø§Ù„Ø©
+// 3. تعد�`� ب�`ا� ات =� 'D13'D):
 app.put('/api/admin/messages/:id', authMiddleware, (req, res) => {
     try {
         const { name, email, message } = req.body;
@@ -498,7 +498,7 @@ app.put('/api/admin/messages/:id', authMiddleware, (req, res) => {
     }
 });
 
-// 4. ØªØºÙŠÙŠØ± Ø­Ø§Ù„Ø© Ø§Ù„Ù‚Ø±Ø§Ø¡Ø©
+// 4. تغ�`�`ر حا�ة ا��راءة
 app.patch('/api/admin/messages/:id/toggle-read', authMiddleware, (req, res) => {
     try {
         const msg = db.prepare('SELECT is_read FROM messages WHERE id = ?').get(req.params.id);
@@ -515,7 +515,7 @@ app.patch('/api/admin/messages/:id/toggle-read', authMiddleware, (req, res) => {
     }
 });
 
-// 5. Ø­Ø°Ù Ø§Ù„Ø±Ø³Ø§Ù„Ø©
+// 5. حذف =� 'D13'D):
 app.delete('/api/admin/messages/:id', authMiddleware, (req, res) => {
     try {
         db.prepare('DELETE FROM messages WHERE id = ?').run(req.params.id);
@@ -526,7 +526,7 @@ app.delete('/api/admin/messages/:id', authMiddleware, (req, res) => {
     }
 });
 
-// ==================== SPA FALLBACK (ÙŠØ¬Ø¨ Ø£Ù† ÙŠÙƒÙˆÙ† ÙÙŠ Ø§Ù„Ù†Ù‡Ø§ÙŠØ© Ø¯Ø§Ø¦Ù…Ø§Ù‹) ====================
+// ==================== SPA FALLBACK (�`جب أ�  �`ْ���  ف�` ا�� �!ا�`ة دائ�&ا�9) ====================
 
 // ==================== BLOG APIS ====================
 app.get('/api/blog', (req, res) => {
@@ -609,11 +609,11 @@ app.get('/{*splat}', (req, res) => {
     }
 });
 
-// ØªØ´ØºÙŠÙ„ Ø§Ù„Ø³ÙŠØ±ÙØ±
+// تشغ�`� ا�س�`رفر
 app.listen(PORT, () => {
-    console.log(`\nðŸŒ´ MASSAR DATES Server Running`);
-    console.log(`ðŸ“ Website: http://localhost:${PORT}`);
-    console.log(`ðŸ”’ Admin:   http://localhost:${PORT}/admin`);
+    console.log(`\n�xR� MASSAR DATES Server Running`);
+    console.log(`�x� Website: http://localhost:${PORT}`);
+    console.log(`�x Admin:   http://localhost:${PORT}/admin`);
 });
 
 

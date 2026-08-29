@@ -2562,8 +2562,8 @@ function replyToCustomer(email, name) {
     }
     const subject = encodeURIComponent("Reply from MASSAR DATES");
     const body = encodeURIComponent(`Hello ${name},\n\n`);
-    const gmailUrl = `https://mail.google.com/mail/?view=cm&fs=1&to=${encodeURIComponent(email)}&su=${subject}&body=${body}`;
-    const mailtoUrl = `mailto:${email}?subject=${subject}&body=${body}`;
+    const gmailUrl = `https://mail.google.com/mail/?view=cm&fs=1&to=${encodeURIComponent(email)}&su=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+    const mailtoUrl = `mailto:${email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
     const useGmail = confirm("How would you like to reply?\n\nClick [ OK ] to open Gmail Web (Recommended)\nClick [ Cancel ] to use default Mail App");
     if (useGmail) {
         window.open(gmailUrl, '_blank');

@@ -2016,7 +2016,7 @@ async function handleContactSubmit(event) {
             const waText = `📩 *New Website Message | رسالة موقع جديدة*\n\n👤 *Name:* ${name}\n📧 *Email:* ${email || 'N/A'}\n💬 *Message:* ${message}\n\n🕒 *Date & Time:* ${dateStr}`;
             const cleanPhone = (config.link_whatsapp || '').replace(/[^0-9]/g, '');
             if (cleanPhone) {
-                const waUrl = `https://wa.me/${cleanPhone}?text=${encodeURIComponent(waText)}`;
+                const waUrl = `https://wa.me/${cleanPhone}?text=%24%7BencodeURIComponent(waText)%7D`;
                 window.open(waUrl, '_blank');
             }
         } else { throw new Error(); }
@@ -2233,7 +2233,7 @@ function renderB2BSection() {
     const cleanPhoneB2B = (config.link_whatsapp || '').replace(/[^0-9]/g, '');
     let b2bMsg = (lang === 'ar') ? 'مرحباً مسار للتمور، أود الاستفسار والحصول على تسعيرة لطلبات الجملة والشركات.' : (lang === 'ms') ? 'Halo MASSAR DATES, saya ingin mendapatkan sebut harga borong untuk perniagaan.' : 'Hello MASSAR DATES, I would like to request a wholesale quote for businesses.';
     const b2bLink = document.getElementById('b2bBtnLink');
-    if (b2bLink) b2bLink.href = cleanPhoneB2B ? `https://wa.me/${cleanPhoneB2B}?text=${encodeURIComponent(b2bMsg)}` : '#';
+    if (b2bLink) b2bLink.href = cleanPhoneB2B ? `https://wa.me/${cleanPhoneB2B}?text=%24%7BencodeURIComponent(b2bMsg)%7D` : '#';
 }
 
 function renderWhyMassar() {
@@ -2719,7 +2719,7 @@ function updateDetailPrice() {
         : `Hello MASSAR DATES,\nI would like to order:\n- Product: ${prodName}\n- Weight: ${selWeight}\n- Quantity: ${qty}\n- Total: RM ${total}`;
 
     const cleanPhone = (config.link_whatsapp || '').replace(/[^0-9]/g, '');
-    const waUrl = `https://wa.me/${cleanPhone}?text=${encodeURIComponent(msgText)}`;
+    const waUrl = `https://wa.me/${cleanPhone}?text=%24%7BencodeURIComponent(msgText)%7D`;
     document.getElementById('detWABtn').href = waUrl;
 
     const shopeeBtn = document.getElementById('detShopeeBtn');
