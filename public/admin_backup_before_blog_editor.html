@@ -1,0 +1,2656 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="noindex, nofollow">
+    <title>MASSAR DATES | Complete Master Admin Panel</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Inter:wght@300;400;500;600;700&family=Amiri:wght@400;700&family=Noto+Sans+Arabic:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+        :root{
+            --cream:#FAF7F2;--cream-dark:#F0EBE1;--beige:#E8E0D4;
+            --gold:#B8956A;--gold-light:#D4B896;--gold-dark:#96734E;
+            --brown:#3E2C23;--brown-light:#5C4033;--brown-dark:#2A1E17;
+            --black:#1A1A1A;--white:#FFF;--text:#2D2D2D;--text-light:#6B6B6B;
+            --border:#E2D8CC;--bg-app:#F5F0E8;--bg-card:#FFF;
+            --success:#27AE60;--danger:#E74C3C;--info:#2980B9;
+            --radius-sm:6px;--radius-md:10px;--radius-lg:16px;--radius-xl:24px;
+            --shadow-sm:0 1px 3px rgba(0,0,0,.06);--shadow-md:0 4px 14px rgba(0,0,0,.08);--shadow-lg:0 10px 30px rgba(0,0,0,.12);
+            --transition:all .25s ease;--font-display:'Playfair Display',Georgia,serif;--font-body:'Inter',-apple-system,sans-serif;
+            --sidebar-w:270px;--topbar-h:70px;
+        }
+        body{font-family:var(--font-body);background:var(--bg-app);color:var(--text);line-height:1.5;min-height:100vh}
+        button{cursor:pointer;border:none;outline:none;font-family:inherit;transition:var(--transition)}
+        input,textarea,select{font-family:inherit;outline:none}
+        a{text-decoration:none;color:inherit}
+        
+        /* LOGIN */
+        .login-view{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px;background:linear-gradient(135deg,var(--cream),var(--beige))}
+        .login-card{background:var(--white);padding:50px 40px;border-radius:var(--radius-xl);box-shadow:var(--shadow-lg);width:100%;max-width:440px}
+        
+        /* APP LAYOUT */
+        .app-view{display:none;min-height:100vh}.app-view.active{display:flex}
+        .sidebar{width:var(--sidebar-w);background:var(--brown-dark);color:var(--cream);position:fixed;top:0;left:0;height:100vh;display:flex;flex-direction:column;z-index:100;overflow-y:auto}
+        .sidebar-header{padding:24px 20px;border-bottom:1px solid rgba(255,255,255,.08);text-align:center}
+        .sidebar-nav{flex:1;padding:12px 0}
+        .nav-category{font-size:.65rem;text-transform:uppercase;letter-spacing:1.5px;color:var(--gold-light);padding:14px 20px 6px;font-weight:700}
+        .nav-item{display:flex;align-items:center;gap:12px;width:100%;padding:11px 20px;background:transparent;color:rgba(250,247,242,.7);font-size:.84rem;font-weight:500;text-align:left;border-left:3px solid transparent}
+        .nav-item:hover{background:rgba(255,255,255,.05);color:var(--cream)}
+        .nav-item.active{background:rgba(184,149,106,.15);color:var(--gold-light);border-left-color:var(--gold);font-weight:600}
+        
+        .main-wrap{flex:1;margin-left:var(--sidebar-w);display:flex;flex-direction:column;min-height:100vh}
+        .topbar{height:var(--topbar-h);background:var(--white);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 30px;position:sticky;top:0;z-index:50}
+        .content{flex:1;padding:28px 30px;max-width:1400px}
+        .panel{display:none}.panel.active{display:block;animation:fadeIn .25s ease}
+        @keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+        
+        /* CARDS & FORMS */
+        .card{background:var(--bg-card);border-radius:var(--radius-md);border:1px solid var(--border);box-shadow:var(--shadow-sm);margin-bottom:24px}
+        .card-header{padding:20px 24px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;background:var(--cream)}
+        .card-header h3{font-family:var(--font-display);font-size:1.15rem;color:var(--brown-dark)}
+        .card-header p{font-size:.8rem;color:var(--text-light);margin-top:2px}
+        .card-body{padding:24px}
+        
+        .field{margin-bottom:18px}
+        .field label{display:block;font-size:.75rem;font-weight:600;color:var(--brown-dark);margin-bottom:8px;text-transform:uppercase;letter-spacing:.5px}
+        .field input,.field textarea,.field select{width:100%;padding:12px 16px;border:1.5px solid var(--border);border-radius:var(--radius-md);font-size:.9rem;background:var(--cream)}
+        .field input:focus,.field textarea:focus{border-color:var(--gold);background:var(--white)}
+        .field textarea{resize:vertical;min-height:90px}
+        .field .hint{font-size:.72rem;color:var(--text-light);margin-top:4px}
+        .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+        
+        .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:12px 26px;border-radius:50px;font-size:.82rem;font-weight:600;letter-spacing:1px;text-transform:uppercase;transition:var(--transition);border:1.5px solid transparent}
+        .btn-primary{background:var(--brown-dark);color:var(--white);border-color:var(--brown-dark)}.btn-primary:hover{background:var(--gold-dark);border-color:var(--gold-dark)}
+        .btn-outline{background:transparent;color:var(--brown-dark);border-color:var(--brown-dark)}.btn-outline:hover{background:var(--brown-dark);color:var(--white)}
+        .btn-danger{background:var(--danger);color:var(--white)}.btn-sm{padding:7px 16px;font-size:.74rem}
+        
+        /* TABS */
+        .lang-tabs{display:inline-flex;gap:4px;background:var(--cream-dark);padding:4px;border-radius:var(--radius-sm);margin-bottom:18px;border:1px solid var(--border)}
+        .lang-tab{padding:8px 18px;font-size:.78rem;font-weight:600;color:var(--text-light);background:transparent;border-radius:var(--radius-sm)}
+        .lang-tab.active{background:var(--white);color:var(--brown-dark);box-shadow:var(--shadow-sm)}
+        .lang-content{display:none}.lang-content.active{display:block}
+        
+        /* SWITCH & INFO ROW */
+        .switch{position:relative;display:inline-block;width:44px;height:24px}.switch input{opacity:0;width:0;height:0}
+        .switch-slider{position:absolute;inset:0;background:var(--border);border-radius:24px;cursor:pointer}
+        .switch-slider::before{content:'';position:absolute;height:18px;width:18px;left:3px;bottom:3px;background:white;border-radius:50%;transition:.3s}
+        .switch input:checked+.switch-slider{background:var(--success)}
+        .switch input:checked+.switch-slider::before{transform:translateX(20px)}
+        .info-row{display:flex;align-items:center;justify-content:space-between;padding:12px 0}
+        
+        /* TABLES */
+        .table{width:100%;border-collapse:collapse}.table th{text-align:left;padding:14px 16px;font-size:.7rem;text-transform:uppercase;background:var(--cream);color:var(--text-light);border-bottom:1px solid var(--border)}
+        .table td{padding:14px 16px;font-size:.88rem;border-bottom:1px solid var(--border);vertical-align:middle}
+        
+        /* TOAST */
+        .toast-wrap{position:fixed;top:24px;right:24px;z-index:99999}
+        .toast{background:var(--brown-dark);color:var(--white);padding:14px 24px;border-radius:var(--radius-md);font-size:.88rem;box-shadow:var(--shadow-lg);margin-bottom:10px}
+        
+        /* MODAL */
+        .modal-overlay{display:none;position:fixed;inset:0;background:rgba(30,20,15,.6);backdrop-filter:blur(4px);z-index:500;align-items:center;justify-content:center;padding:20px}
+        .modal-overlay.active{display:flex}
+        .modal{background:var(--white);width:100%;max-width:780px;max-height:92vh;border-radius:var(--radius-lg);overflow-y:auto;padding:28px}
+     /* ===== TEXT EDITOR CONTROLS ===== */
+
+.text-editor-toolbar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
+    padding: 10px;
+    margin-bottom: 10px;
+    background: var(--cream);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+}
+
+.text-editor-toolbar label {
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--brown-dark);
+    margin: 0;
+}
+
+.text-editor-toolbar select,
+.text-editor-toolbar input[type="color"] {
+    height: 34px;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    background: white;
+    padding: 4px 8px;
+}
+
+.text-editor-toolbar button {
+    height: 34px;
+    min-width: 34px;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    background: white;
+    cursor: pointer;
+    font-weight: 700;
+    color: var(--brown-dark);
+}
+
+.text-editor-toolbar button:hover {
+    background: var(--gold);
+    color: white;
+}
+
+.text-editor-toolbar .editor-size {
+    width: 75px;
+}
+
+.text-editor-toolbar .editor-font {
+    width: 120px;
+}
+
+.rich-text-editor {
+    width: 100%;
+    min-height: 100px;
+    padding: 12px 16px;
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius-md);
+    background: var(--cream);
+    font-size: 16px;
+    outline: none;
+    overflow-y: auto;
+}
+
+.rich-text-editor:focus {
+    border-color: var(--gold);
+    background: var(--white);
+}
+
+.rich-text-editor[dir="rtl"] {
+    text-align: right;
+}   
+        @media(max-width:900px){.sidebar{transform:translateX(-100%)}.sidebar.open{transform:translateX(0)}.main-wrap{margin-left:0}.form-grid{grid-template-columns:1fr}}
+    </style>
+</head>
+<body>
+
+<!-- LOGIN VIEW -->
+<div class="login-view" id="loginView">
+    <div class="login-card">
+        <h1 style="font-family:var(--font-display);font-size:1.6rem;text-align:center;margin-bottom:6px;color:var(--brown-dark)">MASSAR DATES</h1>
+        <p style="text-align:center;color:var(--gold);font-size:.75rem;letter-spacing:2px;text-transform:uppercase;margin-bottom:24px">Admin Master Panel</p>
+        <form onsubmit="handleLogin(event)">
+            <div class="field"><label>Admin Email</label><input type="email" id="loginEmail" value="admin@massardates.com" required></div>
+            <div class="field"><label>Password</label><input type="password" id="loginPassword" value="Admin@2024" required></div>
+            <button type="submit" class="btn btn-primary" style="width:100%;margin-top:10px">Sign In to Dashboard</button>
+        </form>
+    </div>
+</div>
+
+<!-- MASTER APP VIEW -->
+<div class="app-view" id="appView">
+    
+    <!-- SIDEBAR -->
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <div style="font-family:var(--font-display);font-size:1.3rem;color:var(--cream);letter-spacing:2px">MASSAR DATES</div>
+            <small style="color:var(--gold-light);font-size:.65rem;text-transform:uppercase;letter-spacing:1px">Master Control Center</small>
+        </div>
+        <nav class="sidebar-nav">
+            <div class="nav-category">Main</div>
+            <button class="nav-item active" onclick="switchPanel('dashboard', this)"><span>📊</span> Dashboard Overview</button>
+            <button class="nav-item" onclick="switchPanel('products', this)"><span>🌰</span> Products Catalog</button>
+            
+            <div class="nav-category">Homepage Sections</div>
+            <button class="nav-item" onclick="switchPanel('hero', this)"><span>🏠</span> Hero & Banner</button>
+            <button class="nav-item" onclick="switchPanel('whymassar', this)"><span>🤝</span> Why MASSAR?</button>
+            
+            <button class="nav-item" onclick="switchPanel('brands', this)"><span>🏷️</span> Our Brands Portfolio</button>
+            <div class="nav-category">Blog & Media</div>
+            <button class="nav-item" onclick="switchPanel('blog', this)"><span>📝</span> Blog / المدونة</button>
+            <button class="nav-item" onclick="switchPanel('discover', this)"><span>🌍</span> Discover Saudi Dates</button>
+            <button class="nav-item" onclick="switchPanel('b2b', this)"><span>🏢</span> For Businesses (B2B)</button>
+            <button class="nav-item" onclick="switchPanel('testimonials', this)"><span>💬</span> Customer Reviews</button>
+            <button class="nav-item" onclick="switchPanel('brandstory', this)"><span>📖</span> Our Brand Story</button>
+
+            <div class="nav-category">Pages & Content</div>
+            <button class="nav-item" onclick="switchPanel('tabs', this)"><span>📝</span> Product Info Tabs</button>
+            <button class="nav-item" onclick="switchPanel('about', this)"><span>ℹ️</span> About Us Page</button>
+            <button class="nav-item" onclick="switchPanel('contact', this)"><span>📍</span> Contact Information</button>
+            <button class="nav-item" onclick="switchPanel('messages', this)">📬 Customer Messages</button>
+            <button class="nav-item" onclick="switchPanel('links', this)"><span>🔗</span> Purchase & Social Links</button>
+
+            <div class="nav-category">Settings & Security</div>
+            <button class="nav-item" onclick="switchPanel('settings', this)"><span>⚙️</span> Website Identity & SEO</button>
+            <button class="nav-item" onclick="switchPanel('security', this)"><span>🔒</span> Admin Password</button>
+        </nav>
+        <div style="padding:16px;border-top:1px solid rgba(255,255,255,.08)">
+            <button onclick="logout()" style="width:100%;padding:10px;background:rgba(231,76,60,.12);color:#ff8a80;border-radius:6px;font-weight:600">🚪 Sign Out</button>
+        </div>
+    </aside>
+
+    <!-- MAIN CONTENT AREA -->
+    <main class="main-wrap">
+        <header class="topbar">
+            <h2 style="font-family:var(--font-display);font-size:1.3rem;color:var(--brown-dark)" id="pageTitle">Dashboard Overview</h2>
+            <a href="/" target="_blank" class="btn btn-outline btn-sm">👁 View Public Site</a>
+        </header>
+
+        <div class="content">
+
+            <!-- ============================================== -->
+            <!-- 1. DASHBOARD OVERVIEW -->
+            <!-- ============================================== -->
+            <div class="panel active" id="panel-dashboard">
+                <div class="card">
+                    <div class="card-header"><div><h3>Welcome to MASSAR DATES Master Panel</h3><p>Full control over website content, products, translations and settings.</p></div></div>
+                    <div class="card-body">
+                        <p style="margin-bottom:20px;color:var(--text-light)">Use the sidebar on the left to navigate and customize any section of your website. All changes save directly to your SQLite database.</p>
+                        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px">
+                            <button onclick="switchPanelByName('products')" class="btn btn-outline" style="padding:16px;border-radius:var(--radius-md)">🌰 Manage Products</button>
+                            <button onclick="switchPanelByName('hero')" class="btn btn-outline" style="padding:16px;border-radius:var(--radius-md)">🏠 Edit Homepage Hero</button>
+                            <button onclick="switchPanelByName('b2b')" class="btn btn-outline" style="padding:16px;border-radius:var(--radius-md)">🏢 Wholesale & B2B</button>
+                            <button onclick="switchPanelByName('links')" class="btn btn-outline" style="padding:16px;border-radius:var(--radius-md)">🔗 Update Links & WhatsApp</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ============================================== -->
+            <!-- 2. PRODUCTS CATALOG -->
+            <!-- ============================================== -->
+            <div class="panel" id="panel-products">
+                <div class="card">
+                    <div class="card-header">
+                        <div><h3>Products Management</h3><p>Manage product details, individual weights, prices, and high-res photography.</p></div>
+                        <button class="btn btn-primary" onclick="openProductModal()">+ Add New Product</button>
+                    </div>
+                    <div class="card-body" style="padding:0">
+                        <table class="table">
+                            <thead><tr><th>Image</th><th>Product Name (EN)</th><th>Variety</th><th>Base Price</th><th>Status</th><th>Featured</th><th style="text-align:right">Actions</th></tr></thead>
+                            <tbody id="productsTableBody"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ============================================== -->
+            <!-- 3. HERO & BANNER -->
+            <!-- ============================================== -->
+            <div class="panel" id="panel-hero">
+                <div class="card">
+                    <div class="card-header"><div><h3>Homepage Hero Section</h3><p>Edit banner texts and upload the main showcase image.</p></div></div>
+                    <div class="card-body">
+                        <div class="lang-tabs">
+                            <button class="lang-tab active" onclick="switchLangTab('hero', 'en', this)">🇬🇧 English</button>
+                            <button class="lang-tab" onclick="switchLangTab('hero', 'ar', this)">🇸🇦 العربية</button>
+                            <button class="lang-tab" onclick="switchLangTab('hero', 'ms', this)">🇲🇾 Bahasa Melayu</button>
+                        </div>
+                        <div class="lang-content active" id="hero-lang-en">
+                            <div class="field"><label>Badge Text</label><input id="hero_badge_en"></div>
+                            <div class="field"><label>Hero Main Title</label><input id="hero_title_en"></div>
+                            <div class="field"><label>Hero Description</label><textarea id="hero_desc_en"></textarea></div>
+                        </div>
+                        <div class="lang-content" id="hero-lang-ar" dir="rtl">
+                            <div class="field"><label>نص الشارة</label><input id="hero_badge_ar" dir="rtl"></div>
+                            <div class="field"><label>العنوان الرئيسي</label><input id="hero_title_ar" dir="rtl"></div>
+                            <div class="field"><label>الوصف الترحيبي</label><textarea id="hero_desc_ar" dir="rtl"></textarea></div>
+                        </div>
+                        <div class="lang-content" id="hero-lang-ms">
+                            <div class="field"><label>Teks Lencana</label><input id="hero_badge_ms"></div>
+                            <div class="field"><label>Tajuk Utama</label><input id="hero_title_ms"></div>
+                            <div class="field"><label>Penerangan Hero</label><textarea id="hero_desc_ms"></textarea></div>
+                        </div>
+                        
+                        <div class="field" style="margin-top:20px">
+                            <label>Hero Showcase Image</label>
+                            <input type="file" onchange="uploadSingleImage(event, 'hero_img', 'heroImgPreview')">
+                            <input type="hidden" id="hero_img">
+                            <div id="heroImgPreview" style="margin-top:10px"></div>
+                        </div>
+
+                        <button class="btn btn-primary" onclick="saveConfigFields(['hero_badge_en','hero_badge_ar','hero_badge_ms','hero_title_en','hero_title_ar','hero_title_ms','hero_desc_en','hero_desc_ar','hero_desc_ms','hero_img'])">💾 Save Hero Section</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ============================================== -->
+            <!-- 4. WHY MASSAR? -->
+            <!-- ============================================== -->
+            <div class="panel" id="panel-whymassar">
+                <div class="card">
+                    <div class="card-header"><div><h3>"Why MASSAR?" Section</h3><p>Manage value proposition cards, icons, and multilingual texts.</p></div></div>
+                    <div class="card-body">
+                        <div class="info-row" style="border-bottom:1px solid var(--border);padding-bottom:14px;margin-bottom:18px">
+                            <span class="info-row-label"><strong>Enable "Why MASSAR?" Section</strong></span>
+                            <label class="switch"><input type="checkbox" id="wm_active" checked><span class="switch-slider"></span></label>
+                        </div>
+                        <div class="lang-tabs">
+                            <button class="lang-tab active" onclick="switchLangTab('wm-head', 'en', this)">🇬🇧 English</button>
+                            <button class="lang-tab" onclick="switchLangTab('wm-head', 'ar', this)">🇸🇦 العربية</button>
+                            <button class="lang-tab" onclick="switchLangTab('wm-head', 'ms', this)">🇲🇾 Bahasa Melayu</button>
+                        </div>
+                        <div class="lang-content active" id="wm-head-lang-en">
+                            <div class="field"><label>Subtitle</label><input id="wm_sub_en"></div>
+                            <div class="field"><label>Main Title</label><input id="wm_title_en"></div>
+                            <div class="field"><label>Description</label><textarea id="wm_desc_en"></textarea></div>
+                        </div>
+                        <div class="lang-content" id="wm-head-lang-ar" dir="rtl">
+                            <div class="field"><label>العنوان الفرعي</label><input id="wm_sub_ar" dir="rtl"></div>
+                            <div class="field"><label>العنوان الرئيسي</label><input id="wm_title_ar" dir="rtl"></div>
+                            <div class="field"><label>الوصف</label><textarea id="wm_desc_ar" dir="rtl"></textarea></div>
+                        </div>
+                        <div class="lang-content" id="wm-head-lang-ms">
+                            <div class="field"><label>Subtitle</label><input id="wm_sub_ms"></div>
+                            <div class="field"><label>Tajuk Utama</label><input id="wm_title_ms"></div>
+                            <div class="field"><label>Penerangan</label><textarea id="wm_desc_ms"></textarea></div>
+                        </div>
+
+                        <div id="wmCardsContainer" style="margin-top:20px"></div>
+                        <button class="btn btn-primary" onclick="saveWhyMassarComplete()">💾 Save Why MASSAR Settings</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ============================================== -->
+            <!-- 5. OUR BRANDS PORTFOLIO -->
+            <!-- ============================================== -->
+            <div class="panel" id="panel-brands">
+                <div class="card">
+                    <div class="card-header">
+                        <div><h3>Our Brands Portfolio</h3><p>Manage NAWAH, QUBBAH, ALMADINAH, and any new brands.</p></div>
+                        <button class="btn btn-primary" onclick="openBrandModal()">+ Add New Brand</button>
+                    </div>
+                    <div class="card-body" style="padding:0">
+                        <table class="table">
+                            <thead><tr><th>Logo</th><th>Brand Name</th><th>Tagline (EN)</th><th>Status</th><th style="text-align:right">Actions</th></tr></thead>
+                            <tbody id="brandsTableBody"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ============================================== -->
+            <!-- 6. FOR BUSINESSES (B2B / WHOLESALE) -->
+            <!-- ============================================== -->
+            <div class="panel" id="panel-b2b">
+                <div class="card">
+                    <div class="card-header"><div><h3>For Businesses (Wholesale & Corporate)</h3><p>Customize B2B offerings and quotation button.</p></div></div>
+                    <div class="card-body">
+                        <div class="info-row" style="border-bottom:1px solid var(--border);padding-bottom:14px;margin-bottom:18px">
+                            <span class="info-row-label"><strong>Enable "For Businesses" Section</strong></span>
+                            <label class="switch"><input type="checkbox" id="b2b_active" checked><span class="switch-slider"></span></label>
+                        </div>
+                        <div class="lang-tabs">
+                            <button class="lang-tab active" onclick="switchLangTab('b2b', 'en', this)">🇬🇧 English</button>
+                            <button class="lang-tab" onclick="switchLangTab('b2b', 'ar', this)">🇸🇦 العربية</button>
+                            <button class="lang-tab" onclick="switchLangTab('b2b', 'ms', this)">🇲🇾 Bahasa Melayu</button>
+                        </div>
+                        <div class="lang-content active" id="b2b-lang-en">
+                            <div class="field"><label>Subtitle</label><input id="b2b_subtitle_en"></div>
+                            <div class="field"><label>Title</label><input id="b2b_title_en"></div>
+                            <div class="field"><label>Description</label><textarea id="b2b_desc_en"></textarea></div>
+                            <div class="field"><label>Button Text</label><input id="b2b_button_en"></div>
+                        </div>
+                        <div class="lang-content" id="b2b-lang-ar" dir="rtl">
+                            <div class="field"><label>العنوان الفرعي</label><input id="b2b_subtitle_ar" dir="rtl"></div>
+                            <div class="field"><label>العنوان الرئيسي</label><input id="b2b_title_ar" dir="rtl"></div>
+                            <div class="field"><label>الوصف</label><textarea id="b2b_desc_ar" dir="rtl"></textarea></div>
+                            <div class="field"><label>نص الزر</label><input id="b2b_button_ar" dir="rtl"></div>
+                        </div>
+                        <div class="lang-content" id="b2b-lang-ms">
+                            <div class="field"><label>Subtitle</label><input id="b2b_subtitle_ms"></div>
+                            <div class="field"><label>Tajuk</label><input id="b2b_title_ms"></div>
+                            <div class="field"><label>Penerangan</label><textarea id="b2b_desc_ms"></textarea></div>
+                            <div class="field"><label>Teks Butang</label><input id="b2b_button_ms"></div>
+                        </div>
+                        <button class="btn btn-primary" onclick="saveB2BSectionComplete()">💾 Save For Businesses</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ============================================== -->
+            <!-- 7. TESTIMONIALS / REVIEWS -->
+            <!-- ============================================== -->
+            <div class="panel" id="panel-testimonials">
+                <div class="card">
+                    <div class="card-header"><div><h3>Customer Testimonials</h3><p>Manage client reviews and 5-star testimonials on homepage.</p></div></div>
+                    <div class="card-body">
+                        <div class="lang-tabs">
+                            <button class="lang-tab active" onclick="switchLangTab('testi', 'en', this)">🇬🇧 English</button>
+                            <button class="lang-tab" onclick="switchLangTab('testi', 'ar', this)">🇸🇦 العربية</button>
+                            <button class="lang-tab" onclick="switchLangTab('testi', 'ms', this)">🇲🇾 Bahasa Melayu</button>
+                        </div>
+                        <div class="lang-content active" id="testi-lang-en">
+                            <div class="field"><label>Review #1 Text</label><textarea id="t_q1_en"></textarea></div>
+                            <div class="form-grid"><div class="field"><label>Author #1</label><input id="t_a1_en"></div><div class="field"><label>Location #1</label><input id="t_r1_en"></div></div>
+                            <hr style="margin:16px 0;border:0;border-top:1px solid var(--border)">
+                            <div class="field"><label>Review #2 Text</label><textarea id="t_q2_en"></textarea></div>
+                            <div class="form-grid"><div class="field"><label>Author #2</label><input id="t_a2_en"></div><div class="field"><label>Location #2</label><input id="t_r2_en"></div></div>
+                            <hr style="margin:16px 0;border:0;border-top:1px solid var(--border)">
+                            <div class="field"><label>Review #3 Text</label><textarea id="t_q3_en"></textarea></div>
+                            <div class="form-grid"><div class="field"><label>Author #3</label><input id="t_a3_en"></div><div class="field"><label>Location #3</label><input id="t_r3_en"></div></div>
+                        </div>
+                        <div class="lang-content" id="testi-lang-ar" dir="rtl">
+                            <div class="field"><label>نص التقييم الأول</label><textarea id="t_q1_ar" dir="rtl"></textarea></div>
+                            <div class="form-grid"><div class="field"><label>صاحب التقييم</label><input id="t_a1_ar" dir="rtl"></div><div class="field"><label>المدينة / الصفة</label><input id="t_r1_ar" dir="rtl"></div></div>
+                            <hr style="margin:16px 0;border:0;border-top:1px solid var(--border)">
+                            <div class="field"><label>نص التقييم الثاني</label><textarea id="t_q2_ar" dir="rtl"></textarea></div>
+                            <div class="form-grid"><div class="field"><label>صاحب التقييم</label><input id="t_a2_ar" dir="rtl"></div><div class="field"><label>المدينة / الصفة</label><input id="t_r2_ar" dir="rtl"></div></div>
+                            <hr style="margin:16px 0;border:0;border-top:1px solid var(--border)">
+                            <div class="field"><label>نص التقييم الثالث</label><textarea id="t_q3_ar" dir="rtl"></textarea></div>
+                            <div class="form-grid"><div class="field"><label>صاحب التقييم</label><input id="t_a3_ar" dir="rtl"></div><div class="field"><label>المدينة / الصفة</label><input id="t_r3_ar" dir="rtl"></div></div>
+                        </div>
+                        <div class="lang-content" id="testi-lang-ms">
+                            <div class="field"><label>Ulasan #1</label><textarea id="t_q1_ms"></textarea></div>
+                            <div class="form-grid"><div class="field"><label>Penulis #1</label><input id="t_a1_ms"></div><div class="field"><label>Lokasi #1</label><input id="t_r1_ms"></div></div>
+                            <hr style="margin:16px 0;border:0;border-top:1px solid var(--border)">
+                            <div class="field"><label>Ulasan #2</label><textarea id="t_q2_ms"></textarea></div>
+                            <div class="form-grid"><div class="field"><label>Penulis #2</label><input id="t_a2_ms"></div><div class="field"><label>Lokasi #2</label><input id="t_r2_ms"></div></div>
+                            <hr style="margin:16px 0;border:0;border-top:1px solid var(--border)">
+                            <div class="field"><label>Ulasan #3</label><textarea id="t_q3_ms"></textarea></div>
+                            <div class="form-grid"><div class="field"><label>Penulis #3</label><input id="t_a3_ms"></div><div class="field"><label>Lokasi #3</label><input id="t_r3_ms"></div></div>
+                        </div>
+                        <button class="btn btn-primary" onclick="saveTestimonialsComplete()">💾 Save Reviews</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ============================================== -->
+            <!-- 8. OUR BRAND STORY -->
+            <!-- ============================================== -->
+            <div class="panel" id="panel-brandstory">
+                <div class="card">
+                    <div class="card-header"><div><h3>"OUR BRAND" Homepage Section</h3><p>Edit the bottom narrative section above footer.</p></div></div>
+                    <div class="card-body">
+                        <div class="lang-tabs">
+                            <button class="lang-tab active" onclick="switchLangTab('bstory', 'en', this)">🇬🇧 English</button>
+                            <button class="lang-tab" onclick="switchLangTab('bstory', 'ar', this)">🇸🇦 العربية</button>
+                            <button class="lang-tab" onclick="switchLangTab('bstory', 'ms', this)">🇲🇾 Bahasa Melayu</button>
+                        </div>
+                        <div class="lang-content active" id="bstory-lang-en">
+                            <div class="field"><label>Subtitle</label><input id="ourbrand_sub_en"></div>
+                            <div class="field"><label>Title</label><input id="ourbrand_title_en"></div>
+                            <div class="field"><label>Story Description</label><textarea id="ourbrand_desc_en" style="min-height:120px"></textarea></div>
+                            <div class="field"><label>Button Text</label><input id="ourbrand_btn_en"></div>
+                        </div>
+                        <div class="lang-content" id="bstory-lang-ar" dir="rtl">
+                            <div class="field"><label>العنوان الفرعي</label><input id="ourbrand_sub_ar" dir="rtl"></div>
+                            <div class="field"><label>العنوان الرئيسي</label><input id="ourbrand_title_ar" dir="rtl"></div>
+                            <div class="field"><label>نص القصة</label><textarea id="ourbrand_desc_ar" dir="rtl" style="min-height:120px"></textarea></div>
+                            <div class="field"><label>نص الزر</label><input id="ourbrand_btn_ar" dir="rtl"></div>
+                        </div>
+                        <div class="lang-content" id="bstory-lang-ms">
+                            <div class="field"><label>Subtitle</label><input id="ourbrand_sub_ms"></div>
+                            <div class="field"><label>Tajuk</label><input id="ourbrand_title_ms"></div>
+                            <div class="field"><label>Penerangan</label><textarea id="ourbrand_desc_ms" style="min-height:120px"></textarea></div>
+                            <div class="field"><label>Teks Butang</label><input id="ourbrand_btn_ms"></div>
+                        </div>
+                        <button class="btn btn-primary" onclick="saveBrandStoryComplete()">💾 Save Brand Story</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ============================================== -->
+            <!-- 9. PRODUCT INFO TABS -->
+            <!-- ============================================== -->
+            <div class="panel" id="panel-tabs">
+                <div class="card">
+                    <div class="card-header"><div><h3>Product Details Tabs</h3><p>Product Details, Shipping, Storage Instructions, and Returns.</p></div></div>
+                    <div class="card-body">
+                        <div class="lang-tabs">
+                            <button class="lang-tab active" onclick="switchLangTab('ptabs', 'en', this)">🇬🇧 English</button>
+                            <button class="lang-tab" onclick="switchLangTab('ptabs', 'ar', this)">🇸🇦 العربية</button>
+                            <button class="lang-tab" onclick="switchLangTab('ptabs', 'ms', this)">🇲🇾 Bahasa Melayu</button>
+                        </div>
+                        <div class="lang-content active" id="ptabs-lang-en">
+                            <div class="field"><label>Product Details Info</label><textarea id="detail_tab_en"></textarea></div>
+                            <div class="field"><label>Shipping Information</label><textarea id="ship_tab_en"></textarea></div>
+                            <div class="field"><label>Storage Instructions</label><textarea id="stor_tab_en"></textarea></div>
+                            <div class="field"><label>Returns & Refunds Policy</label><textarea id="ret_tab_en"></textarea></div>
+                        </div>
+                        <div class="lang-content" id="ptabs-lang-ar" dir="rtl">
+                            <div class="field"><label>تفاصيل المنتج</label><textarea id="detail_tab_ar" dir="rtl"></textarea></div>
+                            <div class="field"><label>معلومات الشحن</label><textarea id="ship_tab_ar" dir="rtl"></textarea></div>
+                            <div class="field"><label>تعليمات التخزين</label><textarea id="stor_tab_ar" dir="rtl"></textarea></div>
+                            <div class="field"><label>سياسة الاسترجاع والاسترداد</label><textarea id="ret_tab_ar" dir="rtl"></textarea></div>
+                        </div>
+                        <div class="lang-content" id="ptabs-lang-ms">
+                            <div class="field"><label>Butiran Produk</label><textarea id="detail_tab_ms"></textarea></div>
+                            <div class="field"><label>Maklumat Penghantaran</label><textarea id="ship_tab_ms"></textarea></div>
+                            <div class="field"><label>Arahan Penyimpanan</label><textarea id="stor_tab_ms"></textarea></div>
+                            <div class="field"><label>Polisi Pemulangan</label><textarea id="ret_tab_ms"></textarea></div>
+                        </div>
+                        <button class="btn btn-primary" onclick="saveConfigFields(['detail_tab_en','detail_tab_ar','detail_tab_ms','ship_tab_en','ship_tab_ar','ship_tab_ms','stor_tab_en','stor_tab_ar','stor_tab_ms','ret_tab_en','ret_tab_ar','ret_tab_ms'])">💾 Save Info Tabs</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ============================================== -->
+            <!-- 10. ABOUT US PAGE -->
+            <!-- ============================================== -->
+            <div class="panel" id="panel-about">
+                <div class="card">
+                    <div class="card-header"><div><h3>About Us Page Content</h3><p>Customize the full story on the About page.</p></div></div>
+                    <div class="card-body">
+                        <div class="lang-tabs">
+                            <button class="lang-tab active" onclick="switchLangTab('abpage', 'en', this)">🇬🇧 English</button>
+                            <button class="lang-tab" onclick="switchLangTab('abpage', 'ar', this)">🇸🇦 العربية</button>
+                            <button class="lang-tab" onclick="switchLangTab('abpage', 'ms', this)">🇲🇾 Bahasa Melayu</button>
+                        </div>
+                        <div class="lang-content active" id="abpage-lang-en">
+                            <div class="field"><label>Page Title</label><input id="about_title_en"></div>
+                            <div class="field"><label>Story Content</label><textarea id="about_text_en" style="min-height:160px"></textarea></div>
+                        </div>
+                        <div class="lang-content" id="abpage-lang-ar" dir="rtl">
+                            <div class="field"><label>عنوان الصفحة</label><input id="about_title_ar" dir="rtl"></div>
+                            <div class="field"><label>القصة الكاملة</label><textarea id="about_text_ar" dir="rtl" style="min-height:160px"></textarea></div>
+                        </div>
+                        <div class="lang-content" id="abpage-lang-ms">
+                            <div class="field"><label>Tajuk Halaman</label><input id="about_title_ms"></div>
+                            <div class="field"><label>Kandungan Cerita</label><textarea id="about_text_ms" style="min-height:160px"></textarea></div>
+                        </div>
+                     <div class="field">
+    <label>About Us Image</label>
+
+    <div id="aboutImagePreviewBox"
+         style="display:none;margin-bottom:12px;padding:12px;background:var(--cream);border:1px solid var(--border);border-radius:var(--radius-md)">
+        <img id="aboutImagePreview"
+             src=""
+             style="display:block;max-width:400px;max-height:250px;object-fit:contain">
+    </div>
+
+    <input type="file"
+           id="aboutImageFile"
+           accept="image/*"
+           onchange="uploadAboutImage(event)">
+</div>
+
+<button class="btn btn-primary" onclick="saveConfigFields(['about_title_en','about_title_ar','about_title_ms','about_text_en','about_text_ar','about_text_ms','about_image'])">💾 Save About Us</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ============================================== -->
+            <!-- 11. CONTACT INFORMATION -->
+            <!-- ============================================== -->
+            <div class="panel" id="panel-contact">
+                <div class="card">
+                    <div class="card-header"><div><h3>Contact Information</h3><p>Details displayed on the Contact Us page.</p></div></div>
+                    <div class="card-body">
+                        <div class="form-grid">
+                            <div class="field"><label>Official Email</label><input id="contact_email"></div>
+                            <div class="field"><label>WhatsApp Number</label><input id="link_whatsapp"></div>
+                        </div>
+                        <div class="lang-tabs">
+                            <button class="lang-tab active" onclick="switchLangTab('cntloc', 'en', this)">🇬🇧 English</button>
+                            <button class="lang-tab" onclick="switchLangTab('cntloc', 'ar', this)">🇸🇦 العربية</button>
+                            <button class="lang-tab" onclick="switchLangTab('cntloc', 'ms', this)">🇲🇾 Bahasa Melayu</button>
+                        </div>
+                        <div class="lang-content active" id="cntloc-lang-en"><div class="field"><label>Location Address (English)</label><input id="contact_location_en"></div></div>
+                        <div class="lang-content" id="cntloc-lang-ar" dir="rtl"><div class="field"><label>الموقع والعنوان (عربي)</label><input id="contact_location_ar" dir="rtl"></div></div>
+                        <div class="lang-content" id="cntloc-lang-ms"><div class="field"><label>Lokasi (Melayu)</label><input id="contact_location_ms"></div></div>
+                        <button class="btn btn-primary" onclick="saveConfigFields(['contact_email','link_whatsapp','contact_location_en','contact_location_ar','contact_location_ms'])">💾 Save Contact Info</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ============================================== -->
+            <!-- 12. PURCHASE & SOCIAL LINKS -->
+            <!-- ============================================== -->
+            <!-- MESSAGES PANEL -->
+            <div class="panel" id="panel-messages">
+                <div class="panel-header">
+                    <h2>📬 Customer Messages</h2>
+                    <p>Manage and respond to customer enquiries.</p>
+                </div>
+                <div style="display:flex; gap:12px; margin:20px 0; flex-wrap:wrap;">
+                    <input type="text" id="msgSearchInput" placeholder="🔍 Search by name, email or message..." 
+                           style="flex:1; min-width:200px; padding:10px; border:1px solid var(--border); border-radius:var(--radius-sm);"
+                           oninput="fetchAdminMessages()">
+                    <select id="msgFilterSelect" onchange="fetchAdminMessages()" 
+                            style="padding:10px; border:1px solid var(--border); border-radius:var(--radius-sm); background:var(--white);">
+                        <option value="all">Show All</option>
+                        <option value="unread">Unread Only 🔴</option>
+                        <option value="read">Read Only ✅</option>
+                    </select>
+                </div>
+                <div class="table-wrap">
+                    <table style="width:100%;">
+                        <thead>
+                            <tr>
+                                <th style="width:120px">Status</th>
+                                <th style="width:150px">Name</th>
+                                <th style="width:180px">Email</th>
+                                <th>Message</th>
+                                <th style="width:160px">Date & Time</th>
+                                <th style="width:150px; text-align:right">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="messagesTableBody">
+                            <!-- Loaded via JS -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="panel" id="panel-links">
+                <div class="card">
+                    <div class="card-header"><div><h3>E-Commerce & WhatsApp Channels</h3><p>Direct buy links for TikTok Shop, Shopee, and WhatsApp number.</p></div></div>
+                    <div class="card-body">
+                        <div class="field"><label>🎵 TikTok Shop Store URL</label><input id="link_tiktok" placeholder="https://www.tiktok.com/@yourshop"></div>
+                        <div class="field"><label>🛒 Shopee Store URL</label><input id="link_shopee" placeholder="https://shopee.com.my/yourshop"></div>
+                        <div class="field"><label>💙 Lazada Store URL</label><input id="link_lazada" placeholder="https://www.lazada.com.my/shop/yourshop"></div>
+                        <div class="field"><label>💬 WhatsApp Number (International format without +)</label><input id="link_whatsapp_2" placeholder="60123456789"></div>
+                        
+                        <h4 style="margin:24px 0 12px;font-family:var(--font-display)">Social Media Accounts</h4>
+                        <div class="form-grid">
+                            <div class="field"><label>Instagram Profile URL</label><input id="social_instagram"></div>
+                            <div class="field"><label>Facebook Page URL</label><input id="social_facebook"></div>
+                            <div class="field"><label>TikTok Profile URL</label><input id="social_tiktok"></div>
+                        </div>
+
+                        <button class="btn btn-primary" onclick="saveLinksComplete()">💾 Save Purchase & Social Links</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ============================================== -->
+            <!-- 13. WEBSITE IDENTITY & SEO -->
+            <!-- ============================================== -->
+            <div class="panel" id="panel-settings">
+                <div class="card">
+                    <div class="card-header"><div><h3>Brand Logo & Typography</h3><p>Upload your official logo image or change the brand name.</p></div></div>
+                    <div class="card-body">
+                        <div class="field"><label>Brand Name (Text)</label><input id="logo_text"></div>
+                        <div class="field">
+                            <label>Brand Logo Image</label>
+                            <div id="logoPreviewBox" style="display:none;align-items:center;gap:16px;padding:16px;background:var(--cream);border:1px solid var(--border);border-radius:var(--radius-md);margin-bottom:12px">
+                                <img id="logoPreviewImg" src="" style="max-height:50px;max-width:180px;object-fit:contain">
+                                <button class="btn btn-danger btn-sm" onclick="removeLogo()">Remove Logo</button>
+                            </div>
+                            <input type="file" onchange="uploadLogoDirect(event)">
+                            <input type="hidden" id="logo_url">
+<div style="display:flex;gap:15px;flex-wrap:wrap;margin-top:15px;">
+    <div class="field" style="flex:1;min-width:180px;">
+        <label>Logo Width (px)</label>
+        <input type="number" id="logo_width" value="280" min="100" max="500">
+    </div>
+
+    <div class="field" style="flex:1;min-width:180px;">
+        <label>Logo Height (px)</label>
+        <input type="number" id="logo_height" value="90" min="40" max="200">
+    </div>
+</div>
+
+<button class="btn btn-primary" onclick="saveLogoSize()">
+    💾 Save Logo Size
+</button>
+
+                        </div>
+
+                        <h4 style="margin:24px 0 12px;font-family:var(--font-display)">SEO & Search Engine Optimization</h4>
+                        <div class="field"><label>SEO Website Title</label><input id="seo_title"></div>
+                        <div class="field"><label>SEO Meta Description</label><textarea id="seo_desc"></textarea></div>
+
+                        <button class="btn btn-primary" onclick="saveConfigFields(['logo_text','seo_title','seo_desc'])">💾 Save Identity & SEO</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ============================================== -->
+            <!-- 14. SECURITY & PASSWORD -->
+            <!-- ============================================== -->
+            <div class="panel" id="panel-security">
+                <div class="card">
+                    <div class="card-header"><div><h3>Change Admin Password</h3><p>Update your dashboard credentials.</p></div></div>
+                    <div class="card-body">
+                        <form onsubmit="changePassword(event)">
+                            <div class="field"><label>Current Password</label><input type="password" id="currentPassword" required></div>
+                            <div class="field"><label>New Password (Min 6 characters)</label><input type="password" id="newPassword" required minlength="6"></div>
+                            <div class="field"><label>Confirm New Password</label><input type="password" id="confirmPassword" required minlength="6"></div>
+                            <button type="submit" class="btn btn-primary">🔒 Update Password</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    
+        <!-- BLOG PANEL -->
+        <div class="panel" id="panel-blog">
+            <div class="card">
+                <div class="card-header">
+                    <div>
+                        <h3>📝 Blog Articles / إدارة مقالات المدونة</h3>
+                        <p>Manage multilingual blog posts, news, and date guides.</p>
+                    </div>
+                    <button class="btn" onclick="showNativeBlogForm()" style="background:var(--gold);color:#fff;padding:8px 16px;border-radius:var(--radius-sm);font-weight:bold;">+ Add New Article</button>
+                </div>
+                <div class="card-body">
+                    <div id="blogTableWrap"><p>Loading articles...</p></div>
+                </div>
+            </div>
+
+            <div class="card" id="blogFormCard" style="display:none;">
+                <div class="card-header">
+                    <h3 id="blogFormCardTitle">Add New Article</h3>
+                    <button class="btn" onclick="document.getElementById('blogFormCard').style.display='none'">✕ Close</button>
+                </div>
+                <div class="card-body">
+                    <input type="hidden" id="adminBlogEditId">
+                    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:15px;" class="field">
+                        <div>
+                            <label>Slug (URL)</label>
+                            <input type="text" id="adminBlogSlug" placeholder="ajwa-dates-guide">
+                        </div>
+                        <div>
+                            <label>Category</label>
+                            <select id="adminBlogCategory">
+                                <option value="types-of-dates">Types of Dates</option>
+                                <option value="saudi-farms">Saudi Date Farms</option>
+                                <option value="dates-guide">Dates Guide</option>
+                                <option value="nutrition">Dates & Nutrition</option>
+                                <option value="recipes">Date Recipes</option>
+                                <option value="news">MASSAR DATES News</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label>Sort Order</label>
+                            <input type="number" id="adminBlogSort" value="0">
+                        </div>
+                    </div>
+                    <div class="field">
+                        <label>Featured Image</label>
+                        <div style="display:flex;gap:10px;">
+                            <input type="file" accept="image/*" onchange="uploadAdminImage(this, 'adminBlogImg')">
+                            <input type="text" id="adminBlogImg" placeholder="Or paste Image URL" style="flex:1;">
+                        </div>
+                    </div>
+                    
+                    <div class="lang-tabs" style="margin-top:15px;">
+                        <button type="button" class="lang-tab active" onclick="switchBlogLangTab('ar', this)">🇸🇦 العربية</button>
+                        <button type="button" class="lang-tab" onclick="switchBlogLangTab('en', this)">🇬🇧 English</button>
+                        <button type="button" class="lang-tab" onclick="switchBlogLangTab('ms', this)">🇲🇾 Bahasa Melayu</button>
+                    </div>
+
+                    <div id="blogLangBox-ar">
+                        <div class="field"><label>العنوان (عربي)</label><input type="text" id="adminBlogTitleAr"></div>
+                        <div class="field"><label>الوصف المختصر</label><textarea id="adminBlogExcAr" rows="3"></textarea></div>
+                        <div class="field"><label>المحتوى الكامل (HTML)</label><textarea id="adminBlogContAr" rows="6"></textarea></div>
+                    </div>
+                    <div id="blogLangBox-en" style="display:none;" dir="ltr">
+                        <div class="field"><label>Title (English)</label><input type="text" id="adminBlogTitleEn"></div>
+                        <div class="field"><label>Short Excerpt</label><textarea id="adminBlogExcEn" rows="3"></textarea></div>
+                        <div class="field"><label>Full Content (HTML)</label><textarea id="adminBlogContEn" rows="6"></textarea></div>
+                    </div>
+                    <div id="blogLangBox-ms" style="display:none;" dir="ltr">
+                        <div class="field"><label>Tajuk (Malay)</label><input type="text" id="adminBlogTitleMs"></div>
+                        <div class="field"><label>Penerangan Ringkas</label><textarea id="adminBlogExcMs" rows="3"></textarea></div>
+                        <div class="field"><label>Kandungan Penuh (HTML)</label><textarea id="adminBlogContMs" rows="6"></textarea></div>
+                    </div>
+
+                    <div style="margin-top:20px;display:flex;gap:10px;">
+                        <button class="btn" style="background:var(--success);color:#fff;padding:10px 20px;border-radius:var(--radius-sm);font-weight:bold;" onclick="saveAdminBlog()">💾 Save Article</button>
+                        <button class="btn" style="background:var(--border);padding:10px 20px;border-radius:var(--radius-sm);" onclick="document.getElementById('blogFormCard').style.display='none'">Cancel</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- DISCOVER PANEL -->
+        <div class="panel" id="panel-discover">
+            <div class="card">
+                <div class="card-header">
+                    <div>
+                        <h3>🌍 Discover Saudi Dates / بطاقات قسم الاكتشاف</h3>
+                        <p>Manage dynamic cards in the homepage "Discover the World of Saudi Dates" section.</p>
+                    </div>
+                    <button class="btn" onclick="showNativeDiscForm()" style="background:var(--gold);color:#fff;padding:8px 16px;border-radius:var(--radius-sm);font-weight:bold;">+ Add New Card</button>
+                </div>
+                <div class="card-body">
+                    <div id="discTableWrap"><p>Loading discover cards...</p></div>
+                </div>
+            </div>
+
+            <div class="card" id="discFormCard" style="display:none;">
+                <div class="card-header">
+                    <h3 id="discFormCardTitle">Add New Discover Card</h3>
+                    <button class="btn" onclick="document.getElementById('discFormCard').style.display='none'">✕ Close</button>
+                </div>
+                <div class="card-body">
+                    <input type="hidden" id="adminDiscEditId">
+                    <div class="field">
+                        <label>Card Image (Saudi Dates / Palm Farms)</label>
+                        <div style="display:flex;gap:10px;">
+                            <input type="file" accept="image/*" onchange="uploadAdminImage(this, 'adminDiscImg')">
+                            <input type="text" id="adminDiscImg" placeholder="Or paste Image URL" style="flex:1;">
+                        </div>
+                    </div>
+
+                    <div class="lang-tabs">
+                        <button type="button" class="lang-tab active" onclick="switchDiscLangTab('ar', this)">🇸🇦 العربية</button>
+                        <button type="button" class="lang-tab" onclick="switchDiscLangTab('en', this)">🇬🇧 English</button>
+                        <button type="button" class="lang-tab" onclick="switchDiscLangTab('ms', this)">🇲🇾 Bahasa Melayu</button>
+                    </div>
+
+                    <div id="discLangBox-ar">
+                        <div class="field"><label>العنوان (عربي)</label><input type="text" id="adminDiscTitleAr"></div>
+                        <div class="field"><label>الوصف</label><textarea id="adminDiscDescAr" rows="3"></textarea></div>
+                    </div>
+                    <div id="discLangBox-en" style="display:none;" dir="ltr">
+                        <div class="field"><label>Title (English)</label><input type="text" id="adminDiscTitleEn"></div>
+                        <div class="field"><label>Description</label><textarea id="adminDiscDescEn" rows="3"></textarea></div>
+                    </div>
+                    <div id="discLangBox-ms" style="display:none;" dir="ltr">
+                        <div class="field"><label>Tajuk (Malay)</label><input type="text" id="adminDiscTitleMs"></div>
+                        <div class="field"><label>Penerangan</label><textarea id="adminDiscDescMs" rows="3"></textarea></div>
+                    </div>
+
+                    <div style="margin-top:20px;display:flex;gap:10px;">
+                        <button class="btn" style="background:var(--success);color:#fff;padding:10px 20px;border-radius:var(--radius-sm);font-weight:bold;" onclick="saveAdminDisc()">💾 Save Card</button>
+                        <button class="btn" style="background:var(--border);padding:10px 20px;border-radius:var(--radius-sm);" onclick="document.getElementById('discFormCard').style.display='none'">Cancel</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+</main>
+</div>
+
+<!-- PRODUCT MODAL -->
+<div class="modal-overlay" id="productModal">
+    <div class="modal">
+        <h3 id="productModalTitle" style="font-family:var(--font-display);margin-bottom:18px">Product Details</h3>
+        <input type="hidden" id="editProdId">
+
+        <div class="field">
+            <label>Product Photo</label>
+            <div id="prodImgPreviewBox" style="margin-bottom:10px"></div>
+            <input type="file" onchange="uploadProductImage(event)">
+            <input type="hidden" id="editProdImage">
+        </div>
+
+        <div class="form-grid">
+            <div class="field"><label>URL Slug (e.g. ajwa-madinah)</label><input id="editProdSlug"></div>
+            <div class="field"><label>Variety / Region</label><input id="editProdVariety" placeholder="Al Madinah"></div>
+        </div>
+
+        <div class="lang-tabs">
+            <button class="lang-tab active" onclick="switchLangTab('pmodal', 'en', this)">🇬🇧 English</button>
+            <button class="lang-tab" onclick="switchLangTab('pmodal', 'ar', this)">🇸🇦 العربية</button>
+            <button class="lang-tab" onclick="switchLangTab('pmodal', 'ms', this)">🇲🇾 Bahasa Melayu</button>
+        </div>
+
+        <div class="lang-content active" id="pmodal-lang-en">
+            <div class="field"><label>Product Name (EN)</label><input id="editProdName_en" required></div>
+            <div class="field"><label>Description (EN)</label><textarea id="editProdDesc_en"></textarea></div>
+            <div class="form-grid"><div class="field"><label>Badge (e.g. Best Seller)</label><input id="editProdBadge_en"></div><div class="field"><label>Texture</label><input id="editProdTexture_en"></div></div>
+        </div>
+        <div class="lang-content" id="pmodal-lang-ar" dir="rtl">
+            <div class="field"><label>اسم المنتج (عربي)</label><input id="editProdName_ar" dir="rtl"></div>
+            <div class="field"><label>الوصف (عربي)</label><textarea id="editProdDesc_ar" dir="rtl"></textarea></div>
+            <div class="form-grid"><div class="field"><label>الشارة</label><input id="editProdBadge_ar" dir="rtl"></div><div class="field"><label>الملمس</label><input id="editProdTexture_ar" dir="rtl"></div></div>
+        </div>
+        <div class="lang-content" id="pmodal-lang-ms">
+            <div class="field"><label>Nama Produk (MS)</label><input id="editProdName_ms"></div>
+            <div class="field"><label>Penerangan (MS)</label><textarea id="editProdDesc_ms"></textarea></div>
+            <div class="form-grid"><div class="field"><label>Lencana</label><input id="editProdBadge_ms"></div><div class="field"><label>Tekstur</label><input id="editProdTexture_ms"></div></div>
+        </div>
+
+        <h4 style="font-family:var(--font-display);margin:20px 0 10px">Prices by Weight (RM)</h4>
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(110px,1fr));gap:10px;background:var(--cream);padding:14px;border-radius:var(--radius-sm)">
+            <div><label style="font-size:.7rem;font-weight:700">100g (RM)</label><input type="number" step="0.01" id="p_100g" style="padding:6px;width:100%"></div>
+            <div><label style="font-size:.7rem;font-weight:700">250g (RM)</label><input type="number" step="0.01" id="p_250g" style="padding:6px;width:100%"></div>
+            <div><label style="font-size:.7rem;font-weight:700">500g (RM)</label><input type="number" step="0.01" id="p_500g" style="padding:6px;width:100%"></div>
+            <div><label style="font-size:.7rem;font-weight:700">1kg (RM)</label><input type="number" step="0.01" id="p_1kg" style="padding:6px;width:100%"></div>
+            <div><label style="font-size:.7rem;font-weight:700">3kg (RM)</label><input type="number" step="0.01" id="p_3kg" style="padding:6px;width:100%"></div>
+            <div><label style="font-size:.7rem;font-weight:700">5kg (RM)</label><input type="number" step="0.01" id="p_5kg" style="padding:6px;width:100%"></div>
+        </div>
+
+        <div class="form-grid" style="margin-top:16px">
+            <div class="info-row"><span class="info-row-label"><strong>Active</strong></span><label class="switch"><input type="checkbox" id="editProdActive" checked><span class="switch-slider"></span></label></div>
+            <div class="info-row"><span class="info-row-label"><strong>Featured</strong></span><label class="switch"><input type="checkbox" id="editProdFeatured" checked><span class="switch-slider"></span></label></div>
+        </div>
+
+        <div style="display:flex;gap:10px;justify-content:flex-end;margin-top:24px">
+            <button class="btn btn-outline" onclick="closeProductModal()">Cancel</button>
+            <button class="btn btn-primary" onclick="saveProductModal()">💾 Save Product</button>
+        </div>
+    </div>
+</div>
+
+<!-- BRAND MODAL -->
+<div class="modal-overlay" id="brandModal">
+    <div class="modal">
+        <h3 id="brandModalTitle" style="font-family:var(--font-display);margin-bottom:18px">Brand Details</h3>
+        <input type="hidden" id="editBrandId">
+        <div class="field"><label>Brand Name</label><input id="editBrandName" placeholder="e.g. NAWAH" required></div>
+        <div class="field">
+            <label>Brand Logo (Upload)</label>
+            <input type="file" onchange="uploadBrandLogo(event)">
+            <input type="hidden" id="editBrandImage">
+        </div>
+        <div class="lang-tabs">
+            <button class="lang-tab active" onclick="switchLangTab('bmodal', 'en', this)">🇬🇧 English</button>
+            <button class="lang-tab" onclick="switchLangTab('bmodal', 'ar', this)">🇸🇦 العربية</button>
+            <button class="lang-tab" onclick="switchLangTab('bmodal', 'ms', this)">🇲🇾 Bahasa Melayu</button>
+        </div>
+        <div class="lang-content active" id="bmodal-lang-en">
+            <div class="field"><label>Tagline</label><input id="editBrandTagline_en"></div>
+            <div class="field"><label>Description</label><textarea id="editBrandDesc_en"></textarea></div>
+        </div>
+        <div class="lang-content" id="bmodal-lang-ar" dir="rtl">
+            <div class="field"><label>الشعار اللفظي</label><input id="editBrandTagline_ar" dir="rtl"></div>
+            <div class="field"><label>الوصف</label><textarea id="editBrandDesc_ar" dir="rtl"></textarea></div>
+        </div>
+        <div class="lang-content" id="bmodal-lang-ms">
+            <div class="field"><label>Tagline</label><input id="editBrandTagline_ms"></div>
+            <div class="field"><label>Penerangan</label><textarea id="editBrandDesc_ms"></textarea></div>
+        </div>
+        <div class="info-row"><span class="info-row-label"><strong>Active</strong></span><label class="switch"><input type="checkbox" id="editBrandActive" checked><span class="switch-slider"></span></label></div>
+        <div style="display:flex;gap:10px;justify-content:flex-end;margin-top:20px">
+            <button class="btn btn-outline" onclick="closeBrandModal()">Cancel</button>
+            <button class="btn btn-primary" onclick="saveBrandModal()">💾 Save Brand</button>
+        </div>
+    </div>
+</div>
+
+<div class="toast-wrap" id="toastWrap"></div>
+
+<script>
+let AUTH_TOKEN = localStorage.getItem('massar_admin_token') || '';
+let CONFIG = {}, PRODUCTS = [], BRANDS = [];
+// ================= TEXT FORMATTER =================
+function applyTextFormat(element, property, value) {
+    if (!element || !value) return;
+
+    if (property === 'fontFamily') {
+        element.style.fontFamily = value;
+        element.dataset.fontFamily = value;
+    }
+
+    if (property === 'fontSize') {
+        element.style.fontSize = value;
+        element.dataset.fontSize = value;
+    }
+
+    if (property === 'fontWeight') {
+        element.style.fontWeight = value;
+        element.dataset.fontWeight = value;
+    }
+
+    if (property === 'textAlign') {
+        element.style.textAlign = value;
+        element.dataset.textAlign = value;
+    }
+
+    if (property === 'color') {
+        element.style.color = value;
+        element.dataset.textColor = value;
+    }
+}
+function createTextFormatter(targetId) {
+    const target = document.getElementById(targetId);
+    if (!target) return;
+
+    const old = document.getElementById('formatter-' + targetId);
+    if (old) old.remove();
+
+    const wrapper = document.createElement('div');
+    wrapper.id = 'formatter-' + targetId;
+
+    wrapper.style.cssText = `
+        margin-top:8px;
+        padding:10px;
+        border:1px solid var(--border);
+        border-radius:10px;
+        background:var(--cream);
+        display:flex;
+        gap:8px;
+        flex-wrap:wrap;
+        align-items:center;
+    `;
+
+    wrapper.innerHTML = `
+        <select class="text-font">
+            <option value="">Font</option>
+            <option value="Arial">Arial</option>
+            <option value="Georgia">Georgia</option>
+            <option value="Verdana">Verdana</option>
+            <option value="Tahoma">Tahoma</option>
+            <option value="Times New Roman">Times New Roman</option>
+            <option value="Courier New">Courier New</option>
+        </select>
+
+        <select class="text-size">
+            <option value="">Size</option>
+            <option value="12px">12px</option>
+            <option value="14px">14px</option>
+            <option value="16px">16px</option>
+            <option value="18px">18px</option>
+            <option value="20px">20px</option>
+            <option value="24px">24px</option>
+            <option value="30px">30px</option>
+            <option value="36px">36px</option>
+            <option value="42px">42px</option>
+        </select>
+
+        <select class="text-weight">
+            <option value="">Weight</option>
+            <option value="400">Normal</option>
+            <option value="500">Medium</option>
+            <option value="600">Semi Bold</option>
+            <option value="700">Bold</option>
+            <option value="800">Extra Bold</option>
+        </select>
+
+        <select class="text-align">
+            <option value="">Align</option>
+            <option value="left">Left</option>
+            <option value="center">Center</option>
+            <option value="right">Right</option>
+        </select>
+
+        <label style="font-size:12px;">
+            Color
+            <input type="color" class="text-color" value="#000000">
+        </label>
+    `;
+
+    target.parentElement.appendChild(wrapper);
+
+    wrapper.querySelector('.text-font').onchange = function () {
+        applyTextFormat(target, 'fontFamily', this.value);
+    };
+
+    wrapper.querySelector('.text-size').onchange = function () {
+        applyTextFormat(target, 'fontSize', this.value);
+    };
+
+    wrapper.querySelector('.text-weight').onchange = function () {
+        applyTextFormat(target, 'fontWeight', this.value);
+    };
+
+    wrapper.querySelector('.text-align').onchange = function () {
+        applyTextFormat(target, 'textAlign', this.value);
+    };
+
+    wrapper.querySelector('.text-color').oninput = function () {
+        applyTextFormat(target, 'color', this.value);
+    };
+}
+
+async function api(url, options = {}) {
+    const opts = { ...options, headers: { ...(options.headers || {}) } };
+    if (AUTH_TOKEN) opts.headers['Authorization'] = 'Bearer ' + AUTH_TOKEN;
+    if (options.body && typeof options.body === 'object' && !(options.body instanceof FormData)) {
+        opts.headers['Content-Type'] = 'application/json';
+        opts.body = JSON.stringify(options.body);
+    }
+    const res = await fetch(url, opts);
+    if (res.status === 401 && AUTH_TOKEN) { logout(); throw new Error('Unauthorized'); }
+    return res.json();
+}
+
+function toast(msg) {
+    const el = document.createElement('div'); el.className = 'toast'; el.textContent = msg;
+    document.getElementById('toastWrap').appendChild(el);
+    setTimeout(() => el.remove(), 2600);
+}
+
+async function handleLogin(e) {
+    e.preventDefault();
+    try {
+        const data = await api('/api/admin/login', {
+            method: 'POST',
+            body: { email: document.getElementById('loginEmail').value, password: document.getElementById('loginPassword').value }
+        });
+        if (data.token) {
+            AUTH_TOKEN = data.token;
+            localStorage.setItem('massar_admin_token', AUTH_TOKEN);
+            enterApp();
+        } else { toast('Invalid email or password'); }
+    } catch(err) { toast('Login failed'); }
+}
+
+function logout() {
+    AUTH_TOKEN = ''; localStorage.removeItem('massar_admin_token');
+    document.getElementById('appView').classList.remove('active');
+    document.getElementById('loginView').style.display = 'flex';
+}
+
+async function enterApp() {
+    document.getElementById('loginView').style.display = 'none';
+    document.getElementById('appView').classList.add('active');
+    await loadAllData();
+}
+
+function switchPanel(name, btn) {
+    document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+    document.getElementById('panel-' + name).classList.add('active');
+    if (btn) btn.classList.add('active');
+    document.getElementById('pageTitle').textContent = name.toUpperCase();
+    window.scrollTo(0,0);
+}
+function switchPanelByName(name) {
+    const btn = document.querySelector(`.nav-item[onclick*="${name}"]`);
+    switchPanel(name, btn);
+}
+
+function switchLangTab(scope, l, btn) {
+    btn.parentElement.querySelectorAll('.lang-tab').forEach(t => t.classList.remove('active'));
+    btn.classList.add('active');
+    document.querySelectorAll(`[id^="${scope}-lang-"]`).forEach(el => el.classList.remove('active'));
+    document.getElementById(`${scope}-lang-${l}`)?.classList.add('active');
+}
+
+async function loadAllData() {
+    CONFIG = await api('/api/config');
+    PRODUCTS = await api('/api/admin/products');
+    
+    // Populate simple fields
+    const allFields = [
+        'hero_badge_en','hero_badge_ar','hero_badge_ms','hero_title_en','hero_title_ar','hero_title_ms','hero_desc_en','hero_desc_ar','hero_desc_ms','hero_img',
+        'detail_tab_en','detail_tab_ar','detail_tab_ms','ship_tab_en','ship_tab_ar','ship_tab_ms','stor_tab_en','stor_tab_ar','stor_tab_ms','ret_tab_en','ret_tab_ar','ret_tab_ms',
+        'about_title_en','about_title_ar','about_title_ms',
+'about_text_en','about_text_ar','about_text_ms',
+'about_image',
+        'contact_email','contact_location_en','contact_location_ar','contact_location_ms',
+        'link_tiktok','link_shopee','link_lazada','link_whatsapp',
+        'social_instagram','social_facebook','social_tiktok',
+        'logo_text','seo_title','seo_desc','logo_url'
+    ];
+    allFields.forEach(f => {
+        const el = document.getElementById(f);
+        if (el) el.value = CONFIG[f] || '';
+    });
+      loadSavedTextFormatting();
+
+    const wa2 = document.getElementById('link_whatsapp_2');
+    if (wa2) wa2.value = CONFIG.link_whatsapp || '';
+
+    // Hero image preview
+    if (CONFIG.hero_img) {
+        document.getElementById('heroImgPreview').innerHTML = `<img src="${CONFIG.hero_img}" style="max-height:80px;border-radius:6px">`;
+    }
+
+    // Logo image preview
+    refreshLogoPreview();
+
+    // Render specialized editors
+    renderProductsTable();
+    loadWhyMassarUI();
+    loadBrandsUI();
+    loadB2BUI();
+    loadTestimonialsUI();
+        loadBrandStoryUI();
+
+    // تشغيل محرر تنسيق النصوص
+    initTextFormatters();
+}
+function loadSavedTextFormatting() {
+    const textFields = [
+        'hero_badge_en',
+        'hero_badge_ar',
+        'hero_badge_ms',
+        'hero_title_en',
+        'hero_title_ar',
+        'hero_title_ms',
+        'hero_desc_en',
+        'hero_desc_ar',
+        'hero_desc_ms',
+
+        'wm_sub_en',
+        'wm_sub_ar',
+        'wm_sub_ms',
+        'wm_title_en',
+        'wm_title_ar',
+        'wm_title_ms',
+        'wm_desc_en',
+        'wm_desc_ar',
+        'wm_desc_ms',
+
+        'b2b_subtitle_en',
+        'b2b_subtitle_ar',
+        'b2b_subtitle_ms',
+        'b2b_title_en',
+        'b2b_title_ar',
+        'b2b_title_ms',
+        'b2b_desc_en',
+        'b2b_desc_ar',
+        'b2b_desc_ms',
+        'b2b_button_en',
+        'b2b_button_ar',
+        'b2b_button_ms',
+
+        'about_title_en',
+        'about_title_ar',
+        'about_title_ms',
+        'about_text_en',
+        'about_text_ar',
+        'about_text_ms',
+
+        'detail_tab_en',
+        'detail_tab_ar',
+        'detail_tab_ms',
+        'ship_tab_en',
+        'ship_tab_ar',
+        'ship_tab_ms',
+        'stor_tab_en',
+        'stor_tab_ar',
+        'stor_tab_ms',
+        'ret_tab_en',
+        'ret_tab_ar',
+        'ret_tab_ms',
+
+        'seo_title',
+        'seo_desc'
+    ];
+
+    textFields.forEach(id => {
+        const el = document.getElementById(id);
+        if (!el) return;
+
+        const fontFamily = CONFIG[id + '_font_family'];
+        const fontSize = CONFIG[id + '_font_size'];
+        const fontWeight = CONFIG[id + '_font_weight'];
+        const textAlign = CONFIG[id + '_text_align'];
+        const textColor = CONFIG[id + '_text_color'];
+
+        if (fontFamily) {
+            el.dataset.fontFamily = fontFamily;
+            el.style.fontFamily = fontFamily;
+        }
+
+        if (fontSize) {
+            el.dataset.fontSize = fontSize;
+            el.style.fontSize = fontSize;
+        }
+
+        if (fontWeight) {
+            el.dataset.fontWeight = fontWeight;
+            el.style.fontWeight = fontWeight;
+        }
+
+        if (textAlign) {
+            el.dataset.textAlign = textAlign;
+            el.style.textAlign = textAlign;
+        }
+
+        if (textColor) {
+            el.dataset.textColor = textColor;
+            el.style.color = textColor;
+        }
+    });
+}
+function initTextFormatters() {
+    const textFields = [
+        // HERO
+        'hero_badge_en',
+        'hero_badge_ar',
+        'hero_badge_ms',
+        'hero_title_en',
+        'hero_title_ar',
+        'hero_title_ms',
+        'hero_desc_en',
+        'hero_desc_ar',
+        'hero_desc_ms',
+
+        // WHY MASSAR
+        'wm_sub_en',
+        'wm_sub_ar',
+        'wm_sub_ms',
+        'wm_title_en',
+        'wm_title_ar',
+        'wm_title_ms',
+        'wm_desc_en',
+        'wm_desc_ar',
+        'wm_desc_ms',
+
+        // B2B
+        'b2b_subtitle_en',
+        'b2b_subtitle_ar',
+        'b2b_subtitle_ms',
+        'b2b_title_en',
+        'b2b_title_ar',
+        'b2b_title_ms',
+        'b2b_desc_en',
+        'b2b_desc_ar',
+        'b2b_desc_ms',
+        'b2b_button_en',
+        'b2b_button_ar',
+        'b2b_button_ms',
+
+        // ABOUT
+        'about_title_en',
+        'about_title_ar',
+        'about_title_ms',
+        'about_text_en',
+        'about_text_ar',
+        'about_text_ms',
+
+        // PRODUCT DETAILS
+        'detail_tab_en',
+        'detail_tab_ar',
+        'detail_tab_ms',
+        'ship_tab_en',
+        'ship_tab_ar',
+        'ship_tab_ms',
+        'stor_tab_en',
+        'stor_tab_ar',
+        'stor_tab_ms',
+        'ret_tab_en',
+        'ret_tab_ar',
+        'ret_tab_ms',
+
+        // SEO
+        'seo_title',
+        'seo_desc'
+    ];
+
+    textFields.forEach(id => {
+        createTextFormatter(id);
+    });
+}
+async function saveLogoSize() {
+    const width = document.getElementById('logo_width').value || 280;
+    const height = document.getElementById('logo_height').value || 90;
+
+    await api('/api/admin/config', {
+        method: 'PUT',
+        body: {
+            logo_width: width,
+            logo_height: height
+        }
+    });
+
+    CONFIG.logo_width = width;
+    CONFIG.logo_height = height;
+
+    toast('Logo size saved successfully!');
+}
+
+async function saveConfigFields(fields) {
+    const body = {};
+
+    fields.forEach(f => {
+        const el = document.getElementById(f);
+        if (!el) return;
+
+        // Save text value
+        body[f] = el.value;
+
+        // Save text formatting
+        if (el.dataset.fontFamily) {
+            body[f + '_font_family'] = el.dataset.fontFamily;
+        }
+
+        if (el.dataset.fontSize) {
+            body[f + '_font_size'] = el.dataset.fontSize;
+        }
+
+        if (el.dataset.fontWeight) {
+            body[f + '_font_weight'] = el.dataset.fontWeight;
+        }
+
+        if (el.dataset.textAlign) {
+            body[f + '_text_align'] = el.dataset.textAlign;
+        }
+
+        if (el.dataset.textColor) {
+            body[f + '_text_color'] = el.dataset.textColor;
+        }
+    });
+
+    try {
+        await api('/api/admin/config', {
+            method: 'PUT',
+            body
+        });
+
+        Object.assign(CONFIG, body);
+
+        toast('Saved successfully!');
+    } catch (error) {
+        console.error('Save config error:', error);
+        toast('Failed to save changes');
+    }
+}
+// ---------------- PRODUCTS ----------------
+function renderProductsTable() {
+    document.getElementById('productsTableBody').innerHTML = PRODUCTS.map(p => {
+        const pVals = Object.values(p.prices || {}).filter(v => v > 0);
+        const minP = pVals.length ? `RM ${Math.min(...pVals)}` : '--';
+        const img = p.image_url ? `<img src="${p.image_url}" style="width:40px;height:40px;object-fit:cover;border-radius:4px">` : '🌰';
+        return `
+            <tr>
+                <td>${img}</td>
+                <td><strong>${p.name_en}</strong></td>
+                <td>${p.variety || '-'}</td>
+                <td>${minP}</td>
+                <td>${p.active ? '<span style="color:var(--success);font-weight:700">● Active</span>' : '<span style="color:var(--text-light)">○ Hidden</span>'}</td>
+                <td>${p.featured ? '⭐ Yes' : 'No'}</td>
+                <td style="text-align:right">
+                    <button class="btn btn-outline btn-sm" onclick="editProductModal(${p.id})">Edit</button>
+                    <button class="btn btn-danger btn-sm" onclick="deleteProduct(${p.id})">🗑</button>
+                </td>
+            </tr>
+        `;
+    }).join('');
+}
+
+function openProductModal() {
+    document.getElementById('editProdId').value = '';
+    ['Slug','Variety','Name_en','Name_ar','Name_ms','Desc_en','Desc_ar','Desc_ms','Badge_en','Badge_ar','Badge_ms','Texture_en','Texture_ar','Texture_ms'].forEach(f => {
+        const el = document.getElementById('editProd' + f); if (el) el.value = '';
+    });
+    document.getElementById('editProdImage').value = '';
+    document.getElementById('prodImgPreviewBox').innerHTML = '';
+    ['100g','250g','500g','1kg','3kg','5kg'].forEach(w => document.getElementById('p_' + w).value = '');
+    document.getElementById('editProdActive').checked = true;
+    document.getElementById('editProdFeatured').checked = true;
+    document.getElementById('productModal').classList.add('active');
+}
+function closeProductModal() { document.getElementById('productModal').classList.remove('active'); }
+
+function editProductModal(id) {
+    const p = PRODUCTS.find(x => x.id === id); if (!p) return;
+    document.getElementById('editProdId').value = p.id;
+    document.getElementById('editProdSlug').value = p.slug || '';
+    document.getElementById('editProdVariety').value = p.variety || '';
+    ['en','ar','ms'].forEach(l => {
+        document.getElementById('editProdName_' + l).value = p['name_' + l] || '';
+        document.getElementById('editProdDesc_' + l).value = p['desc_' + l] || '';
+        document.getElementById('editProdBadge_' + l).value = p['badge_' + l] || '';
+        document.getElementById('editProdTexture_' + l).value = p['texture_' + l] || '';
+    });
+    ['100g','250g','500g','1kg','3kg','5kg'].forEach(w => {
+        document.getElementById('p_' + w).value = (p.prices && p.prices[w]) || '';
+    });
+    document.getElementById('editProdActive').checked = p.active !== false;
+    document.getElementById('editProdFeatured').checked = !!p.featured;
+    document.getElementById('editProdImage').value = p.image_url || '';
+    document.getElementById('prodImgPreviewBox').innerHTML = p.image_url ? `<img src="${p.image_url}" style="max-height:70px;border-radius:4px">` : '';
+    document.getElementById('productModal').classList.add('active');
+}
+
+async function saveProductModal() {
+    const id = document.getElementById('editProdId').value;
+    const prices = {};
+    ['100g','250g','500g','1kg','3kg','5kg'].forEach(w => {
+        const val = parseFloat(document.getElementById('p_' + w).value);
+        if (val > 0) prices[w] = val;
+    });
+    const body = {
+        slug: document.getElementById('editProdSlug').value || document.getElementById('editProdName_en').value.toLowerCase().replace(/[^a-z0-9]+/g,'-'),
+        name_en: document.getElementById('editProdName_en').value,
+        name_ar: document.getElementById('editProdName_ar').value || document.getElementById('editProdName_en').value,
+        name_ms: document.getElementById('editProdName_ms').value || document.getElementById('editProdName_en').value,
+        desc_en: document.getElementById('editProdDesc_en').value,
+        desc_ar: document.getElementById('editProdDesc_ar').value,
+        desc_ms: document.getElementById('editProdDesc_ms').value,
+        badge_en: document.getElementById('editProdBadge_en').value,
+        badge_ar: document.getElementById('editProdBadge_ar').value,
+        badge_ms: document.getElementById('editProdBadge_ms').value,
+        texture_en: document.getElementById('editProdTexture_en').value,
+        texture_ar: document.getElementById('editProdTexture_ar').value,
+        texture_ms: document.getElementById('editProdTexture_ms').value,
+        variety: document.getElementById('editProdVariety').value,
+        image_url: document.getElementById('editProdImage').value,
+        active: document.getElementById('editProdActive').checked,
+        featured: document.getElementById('editProdFeatured').checked,
+        prices
+    };
+    if (id) await api('/api/admin/products/' + id, { method: 'PUT', body });
+    else await api('/api/admin/products', { method: 'POST', body });
+    closeProductModal();
+    PRODUCTS = await api('/api/admin/products');
+    renderProductsTable();
+    toast('Product saved successfully!');
+}
+
+async function deleteProduct(id) {
+    if (!confirm('Are you sure you want to delete this product?')) return;
+    await api('/api/admin/products/' + id, { method: 'DELETE' });
+    PRODUCTS = await api('/api/admin/products');
+    renderProductsTable();
+    toast('Product deleted');
+}
+
+// ---------------- WHY MASSAR ----------------
+function loadWhyMassarUI() {
+    let wm = {
+        active: true,
+        subtitle_en: "Why Choose Us", subtitle_ar: "لماذا تختارنا", subtitle_ms: "Kenapa Pilih Kami",
+        title_en: "WHY MASSAR?", title_ar: "لماذا مسار؟", title_ms: "KENAPA MASSAR?",
+        desc_en: "Discover why dates connoisseurs trust MASSAR DATES.", desc_ar: "اكتشف لماذا يثق خبراء التمور بمسار.", desc_ms: "Ketahui sebab pencinta kurma mempercayai MASSAR DATES.",
+        cards: [
+            { icon: "🏆", title_en: "Premium Quality", title_ar: "جودة فائقة", title_ms: "Kualiti Premium", desc_en: "Carefully selected Saudi dates.", desc_ar: "تمور سعودية منتقاة بعناية.", desc_ms: "Kurma Saudi pilihan.", active: true },
+            { icon: "🇸🇦", title_en: "Authentic Saudi Origin", title_ar: "منشأ سعودي أصيل", title_ms: "Asal Saudi Tulen", desc_en: "Authentic dates directly sourced.", desc_ar: "تمور أصيلة مستوردة مباشرة.", desc_ms: "Kurma asli dibekalkan terus.", active: true },
+            { icon: "📦", title_en: "Fresh & Carefully Packed", title_ar: "طازجة ومعبأة بعناية", title_ms: "Segar & Dibungkus Rapi", desc_en: "Packed with care for maximum freshness.", desc_ar: "تعبئة راقية تضمن الطراوة.", desc_ms: "Dibungkus rapi mengekalkan kesegaran.", active: true },
+            { icon: "🤝", title_en: "Trusted Service", title_ar: "خدمة موثوقة", title_ms: "Perkhidmatan Dipercayai", desc_en: "Reliable wholesale & retail service.", desc_ar: "خدمة موثوقة للأفراد والشركات.", desc_ms: "Perkhidmatan dipercayai untuk semua.", active: true }
+        ]
+    };
+    if (CONFIG.why_massar_data) {
+        try { wm = typeof CONFIG.why_massar_data === 'string' ? JSON.parse(CONFIG.why_massar_data) : CONFIG.why_massar_data; } catch(e){}
+    }
+    document.getElementById('wm_active').checked = wm.active !== false;
+    ['en','ar','ms'].forEach(l => {
+        document.getElementById('wm_sub_' + l).value = wm['subtitle_' + l] || '';
+        document.getElementById('wm_title_' + l).value = wm['title_' + l] || '';
+        document.getElementById('wm_desc_' + l).value = wm['desc_' + l] || '';
+    });
+
+    document.getElementById('wmCardsContainer').innerHTML = (wm.cards || []).map((c, i) => `
+        <div style="background:var(--cream);border:1px solid var(--border);border-radius:8px;padding:16px;margin-bottom:14px">
+            <div style="display:flex;justify-content:space-between;margin-bottom:8px">
+                <strong>Card #${i+1}</strong>
+                <label><input type="checkbox" class="wmc-act" data-idx="${i}" ${c.active!==false?'checked':''}> Active</label>
+            </div>
+            <div class="form-grid">
+                <div class="field"><label>Icon (Emoji)</label><input class="wmc-icon" data-idx="${i}" value="${c.icon||'✨'}"></div>
+                <div class="field"><label>Title (EN)</label><input class="wmc-t-en" data-idx="${i}" value="${c.title_en||''}"></div>
+            </div>
+            <div class="field"><label>Description (EN)</label><textarea class="wmc-d-en" data-idx="${i}">${c.desc_en||''}</textarea></div>
+            <div class="form-grid">
+                <div class="field"><label>العنوان (عربي)</label><input class="wmc-t-ar" data-idx="${i}" value="${c.title_ar||''}" dir="rtl"></div>
+                <div class="field"><label>الوصف (عربي)</label><textarea class="wmc-d-ar" data-idx="${i}" dir="rtl">${c.desc_ar||''}</textarea></div>
+            </div>
+            <div class="form-grid">
+                <div class="field"><label>Tajuk (MS)</label><input class="wmc-t-ms" data-idx="${i}" value="${c.title_ms||''}"></div>
+                <div class="field"><label>Penerangan (MS)</label><textarea class="wmc-d-ms" data-idx="${i}">${c.desc_ms||''}</textarea></div>
+            </div>
+        </div>
+    `).join('');
+}
+
+async function saveWhyMassarComplete() {
+    const cards = [];
+    document.querySelectorAll('.wmc-icon').forEach(el => {
+        const i = el.dataset.idx;
+        cards.push({
+            icon: el.value,
+            active: document.querySelector(`.wmc-act[data-idx="${i}"]`).checked,
+            title_en: document.querySelector(`.wmc-t-en[data-idx="${i}"]`).value,
+            desc_en: document.querySelector(`.wmc-d-en[data-idx="${i}"]`).value,
+            title_ar: document.querySelector(`.wmc-t-ar[data-idx="${i}"]`).value,
+            desc_ar: document.querySelector(`.wmc-d-ar[data-idx="${i}"]`).value,
+            title_ms: document.querySelector(`.wmc-t-ms[data-idx="${i}"]`).value,
+            desc_ms: document.querySelector(`.wmc-d-ms[data-idx="${i}"]`).value
+        });
+    });
+    const data = {
+        active: document.getElementById('wm_active').checked,
+        subtitle_en: document.getElementById('wm_sub_en').value,
+        subtitle_ar: document.getElementById('wm_sub_ar').value,
+        subtitle_ms: document.getElementById('wm_sub_ms').value,
+        title_en: document.getElementById('wm_title_en').value,
+        title_ar: document.getElementById('wm_title_ar').value,
+        title_ms: document.getElementById('wm_title_ms').value,
+        desc_en: document.getElementById('wm_desc_en').value,
+        desc_ar: document.getElementById('wm_desc_ar').value,
+        desc_ms: document.getElementById('wm_desc_ms').value,
+        cards
+    };
+    const jsonStr = JSON.stringify(data);
+    await api('/api/admin/config', { method: 'PUT', body: { why_massar_data: jsonStr } });
+    CONFIG.why_massar_data = jsonStr;
+    toast('Why MASSAR section saved!');
+}
+
+// ---------------- BRANDS ----------------
+function loadBrandsUI() {
+    if (CONFIG.brands_data) {
+        try { BRANDS = typeof CONFIG.brands_data === 'string' ? JSON.parse(CONFIG.brands_data) : CONFIG.brands_data; } catch(e){}
+    }
+    if (!BRANDS || !BRANDS.length) {
+        BRANDS = [
+            { name: 'NAWAH', tagline_en: 'Ancient Heritage & Purity', desc_en: 'Crafted with timeless tradition.', active: true },
+            { name: 'QUBBAH', tagline_en: 'Royal Saudi Selection', desc_en: 'The pinnacle of luxury.', active: true },
+            { name: 'ALMADINAH', tagline_en: 'Blessed Sacred Harvest', desc_en: 'Sourced from Al Madinah.', active: true }
+        ];
+    }
+    document.getElementById('brandsTableBody').innerHTML = BRANDS.map((b, i) => `
+        <tr>
+            <td>${b.image_url ? `<img src="${b.image_url}" style="max-height:30px">` : `<div style="width:30px;height:30px;border-radius:50%;background:var(--beige);text-align:center;line-height:30px;font-weight:700">${b.name.charAt(0)}</div>`}</td>
+            <td><strong>${b.name}</strong></td>
+            <td>${b.tagline_en || '-'}</td>
+            <td>${b.active !== false ? '● Active' : '○ Hidden'}</td>
+            <td style="text-align:right">
+                <button class="btn btn-outline btn-sm" onclick="editBrandModal(${i})">Edit</button>
+                <button class="btn btn-danger btn-sm" onclick="deleteBrand(${i})">🗑</button>
+            </td>
+        </tr>
+    `).join('');
+}
+
+function openBrandModal() {
+    document.getElementById('editBrandId').value = '';
+    document.getElementById('editBrandName').value = '';
+    document.getElementById('editBrandImage').value = '';
+    ['en','ar','ms'].forEach(l => {
+        document.getElementById('editBrandTagline_' + l).value = '';
+        document.getElementById('editBrandDesc_' + l).value = '';
+    });
+    document.getElementById('editBrandActive').checked = true;
+    document.getElementById('brandModal').classList.add('active');
+}
+function closeBrandModal() { document.getElementById('brandModal').classList.remove('active'); }
+
+function editBrandModal(idx) {
+    const b = BRANDS[idx]; if (!b) return;
+    document.getElementById('editBrandId').value = idx;
+    document.getElementById('editBrandName').value = b.name;
+    document.getElementById('editBrandImage').value = b.image_url || '';
+    ['en','ar','ms'].forEach(l => {
+        document.getElementById('editBrandTagline_' + l).value = b['tagline_' + l] || '';
+        document.getElementById('editBrandDesc_' + l).value = b['desc_' + l] || '';
+    });
+    document.getElementById('editBrandActive').checked = b.active !== false;
+    document.getElementById('brandModal').classList.add('active');
+}
+
+async function saveBrandModal() {
+    const idx = document.getElementById('editBrandId').value;
+    const b = {
+        name: document.getElementById('editBrandName').value,
+        image_url: document.getElementById('editBrandImage').value,
+        tagline_en: document.getElementById('editBrandTagline_en').value,
+        tagline_ar: document.getElementById('editBrandTagline_ar').value,
+        tagline_ms: document.getElementById('editBrandTagline_ms').value,
+        desc_en: document.getElementById('editBrandDesc_en').value,
+        desc_ar: document.getElementById('editBrandDesc_ar').value,
+        desc_ms: document.getElementById('editBrandDesc_ms').value,
+        active: document.getElementById('editBrandActive').checked
+    };
+    if (idx !== '') BRANDS[idx] = b; else BRANDS.push(b);
+    const jsonStr = JSON.stringify(BRANDS);
+    await api('/api/admin/config', { method: 'PUT', body: { brands_data: jsonStr } });
+    CONFIG.brands_data = jsonStr;
+    closeBrandModal();
+    loadBrandsUI();
+    toast('Brand saved!');
+}
+
+async function deleteBrand(idx) {
+    if (!confirm('Delete this brand?')) return;
+    BRANDS.splice(idx, 1);
+    const jsonStr = JSON.stringify(BRANDS);
+    await api('/api/admin/config', { method: 'PUT', body: { brands_data: jsonStr } });
+    CONFIG.brands_data = jsonStr;
+    loadBrandsUI();
+    toast('Brand deleted');
+}
+
+// ---------------- FOR BUSINESSES (B2B) ----------------
+function loadB2BUI() {
+    let b2b = { active: true };
+    if (CONFIG.b2b_data) {
+        try { b2b = typeof CONFIG.b2b_data === 'string' ? JSON.parse(CONFIG.b2b_data) : CONFIG.b2b_data; } catch(e){}
+    }
+    document.getElementById('b2b_active').checked = b2b.active !== false;
+    ['en','ar','ms'].forEach(l => {
+        document.getElementById('b2b_subtitle_' + l).value = b2b['subtitle_' + l] || '';
+        document.getElementById('b2b_title_' + l).value = b2b['title_' + l] || '';
+        document.getElementById('b2b_desc_' + l).value = b2b['desc_' + l] || '';
+        document.getElementById('b2b_button_' + l).value = b2b['button_' + l] || '';
+    });
+}
+
+async function saveB2BSectionComplete() {
+    const data = {
+        active: document.getElementById('b2b_active').checked,
+        subtitle_en: document.getElementById('b2b_subtitle_en').value,
+        subtitle_ar: document.getElementById('b2b_subtitle_ar').value,
+        subtitle_ms: document.getElementById('b2b_subtitle_ms').value,
+        title_en: document.getElementById('b2b_title_en').value,
+        title_ar: document.getElementById('b2b_title_ar').value,
+        title_ms: document.getElementById('b2b_title_ms').value,
+        desc_en: document.getElementById('b2b_desc_en').value,
+        desc_ar: document.getElementById('b2b_desc_ar').value,
+        desc_ms: document.getElementById('b2b_desc_ms').value,
+        button_en: document.getElementById('b2b_button_en').value,
+        button_ar: document.getElementById('b2b_button_ar').value,
+        button_ms: document.getElementById('b2b_button_ms').value
+    };
+    const jsonStr = JSON.stringify(data);
+    await api('/api/admin/config', { method: 'PUT', body: { b2b_data: jsonStr } });
+    CONFIG.b2b_data = jsonStr;
+    toast('For Businesses updated successfully!');
+}
+
+// ---------------- TESTIMONIALS ----------------
+function loadTestimonialsUI() {
+    let t = {};
+    if (CONFIG.testimonials_data) {
+        try { t = typeof CONFIG.testimonials_data === 'string' ? JSON.parse(CONFIG.testimonials_data) : CONFIG.testimonials_data; } catch(e){}
+    }
+    ['en','ar','ms'].forEach(l => {
+        for (let i = 1; i <= 3; i++) {
+            const q = document.getElementById(`t_q${i}_${l}`); if (q) q.value = t[`q${i}_${l}`] || '';
+            const a = document.getElementById(`t_a${i}_${l}`); if (a) a.value = t[`a${i}_${l}`] || '';
+            const r = document.getElementById(`t_r${i}_${l}`); if (r) r.value = t[`r${i}_${l}`] || '';
+        }
+    });
+}
+
+async function saveTestimonialsComplete() {
+    const data = {};
+    ['en','ar','ms'].forEach(l => {
+        for (let i = 1; i <= 3; i++) {
+            data[`q${i}_${l}`] = document.getElementById(`t_q${i}_${l}`).value;
+            data[`a${i}_${l}`] = document.getElementById(`t_a${i}_${l}`).value;
+            data[`r${i}_${l}`] = document.getElementById(`t_r${i}_${l}`).value;
+        }
+    });
+    const jsonStr = JSON.stringify(data);
+    await api('/api/admin/config', { method: 'PUT', body: { testimonials_data: jsonStr } });
+    CONFIG.testimonials_data = jsonStr;
+    toast('Testimonials saved!');
+}
+
+// ---------------- OUR BRAND STORY ----------------
+function loadBrandStoryUI() {
+    let bs = {};
+    if (CONFIG.brand_story_data) {
+        try { bs = typeof CONFIG.brand_story_data === 'string' ? JSON.parse(CONFIG.brand_story_data) : CONFIG.brand_story_data; } catch(e){}
+    }
+    ['en','ar','ms'].forEach(l => {
+        document.getElementById('ourbrand_sub_' + l).value = bs['sub_' + l] || '';
+        document.getElementById('ourbrand_title_' + l).value = bs['title_' + l] || '';
+        document.getElementById('ourbrand_desc_' + l).value = bs['desc_' + l] || '';
+        document.getElementById('ourbrand_btn_' + l).value = bs['btn_' + l] || '';
+    });
+}
+
+async function saveBrandStoryComplete() {
+    const data = {};
+    ['en','ar','ms'].forEach(l => {
+        data['sub_' + l] = document.getElementById('ourbrand_sub_' + l).value;
+        data['title_' + l] = document.getElementById('ourbrand_title_' + l).value;
+        data['desc_' + l] = document.getElementById('ourbrand_desc_' + l).value;
+        data['btn_' + l] = document.getElementById('ourbrand_btn_' + l).value;
+    });
+    const jsonStr = JSON.stringify(data);
+    await api('/api/admin/config', { method: 'PUT', body: { brand_story_data: jsonStr } });
+    CONFIG.brand_story_data = jsonStr;
+    toast('Brand story saved!');
+}
+
+// ---------------- LINKS ----------------
+async function saveLinksComplete() {
+    const wa = document.getElementById('link_whatsapp_2').value;
+    document.getElementById('link_whatsapp').value = wa;
+    await saveConfigFields(['link_tiktok','link_shopee','link_lazada','link_whatsapp','social_instagram','social_facebook','social_tiktok']);
+}
+
+// ---------------- IMAGE UPLOADS ----------------
+async function uploadSingleImage(e, hiddenId, previewId) {
+    const file = e.target.files[0]; if (!file) return;
+    const fd = new FormData(); fd.append('image', file);
+    const data = await api('/api/admin/upload', { method: 'POST', body: fd });
+    if (data.url) {
+        document.getElementById(hiddenId).value = data.url;
+        if (previewId) document.getElementById(previewId).innerHTML = `<img src="${data.url}" style="max-height:70px;border-radius:4px">`;
+        toast('Image uploaded!');
+    }
+}
+function uploadProductImage(e) { uploadSingleImage(e, 'editProdImage', 'prodImgPreviewBox'); }
+function uploadBrandLogo(e) { uploadSingleImage(e, 'editBrandImage', null); }
+
+async function uploadAboutImage(e) {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    const formData = new FormData();
+    formData.append('image', file);
+
+    try {
+        const response = await fetch('/api/admin/upload', {
+            method: 'POST',
+            headers: {
+                'Authorization': 'Bearer ' + AUTH_TOKEN
+            },
+            body: formData
+        });
+
+        const data = await response.json();
+
+        if (!response.ok || !data.url) {
+            throw new Error(data.error || 'Upload failed');
+        }
+
+        await api('/api/admin/config', {
+            method: 'PUT',
+            body: {
+                about_image: data.url
+            }
+        });
+
+        CONFIG.about_image = data.url;
+
+        const img = document.getElementById('aboutImagePreview');
+        const box = document.getElementById('aboutImagePreviewBox');
+
+        img.src = data.url;
+        box.style.display = 'block';
+
+        toast('About Us image updated!');
+
+    } catch (err) {
+        console.error(err);
+        toast('Image upload failed', 'error');
+    }
+}
+async function uploadLogoDirect(e) {
+    const file = e.target.files[0]; if (!file) return;
+    const fd = new FormData(); fd.append('image', file);
+    const data = await api('/api/admin/upload', { method: 'POST', body: fd });
+    if (data.url) {
+        document.getElementById('logo_url').value = data.url;
+        await api('/api/admin/config', { method: 'PUT', body: { logo_url: data.url } });
+        CONFIG.logo_url = data.url;
+        refreshLogoPreview();
+        toast('Logo image updated!');
+    }
+}
+
+function refreshLogoPreview() {
+    const url = CONFIG.logo_url;
+if (document.getElementById('logo_width')) {
+    document.getElementById('logo_width').value = CONFIG.logo_width || 280;
+}
+
+if (document.getElementById('logo_height')) {
+    document.getElementById('logo_height').value = CONFIG.logo_height || 90;
+}
+    const box = document.getElementById('logoPreviewBox');
+    if (url) {
+        document.getElementById('logoPreviewImg').src = url;
+        box.style.display = 'flex';
+    } else {
+        box.style.display = 'none';
+    }
+}
+
+async function removeLogo() {
+    await api('/api/admin/config', { method: 'PUT', body: { logo_url: '' } });
+    CONFIG.logo_url = '';
+    refreshLogoPreview();
+    toast('Logo removed, reverted to text logo');
+}
+
+// ---------------- SECURITY ----------------
+async function changePassword(e) {
+    e.preventDefault();
+    const cur = document.getElementById('currentPassword').value;
+    const nw = document.getElementById('newPassword').value;
+    const cf = document.getElementById('confirmPassword').value;
+    if (nw !== cf) { toast('Passwords do not match'); return; }
+    try {
+        await api('/api/admin/password', { method: 'PUT', body: { currentPassword: cur, newPassword: nw } });
+        toast('Password changed successfully!');
+        document.getElementById('currentPassword').value = '';
+        document.getElementById('newPassword').value = '';
+        document.getElementById('confirmPassword').value = '';
+    } catch(err) { toast('Failed: ' + err.message); }
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    if (AUTH_TOKEN) enterApp();
+    else document.getElementById('loginView').style.display = 'flex';
+});
+// ----------------- نظام إدارة الرسائل والواتساب الجديد -----------------
+function detectArabic(text) {
+    const arabic = /[\u0600-\u06FF]/;
+    return arabic.test(text);
+}
+
+async function fetchAdminMessages() {
+    const search = document.getElementById('msgSearchInput')?.value || '';
+    const filter = document.getElementById('msgFilterSelect')?.value || 'all';
+    const tbody = document.getElementById('messagesTableBody');
+    if (!tbody) return;
+
+    try {
+        const url = `/api/admin/messages?search=${encodeURIComponent(search)}&filter=${filter}`;
+        MESSAGES = await api(url);
+        
+        tbody.innerHTML = '';
+        if (MESSAGES.length === 0) {
+            tbody.innerHTML = `<tr><td colspan="6" style="text-align:center; padding:30px; color:var(--text-light)">No messages found.</td></tr>`;
+            return;
+        }
+
+        MESSAGES.forEach(msg => {
+            const isUnread = msg.is_read === 0;
+            const bg = isUnread ? '#fff9db' : '#ffffff';
+            const statusLabel = isUnread ? '🔴 Unread' : '✅ Read';
+            const dir = detectArabic(msg.message) ? 'rtl' : 'ltr';
+            const align = detectArabic(msg.message) ? 'right' : 'left';
+
+            tbody.innerHTML += `
+                <tr id="msg-row-${msg.id}" style="background-color:${bg}">
+                    <td>
+                        <strong style="display:block;margin-bottom:4px;">${statusLabel}</strong>
+                        <button class="btn btn-outline btn-sm" style="font-size:10px;padding:2px 6px" onclick="toggleMessageRead(${msg.id})">
+                            Mark ${isUnread ? 'Read' : 'Unread'}
+                        </button>
+                    </td>
+                    <td><input type="text" id="msg-name-${msg.id}" value="${escapeHTML(msg.name)}" style="width:100%;padding:4px;border:1px solid var(--border)"></td>
+                    <td><input type="email" id="msg-email-${msg.id}" value="${escapeHTML(msg.email || '')}" style="width:100%;padding:4px;border:1px solid var(--border)"></td>
+                    <td>
+                        <textarea id="msg-text-${msg.id}" rows="2" dir="${dir}" 
+                                  style="width:100%;padding:6px;border:1px solid var(--border);text-align:${align};font-family:inherit;">${escapeHTML(msg.message)}</textarea>
+                    </td>
+                    <td style="font-size:11px;color:var(--text-light);white-space:nowrap;">
+                        📅 ${msg.created_at}
+                        ${msg.updated_at !== msg.created_at ? `<br><span style="color:var(--gold)">✏️ Edited: ${msg.updated_at}</span>` : ''}
+                    </td>
+                    <td style="text-align:right;">
+                        <button class="btn btn-outline btn-sm" onclick="replyToCustomer('${msg.email}', '${escapeHTML(msg.name)}')"
+                                style="margin-bottom:4px; width:75px; background:#007bff; color:#fff; border:none; cursor:pointer;">
+                                ✉️ Reply
+                        </button>
+                        <br>
+                        <button class="btn btn-primary btn-sm" onclick="saveMessageEdits(${msg.id})" style="margin-bottom:4px;width:75px">💾 Save</button>
+                        <br>
+                        <button class="btn btn-danger btn-sm" onclick="deleteMessage(${msg.id})" style="width:75px">🗑 Delete</button>
+                    </td>
+                </tr>
+            `;
+        });
+    } catch (err) {
+        console.error(err);
+    }
+}
+
+async function toggleMessageRead(id) {
+    try {
+        await api(`/api/admin/messages/${id}/toggle-read`, { method: 'PATCH' });
+        fetchAdminMessages();
+    } catch(err) {
+        toast('Error changing status');
+    }
+}
+
+async function saveMessageEdits(id) {
+    const name = document.getElementById(`msg-name-${id}`).value.trim();
+    const email = document.getElementById(`msg-email-${id}`).value.trim();
+    const message = document.getElementById(`msg-text-${id}`).value.trim();
+    if (!name || !message) {
+        toast('Name and message fields are required.');
+        return;
+    }
+    try {
+        await api(`/api/admin/messages/${id}`, {
+            method: 'PUT',
+            body: { name, email, message }
+        });
+        toast('Message changes saved!');
+        fetchAdminMessages();
+    } catch(err) {
+        toast('Failed to save details');
+    }
+}
+
+async function deleteMessage(id) {
+    if (!confirm('Are you sure you want to delete this message?')) return;
+    try {
+        await api(`/api/admin/messages/${id}`, { method: 'DELETE' });
+        toast('Message deleted');
+        fetchAdminMessages();
+    } catch(err) {
+        toast('Failed to delete message');
+    }
+}
+
+function replyToCustomer(email, name) {
+    if (!email || email.trim() === '') {
+        toast("This customer did not provide an email.");
+        return;
+    }
+    const subject = encodeURIComponent("Reply from MASSAR DATES");
+    const body = encodeURIComponent(`Hello ${name},\n\n`);
+    const gmailUrl = `https://mail.google.com/mail/?view=cm&fs=1&to=${encodeURIComponent(email)}&su=${subject}&body=${body}`;
+    const mailtoUrl = `mailto:${email}?subject=${subject}&body=${body}`;
+    const useGmail = confirm("How would you like to reply?\n\nClick [ OK ] to open Gmail Web (Recommended)\nClick [ Cancel ] to use default Mail App");
+    if (useGmail) {
+        window.open(gmailUrl, '_blank');
+    } else {
+        window.location.href = mailtoUrl;
+    }
+}
+
+function escapeHTML(str) {
+    if (!str) return '';
+    return str.replace(/[&<>'"]/g, 
+        tag => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[tag] || tag)
+    );
+}
+
+const originalSwitchPanel = switchPanel;
+switchPanel = function(name, btn) {
+    originalSwitchPanel(name, btn);
+    if (name === 'messages') {
+        fetchAdminMessages();
+    }
+};
+
+</script>
+
+
+
+<div id="adminDiscoverSection" style="display:none;padding:20px">
+    <h2>🌍 Discover Cards / البطاقات</h2>
+    <button onclick="showDiscForm()" style="padding:10px 20px;background:#c59b27;color:#fff;border:none;border-radius:6px;cursor:pointer;margin-bottom:20px">+ Add New Card</button>
+    <div id="discAdminList"></div>
+    <div id="discFormWrap" style="display:none;background:#f9f9f9;padding:25px;border-radius:10px;margin-top:20px">
+        <h3 id="discFormTitle">New Card</h3><input type="hidden" id="discEditId">
+        <div style="margin-bottom:15px"><label>Image:</label><input type="file" id="discImageFile" onchange="uploadDiscImage(this)"><input id="discImage" style="width:100%;padding:8px;margin-top:5px;box-sizing" placeholder="Or paste URL"></div>
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:15px">
+            <div><h4>Arabic</h4><input id="discTitleAr" placeholder="Title" style="width:100%;padding:8px;box-sizing:border-box;margin-bottom:5px"><textarea id="discDescAr" placeholder="Desc" rows="3" style="width:100%;padding:8px;box-sizing:border-box"></textarea></div>
+            <div><h4>English</h4><input id="discTitleEn" placeholder="Title" style="width:100%;padding:8px;box-sizing:border-box;margin-bottom:5px"><textarea id="discDescEn" placeholder="Desc" rows="3" style="width:100%;padding:8px;box-sizing:border-box"></textarea></div>
+            <div><h4>Malay</h4><input id="discTitleMs" placeholder="Title" style="width:100%;padding:8px;box-sizing:border-box;margin-bottom:5px"><textarea id="discDescMs" placeholder="Desc" rows="3" style="width:100%;padding:8px;box-sizing:border-box"></textarea></div>
+        </div>
+        <div style="margin-top:15px;display:flex;gap:10px"><button onclick="saveDiscCard()" style="padding:10px 20px;background:#27ae60;color:#fff;border:none;border-radius:6px;cursor:pointer">Save</button><button onclick="document.getElementById('discFormWrap').style.display='none'" style="padding:10px 20px;background:#999;color:#fff;border:none;border-radius:6px;cursor:pointer">Cancel</button></div>
+    </div>
+</div>
+
+<script>
+
+// Discover Admin
+async function loadDiscAdmin(){const t=localStorage.getItem('massar_admin_token');if(!t)return;try{const r=await fetch('/api/admin/discover',{headers:{'Authorization':'Bearer '+t}});const c=await r.json();document.getElementById('discAdminList').innerHTML='<table style="width:100%;border-collapse:collapse"><tr style="background:#f5f5f5"><th style="padding:10px;text-align:left">Title</th><th>Active</th><th>Actions</th></tr>'+c.map(x=>'<tr style="border-bottom:1px solid #eee"><td style="padding:10px">'+x.title_en+'</td><td>'+(x.active?'✅':'❌')+'</td><td><button onclick="editDiscCard('+x.id+')" style="padding:4px 8px;cursor:pointer">✏️</button><button onclick="deleteDiscCard('+x.id+')" style="padding:4px 8px;cursor:pointer;color:red">🗑️</button></td></tr>').join('')+'</table>'}catch(e){}}
+function showDiscForm(c){document.getElementById('discFormWrap').style.display='block';document.getElementById('discFormTitle').textContent=c?'Edit':'New';document.getElementById('discEditId').value=c?c.id:'';document.getElementById('discImage').value=c?(c.image_url||''):'';['Ar','En','Ms'].forEach(l=>{document.getElementById('discTitle'+l).value=c?(c['title_'+l.toLowerCase()]||''):'';document.getElementById('discDesc'+l).value=c?(c['desc_'+l.toLowerCase()]||''):''})}
+async function uploadDiscImage(input){if(!input.files[0])return;const f=new FormData();f.append('image',input.files[0]);const t=localStorage.getItem('massar_admin_token');const r=await fetch('/api/admin/upload',{method:'POST',headers:{'Authorization':'Bearer '+t},body:f});const d=await r.json();if(d.filename)document.getElementById('discImage').value='/uploads/'+d.filename}
+async function saveDiscCard(){const t=localStorage.getItem('massar_admin_token');const id=document.getElementById('discEditId').value;const d={image_url:document.getElementById('discImage').value,active:1,sort_order:0};['ar','en','ms'].forEach(l=>{d['title_'+l]=document.getElementById('discTitle'+l.charAt(0).toUpperCase()+l.slice(1)).value;d['desc_'+l]=document.getElementById('discDesc'+l.charAt(0).toUpperCase()+l.slice(1)).value});await fetch(id?'/api/admin/discover/'+id:'/api/admin/discover',{method:id?'PUT':'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+t},body:JSON.stringify(d)});document.getElementById('discFormWrap').style.display='none';loadDiscAdmin()}
+async function editDiscCard(id){const t=localStorage.getItem('massar_admin_token');const r=await fetch('/api/admin/discover',{headers:{'Authorization':'Bearer '+t}});const c=await r.json();const card=c.find(x=>x.id===id);if(card)showDiscForm(card)}
+async function deleteDiscCard(id){if(!confirm('Delete?'))return;const t=localStorage.getItem('massar_admin_token');await fetch('/api/admin/discover/'+id,{method:'DELETE',headers:{'Authorization':'Bearer '+t}});loadDiscAdmin()}
+</script>
+
+<script id="adminNativeLogic">
+async function uploadAdminImage(input, targetId) {
+    if (!input.files || !input.files[0]) return;
+    const formData = new FormData();
+    formData.append('image', input.files[0]);
+    const token = localStorage.getItem('massar_admin_token');
+    try {
+        const res = await fetch('/api/admin/upload', {
+            method: 'POST',
+            headers: { 'Authorization': 'Bearer ' + token },
+            body: formData
+        });
+        const data = await res.json();
+        if (data.filename) {
+            document.getElementById(targetId).value = '/uploads/' + data.filename;
+        } else if (data.url) {
+            document.getElementById(targetId).value = data.url;
+        }
+    } catch(e) {}
+}
+
+function switchBlogLangTab(lang, btn) {
+    ['ar','en','ms'].forEach(l => document.getElementById('blogLangBox-'+l).style.display = (l === lang ? 'block' : 'none'));
+    btn.parentNode.querySelectorAll('.lang-tab').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+}
+
+function switchDiscLangTab(lang, btn) {
+    ['ar','en','ms'].forEach(l => document.getElementById('discLangBox-'+l).style.display = (l === lang ? 'block' : 'none'));
+    btn.parentNode.querySelectorAll('.lang-tab').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+}
+
+async function loadNativeBlog() {
+    const token = localStorage.getItem('massar_admin_token');
+    try {
+        const res = await fetch('/api/admin/blog', { headers: { 'Authorization': 'Bearer ' + token } });
+        const posts = await res.json();
+        const wrap = document.getElementById('blogTableWrap');
+        if (!posts || posts.length === 0) {
+            wrap.innerHTML = '<p>No articles found.</p>';
+            return;
+        }
+        wrap.innerHTML = `<table class="table">
+            <thead>
+                <tr>
+                    <th>Title (EN / AR)</th>
+                    <th>Category</th>
+                    <th>Status</th>
+                    <th>Featured</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                ${posts.map(p => `
+                    <tr>
+                        <td><strong>${p.title_en || '-'}</strong><br><small style="color:var(--text-light)">${p.title_ar || '-'}</small></td>
+                        <td><span style="background:var(--cream-dark);padding:3px 8px;border-radius:4px;font-size:12px;">${p.category || '-'}</span></td>
+                        <td>${p.published ? '<span style="color:var(--success);font-weight:bold;">✅ Published</span>' : '<span style="color:var(--danger)">❌ Hidden</span>'}</td>
+                        <td>${p.featured ? '⭐ Yes' : '-'}</td>
+                        <td>
+                            <button class="btn" style="background:var(--cream-dark);padding:4px 10px;font-size:12px;" onclick="editNativeBlog(${p.id})">✏️ Edit</button>
+                            <button class="btn" style="background:var(--cream-dark);padding:4px 10px;font-size:12px;" onclick="toggleNativeBlogPub(${p.id})">${p.published ? '🙈 Hide' : '👁️ Show'}</button>
+                            <button class="btn" style="background:var(--danger);color:#fff;padding:4px 10px;font-size:12px;" onclick="deleteNativeBlog(${p.id})">🗑️ Delete</button>
+                        </td>
+                    </tr>
+                `).join('')}
+            </tbody>
+        </table>`;
+    } catch(e) {}
+}
+
+function showNativeBlogForm(post) {
+    const form = document.getElementById('blogFormCard');
+
+    if (!form) {
+        console.error('blogFormCard not found');
+        return;
+    }
+
+    form.style.display = 'block';
+
+    document.getElementById('blogFormCardTitle').textContent =
+        post ? 'Edit Article' : 'Add New Article';
+
+    document.getElementById('adminBlogEditId').value =
+        post ? post.id : '';
+
+    document.getElementById('adminBlogSlug').value =
+        post ? (post.slug || '') : '';
+
+    document.getElementById('adminBlogCategory').value =
+        post ? (post.category || 'news') : 'news';
+
+    document.getElementById('adminBlogSort').value =
+        post ? (post.sort_order || 0) : 0;
+
+    document.getElementById('adminBlogImg').value =
+        post ? (post.image_url || '') : '';
+
+    document.getElementById('adminBlogTitleAr').value =
+        post ? (post.title_ar || '') : '';
+
+    document.getElementById('adminBlogExcAr').value =
+        post ? (post.excerpt_ar || '') : '';
+
+    document.getElementById('adminBlogContAr').value =
+        post ? (post.content_ar || '') : '';
+
+    document.getElementById('adminBlogTitleEn').value =
+        post ? (post.title_en || '') : '';
+
+    document.getElementById('adminBlogExcEn').value =
+        post ? (post.excerpt_en || '') : '';
+
+    document.getElementById('adminBlogContEn').value =
+        post ? (post.content_en || '') : '';
+
+    document.getElementById('adminBlogTitleMs').value =
+        post ? (post.title_ms || '') : '';
+
+    document.getElementById('adminBlogExcMs').value =
+        post ? (post.excerpt_ms || '') : '';
+
+    document.getElementById('adminBlogContMs').value =
+        post ? (post.content_ms || '') : '';
+
+    form.scrollIntoView({
+        behavior: 'smooth',
+        block: 'start'
+    });
+}
+
+
+async function saveAdminBlog() {
+    const token = localStorage.getItem('massar_admin_token');
+
+    if (!token) {
+        alert('Admin session expired. Please login again.');
+        return;
+    }
+
+    const id = document.getElementById('adminBlogEditId').value;
+
+    const b = {
+        slug: document.getElementById('adminBlogSlug').value || ('post-' + Date.now()),
+        category: document.getElementById('adminBlogCategory').value,
+        sort_order: parseInt(document.getElementById('adminBlogSort').value) || 0,
+        image_url: document.getElementById('adminBlogImg').value,
+
+        published: 1,
+        featured: 0,
+
+        title_ar: document.getElementById('adminBlogTitleAr').value,
+        title_en: document.getElementById('adminBlogTitleEn').value,
+        title_ms: document.getElementById('adminBlogTitleMs').value,
+
+        excerpt_ar: document.getElementById('adminBlogExcAr').value,
+        excerpt_en: document.getElementById('adminBlogExcEn').value,
+        excerpt_ms: document.getElementById('adminBlogExcMs').value,
+
+        content_ar: document.getElementById('adminBlogContAr').value,
+        content_en: document.getElementById('adminBlogContEn').value,
+        content_ms: document.getElementById('adminBlogContMs').value
+    };
+
+    try {
+        const res = await fetch(
+            id ? '/api/admin/blog/' + id : '/api/admin/blog',
+            {
+                method: id ? 'PUT' : 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer ' + token
+                },
+                body: JSON.stringify(b)
+            }
+        );
+
+        const data = await res.json();
+
+        console.log('Save response:', data);
+
+        if (!res.ok) {
+            alert('Failed to save article: ' + (data.error || data.message || res.status));
+            return;
+        }
+
+        alert(id ? 'Article updated successfully!' : 'Article added successfully!');
+
+        document.getElementById('blogFormCard').style.display = 'none';
+
+        loadNativeBlog();
+
+    } catch (error) {
+        console.error('Save article error:', error);
+        alert('Error saving article. Check the console.');
+    }
+}
+
+
+async function editNativeBlog(id) {
+    console.log('EDIT BLOG ID:', id);
+
+    const token = localStorage.getItem('massar_admin_token');
+
+    if (!token) {
+        alert('Admin session expired. Please login again.');
+        return;
+    }
+
+    try {
+        const res = await fetch('/api/admin/blog', {
+            headers: {
+                'Authorization': 'Bearer ' + token
+            }
+        });
+
+        if (!res.ok) {
+            throw new Error('Failed to load blog: HTTP ' + res.status);
+        }
+
+        const posts = await res.json();
+
+        console.log('BLOG POSTS:', posts);
+
+        const post = posts.find(p => Number(p.id) === Number(id));
+
+        if (!post) {
+            alert('Article not found');
+            return;
+        }
+
+        showNativeBlogForm(post);
+
+    } catch (error) {
+        console.error('editNativeBlog error:', error);
+        alert('Could not load article for editing.');
+    }
+}
+
+async function deleteNativeBlog(id) {
+    if (!confirm('Are you sure you want to delete this article?')) return;
+   const token = localStorage.getItem('massar_admin_token');
+    await fetch('/api/admin/blog/' + id, { method: 'DELETE', headers: { 'Authorization': 'Bearer ' + token } });
+    loadNativeBlog();
+}
+
+async function loadNativeDiscover() {
+    const token = localStorage.getItem('massar_admin_token');
+    try {
+        const res = await fetch('/api/admin/discover', { headers: { 'Authorization': 'Bearer ' + token } });
+        const cards = await res.json();
+        const wrap = document.getElementById('discTableWrap');
+        if (!cards || cards.length === 0) {
+            wrap.innerHTML = '<p>No discover cards found.</p>';
+            return;
+        }
+        wrap.innerHTML = `<table class="table">
+            <thead>
+                <tr>
+                    <th>Image</th>
+                    <th>Title (EN / AR)</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                ${cards.map(c => `
+                    <tr>
+                        <td><img src="${c.image_url}" style="height:45px;width:75px;object-fit:cover;border-radius:4px;"></td>
+                        <td><strong>${c.title_en || '-'}</strong><br><small style="color:var(--text-light)">${c.title_ar || '-'}</small></td>
+                        <td>${c.active ? '<span style="color:var(--success);font-weight:bold;">✅ Active</span>' : '<span style="color:var(--danger)">❌ Hidden</span>'}</td>
+                        <td>
+                            <button class="btn" style="background:var(--cream-dark);padding:4px 10px;font-size:12px;" onclick="editNativeDisc(${c.id})">✏️ Edit</button>
+                            <button class="btn" style="background:var(--danger);color:#fff;padding:4px 10px;font-size:12px;" onclick="deleteNativeDisc(${c.id})">🗑️ Delete</button>
+                        </td>
+                    </tr>
+                `).join('')}
+            </tbody>
+        </table>`;
+    } catch(e) {}
+}
+
+function showNativeDiscForm(card) {
+    document.getElementById('discFormCard').style.display = 'block';
+    document.getElementById('discFormCardTitle').textContent = card ? 'Edit Card' : 'Add New Card';
+    document.getElementById('adminDiscEditId').value = card ? card.id : '';
+    document.getElementById('adminDiscImg').value = card ? (card.image_url || '') : '';
+
+    ['Ar','En','Ms'].forEach(l => {
+        document.getElementById('adminDiscTitle'+l).value = card ? (card['title_'+l.toLowerCase()] || '') : '';
+        document.getElementById('adminDiscDesc'+l).value = card ? (card['desc_'+l.toLowerCase()] || '') : '';
+    });
+}
+
+async function saveAdminDisc() {
+    const token = localStorage.getItem('massar_admin_token');
+    const id = document.getElementById('adminDiscEditId').value;
+    const c = {
+        image_url: document.getElementById('adminDiscImg').value, active: 1, sort_order: 0,
+        title_ar: document.getElementById('adminDiscTitleAr').value,
+        title_en: document.getElementById('adminDiscTitleEn').value,
+        title_ms: document.getElementById('adminDiscTitleMs').value,
+        desc_ar: document.getElementById('adminDiscDescAr').value,
+        desc_en: document.getElementById('adminDiscDescEn').value,
+        desc_ms: document.getElementById('adminDiscDescMs').value
+    };
+    await fetch(id ? '/api/admin/discover/' + id : '/api/admin/discover', {
+        method: id ? 'PUT' : 'POST',
+        headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
+        body: JSON.stringify(c)
+    });
+    document.getElementById('discFormCard').style.display = 'none';
+    loadNativeDiscover();
+}
+
+async function editNativeDisc(id) {
+    const token = localStorage.getItem('massar_admin_token');
+    const res = await fetch('/api/admin/discover', { headers: { 'Authorization': 'Bearer ' + token } });
+    const cards = await res.json();
+    const card = cards.find(c => c.id === id);
+    if (card) showNativeDiscForm(card);
+}
+
+async function deleteNativeDisc(id) {
+    if (!confirm('Are you sure you want to delete this card?')) return;
+   const token = localStorage.getItem('massar_admin_token');
+    await fetch('/api/admin/discover/' + id, { method: 'DELETE', headers: { 'Authorization': 'Bearer ' + token } });
+    loadNativeDiscover();
+}
+
+// Hook natively into switchPanel
+if (typeof window.switchPanel === 'function') {
+    const origSwitch = window.switchPanel;
+    window.switchPanel = function(panelName, btn) {
+        origSwitch(panelName, btn);
+        if (panelName === 'blog') loadNativeBlog();
+        if (panelName === 'discover') loadNativeDiscover();
+    };
+}
+</script>
+
+
+<script>
+console.log("ADMIN NATIVE SCRIPT LOADED");
+console.log("editNativeBlog:", typeof editNativeBlog);
+</script>
+
+
+<script id="adminNativeScript">
+// Image Upload Helper
+async function uploadAdminImage(input, targetId) {
+    if (!input.files || !input.files[0]) return;
+    const formData = new FormData();
+    formData.append('image', input.files[0]);
+    const token = localStorage.getItem('massar_admin_token');
+    try {
+        const res = await fetch('/api/admin/upload', {
+            method: 'POST',
+            headers: { 'Authorization': 'Bearer ' + token },
+            body: formData
+        });
+        const data = await res.json();
+        if (data.filename) {
+            document.getElementById(targetId).value = '/uploads/' + data.filename;
+        } else if (data.url) {
+            document.getElementById(targetId).value = data.url;
+        }
+    } catch(e) { console.error('Upload Error:', e); }
+}
+
+function switchBlogLangTab(lang, btn) {
+    ['ar','en','ms'].forEach(l => document.getElementById('blogLangBox-'+l).style.display = (l === lang ? 'block' : 'none'));
+    btn.parentNode.querySelectorAll('.lang-tab').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+}
+
+function switchDiscLangTab(lang, btn) {
+    ['ar','en','ms'].forEach(l => document.getElementById('discLangBox-'+l).style.display = (l === lang ? 'block' : 'none'));
+    btn.parentNode.querySelectorAll('.lang-tab').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+}
+
+// Load Blog List
+async function loadAdminBlog() {
+    const token = localStorage.getItem('massar_admin_token');
+    try {
+        const res = await fetch('/api/admin/blog', { headers: { 'Authorization': 'Bearer ' + token } });
+        const posts = await res.json();
+        const wrap = document.getElementById('blogTableWrap');
+        if (!posts || posts.length === 0) {
+            wrap.innerHTML = '<p>No articles found.</p>';
+            return;
+        }
+        wrap.innerHTML = `<table class="table">
+            <thead>
+                <tr>
+                    <th>Title (EN / AR)</th>
+                    <th>Category</th>
+                    <th>Status</th>
+                    <th>Featured</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                ${posts.map(p => `
+                    <tr>
+                        <td><strong>${p.title_en}</strong><br><small style="color:var(--text-light)">${p.title_ar}</small></td>
+                        <td><span style="background:var(--cream-dark);padding:3px 8px;border-radius:4px;font-size:12px;">${p.category}</span></td>
+                        <td>${p.published ? '<span style="color:var(--success);font-weight:bold;">✅ Published</span>' : '<span style="color:var(--danger)">❌ Hidden</span>'}</td>
+                        <td>${p.featured ? '⭐ Yes' : '-'}</td>
+                        <td>
+                            <button class="btn" style="background:var(--cream-dark);padding:4px 10px;font-size:12px;" onclick="editAdminBlog(${p.id})">✏️ Edit</button>
+                            <button class="btn" style="background:var(--cream-dark);padding:4px 10px;font-size:12px;" onclick="toggleAdminBlogPub(${p.id})">${p.published ? '🙈 Hide' : '👁️ Show'}</button>
+                            <button class="btn" style="background:var(--danger);color:#fff;padding:4px 10px;font-size:12px;" onclick="deleteAdminBlog(${p.id})">🗑️ Delete</button>
+                        </td>
+                    </tr>
+                `).join('')}
+            </tbody>
+        </table>`;
+    } catch(e) { console.error('Blog load error:', e); }
+}
+
+function showAdminBlogForm(post) {
+    document.getElementById('blogFormCard').style.display = 'block';
+    document.getElementById('blogFormCardTitle').textContent = post ? 'Edit Article' : 'Add New Article';
+    document.getElementById('adminBlogEditId').value = post ? post.id : '';
+    document.getElementById('adminBlogSlug').value = post ? post.slug : '';
+    document.getElementById('adminBlogCategory').value = post ? post.category : 'types-of-dates';
+    document.getElementById('adminBlogSort').value = post ? (post.sort_order || 0) : 0;
+    document.getElementById('adminBlogImg').value = post ? (post.image_url || '') : '';
+
+    ['Ar','En','Ms'].forEach(l => {
+        document.getElementById('adminBlogTitle'+l).value = post ? (post['title_'+l.toLowerCase()] || '') : '';
+        document.getElementById('adminBlogExc'+l).value = post ? (post['excerpt_'+l.toLowerCase()] || '') : '';
+        document.getElementById('adminBlogCont'+l).value = post ? (post['content_'+l.toLowerCase()] || '') : '';
+    });
+}
+
+async function saveAdminBlog() {
+    const token = localStorage.getItem('massar_admin_token');
+    const id = document.getElementById('adminBlogEditId').value;
+    const b = {
+        slug: document.getElementById('adminBlogSlug').value || ('post-' + Date.now()),
+        category: document.getElementById('adminBlogCategory').value,
+        sort_order: parseInt(document.getElementById('adminBlogSort').value) || 0,
+        image_url: document.getElementById('adminBlogImg').value,
+        published: 1, featured: 0,
+        title_ar: document.getElementById('adminBlogTitleAr').value,
+        title_en: document.getElementById('adminBlogTitleEn').value,
+        title_ms: document.getElementById('adminBlogTitleMs').value,
+        excerpt_ar: document.getElementById('adminBlogExcAr').value,
+        excerpt_en: document.getElementById('adminBlogExcEn').value,
+        excerpt_ms: document.getElementById('adminBlogExcMs').value,
+        content_ar: document.getElementById('adminBlogContAr').value,
+        content_en: document.getElementById('adminBlogContEn').value,
+        content_ms: document.getElementById('adminBlogContMs').value
+    };
+    await fetch(id ? '/api/admin/blog/' + id : '/api/admin/blog', {
+        method: id ? 'PUT' : 'POST',
+        headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
+        body: JSON.stringify(b)
+    });
+    document.getElementById('blogFormCard').style.display = 'none';
+    loadAdminBlog();
+}
+
+async function editAdminBlog(id) {
+    const token = localStorage.getItem('massar_admin_token');
+    const res = await fetch('/api/admin/blog', { headers: { 'Authorization': 'Bearer ' + token } });
+    const posts = await res.json();
+    const post = posts.find(p => p.id === id);
+    if (post) showAdminBlogForm(post);
+}
+
+async function toggleAdminBlogPub(id) {
+    const token = localStorage.getItem('massar_admin_token');
+    await fetch('/api/admin/blog/' + id + '/toggle', { method: 'PATCH', headers: { 'Authorization': 'Bearer ' + token } });
+    loadAdminBlog();
+}
+
+async function deleteAdminBlog(id) {
+    if (!confirm('Are you sure you want to delete this article?')) return;
+    const token = localStorage.getItem('massar_admin_token');
+    await fetch('/api/admin/blog/' + id, { method: 'DELETE', headers: { 'Authorization': 'Bearer ' + token } });
+    loadAdminBlog();
+}
+
+// Discover Admin Logic
+async function loadAdminDiscover() {
+    const token = localStorage.getItem('massar_admin_token');
+    try {
+        const res = await fetch('/api/admin/discover', { headers: { 'Authorization': 'Bearer ' + token } });
+        const cards = await res.json();
+        const wrap = document.getElementById('discTableWrap');
+        if (!cards || cards.length === 0) {
+            wrap.innerHTML = '<p>No cards found.</p>';
+            return;
+        }
+        wrap.innerHTML = `<table class="table">
+            <thead>
+                <tr>
+                    <th>Image</th>
+                    <th>Title (EN / AR)</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                ${cards.map(c => `
+                    <tr>
+                        <td><img src="${c.image_url}" style="height:45px;width:75px;object-fit:cover;border-radius:4px;"></td>
+                        <td><strong>${c.title_en}</strong><br><small style="color:var(--text-light)">${c.title_ar}</small></td>
+                        <td>${c.active ? '<span style="color:var(--success);font-weight:bold;">✅ Active</span>' : '<span style="color:var(--danger)">❌ Hidden</span>'}</td>
+                        <td>
+                            <button class="btn" style="background:var(--cream-dark);padding:4px 10px;font-size:12px;" onclick="editAdminDisc(${c.id})">✏️ Edit</button>
+                            <button class="btn" style="background:var(--danger);color:#fff;padding:4px 10px;font-size:12px;" onclick="deleteAdminDisc(${c.id})">🗑️ Delete</button>
+                        </td>
+                    </tr>
+                `).join('')}
+            </tbody>
+        </table>`;
+    } catch(e) { console.error('Discover load error:', e); }
+}
+
+function showAdminDiscForm(card) {
+    document.getElementById('discFormCard').style.display = 'block';
+    document.getElementById('discFormCardTitle').textContent = card ? 'Edit Card' : 'Add New Card';
+    document.getElementById('adminDiscEditId').value = card ? card.id : '';
+    document.getElementById('adminDiscImg').value = card ? (card.image_url || '') : '';
+
+    ['Ar','En','Ms'].forEach(l => {
+        document.getElementById('adminDiscTitle'+l).value = card ? (card['title_'+l.toLowerCase()] || '') : '';
+        document.getElementById('adminDiscDesc'+l).value = card ? (card['desc_'+l.toLowerCase()] || '') : '';
+    });
+}
+
+async function saveAdminDisc() {
+    const token = localStorage.getItem('massar_admin_token');
+    const id = document.getElementById('adminDiscEditId').value;
+    const c = {
+        image_url: document.getElementById('adminDiscImg').value, active: 1, sort_order: 0,
+        title_ar: document.getElementById('adminDiscTitleAr').value,
+        title_en: document.getElementById('adminDiscTitleEn').value,
+        title_ms: document.getElementById('adminDiscTitleMs').value,
+        desc_ar: document.getElementById('adminDiscDescAr').value,
+        desc_en: document.getElementById('adminDiscDescEn').value,
+        desc_ms: document.getElementById('adminDiscDescMs').value
+    };
+    await fetch(id ? '/api/admin/discover/' + id : '/api/admin/discover', {
+        method: id ? 'PUT' : 'POST',
+        headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
+        body: JSON.stringify(c)
+    });
+    document.getElementById('discFormCard').style.display = 'none';
+    loadAdminDiscover();
+}
+
+async function editAdminDisc(id) {
+    const token = localStorage.getItem('massar_admin_token');
+    const res = await fetch('/api/admin/discover', { headers: { 'Authorization': 'Bearer ' + token } });
+    const cards = await res.json();
+    const card = cards.find(c => c.id === id);
+    if (card) showAdminDiscForm(card);
+}
+
+async function deleteAdminDisc(id) {
+    if (!confirm('Are you sure you want to delete this card?')) return;
+    const token = localStorage.getItem('massar_admin_token');
+    await fetch('/api/admin/discover/' + id, { method: 'DELETE', headers: { 'Authorization': 'Bearer ' + token } });
+    loadAdminDiscover();
+}
+
+// Hook into native switchPanel
+if (typeof window.switchPanel === 'function') {
+    const origSwitch = window.switchPanel;
+    window.switchPanel = function(panelName, btn) {
+        origSwitch(panelName, btn);
+        if (panelName === 'blog') loadAdminBlog();
+        if (panelName === 'discover') loadAdminDiscover();
+    };
+}
+</script>
+
+</body>
+</html>

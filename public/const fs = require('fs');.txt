@@ -1,0 +1,796 @@
+const fs = require('fs');
+const path = require('path');
+const ROOT = __dirname;
+const PUBLIC = path.join(ROOT, 'public');
+
+console.log('\n🌴 MASSAR DATES - Blog Setup');
+console.log('============================\n');
+
+// ========== BACKUP ==========
+function backup(name) {
+    const p = path.join(ROOT, name);
+    if (fs.existsSync(p)) {
+        fs.copyFileSync(p, p + '.bak');
+        console.log('  ✅ Backup: ' + name + '.bak');
+    }
+}
+backup('database.js');
+backup('server.js');
+backup(path.join('public', 'index.html'));
+
+// ========== STEP 1: DATABASE ==========
+console.log('\n📦 Step 1: Updating database.js...');
+let dbCode = fs.readFileSync(path.join(ROOT, 'database.js'), 'utf8');
+
+const blogTable = `
+    CREATE TABLE IF NOT EXISTS blog_posts (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        slug TEXT UNIQUE NOT NULL,
+        title_ar TEXT NOT NULL,
+        title_en TEXT NOT NULL,
+        title_ms TEXT NOT NULL,
+        excerpt_ar TEXT,
+        excerpt_en TEXT,
+        excerpt_ms TEXT,
+        content_ar TEXT,
+        content_en TEXT,
+        content_ms TEXT,
+        image_url TEXT DEFAULT '',
+        category TEXT DEFAULT 'news',
+        published INTEGER DEFAULT 0,
+        featured INTEGER DEFAULT 0,
+        sort_order INTEGER DEFAULT 0,
+        created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+        updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
+    );`;
+
+if (!dbCode.includes('blog_posts')) {
+    dbCode = dbCode.replace(
+        /CREATE TABLE IF NOT EXISTS messages/,
+        blogTable + '\n\n    CREATE TABLE IF NOT EXISTS messages'
+    );
+    console.log('  ✅ Added blog_posts table');
+} else {
+    console.log('  ⏭️ blog_posts table already exists');
+}
+
+// Seed articles
+const seedCode = `
+// Seed blog posts if empty
+const blogCount = db.prepare('SELECT COUNT(*) as count FROM blog_posts').get();
+if (blogCount.count === 0) {
+    const insertBlog = db.prepare(\`INSERT INTO blog_posts
+        (slug, title_ar, title_en, title_ms, excerpt_ar, excerpt_en, excerpt_ms,
+         content_ar, content_en, content_ms, image_url, category, published, featured, sort_order)
+        VALUES (@slug, @title_ar, @title_en, @title_ms, @excerpt_ar, @excerpt_en, @excerpt_ms,
+                @content_ar, @content_en, @content_ms, @image_url, @category, 1, @featured, @sort_order)\`);
+    const articles = [
+        {
+            slug: 'ajwa-dates-al-madinah',
+            title_ar: 'تمر العجوة من المدينة المنورة: ما الذي يميزه؟',
+            title_en: 'Ajwa Dates from Al Madinah: What Makes Them Special?',
+            title_ms: 'Kurma Ajwa dari Al Madinah: Apa yang Menjadikannya Istimewa?',
+            excerpt_ar: 'اكتشف سر تمر العجوة، أثمن تمور المدينة المنورة، من حيث فوائده وتاريخه ومميزاته الفريدة.',
+            excerpt_en: 'Discover the secret of Ajwa dates, the most prized dates of Al Madinah, their benefits, history, and unique qualities.',
+            excerpt_ms: 'Temui rahsia kurma Ajwa, kurma paling bernilai dari Al Madinah, manfaat, sejarah, dan kualiti uniknya.',
+            content_ar: '<h2>تمر العجوة: كنز المدينة المنورة</h2><p>يعتبر تمر العجوة من أشهر وأثمن أنواع التمور في العالم، وينحدر من بساتين المدينة المنورة المباركة. يتميز بلونه الداكن المائل إلى الأسود وقوامه الناعم اللين وطعمه الغني الذي يجمع بين الحلاوة العميقة ونكهة الكراميل الخفيفة.</p><h3>المكانة التاريخية والدينية</h3><p>للعجوة مكانة خاصة في التراث الإسلامي، إذ ورد ذكرها في الأحاديث النبوية الشريفة. يُنصح بتناول سبع تمرات عجوة صباحاً لما لها من فوائد صحية عظيمة. وقد اهتم المزارعون في المدينة المنورة بزراعة هذا النوع منذ قرون طويلة.</p><h3>القيمة الغذائية</h3><p>من الناحية الغذائية، يحتوي تمر العجوة على نسبة عالية من الألياف والبوتاسيوم والمغنيسيوم والحديد، مما يجعله مصدراً طبيعياً ممتازاً للطاقة والتغذية. كما يحتوي على مضادات أكسدة قوية تساعد في تعزيز المناعة.</p><p>في MASSAR DATES، نختار أجود حبات العجوة مباشرة من مزارع المدينة المنورة لنقدمها لكم بأعلى معايير الجودة والنضارة.</p>',
+            content_en: '<h2>Ajwa Dates: The Treasure of Al Madinah</h2><p>Ajwa dates are among the most prized and celebrated date varieties in the world, originating from the blessed orchards of Al Madinah. They are distinguished by their deep, dark color approaching black, their remarkably soft and tender texture, and their rich flavor that blends deep sweetness with subtle caramel notes.</p><h3>Historical and Religious Significance</h3><p>Ajwa holds a special place in Islamic heritage, having been mentioned in prophetic traditions. It is recommended to consume seven Ajwa dates each morning for their tremendous health benefits. Farmers in Al Madinah have cultivated this variety for centuries.</p><h3>Nutritional Value</h3><p>Nutritionally, Ajwa dates are rich in fiber, potassium, magnesium, and iron, making them an excellent natural source of energy and nourishment. They also contain powerful antioxidants that help boost immunity.</p><p>At MASSAR DATES, we select the finest Ajwa dates directly from Al Madinah farms to deliver them to you at the highest standards of quality and freshness.</p>',
+            content_ms: '<h2>Kurma Ajwa: Khazanah Al Madinah</h2><p>Kurma Ajwa adalah antara jenis kurma paling bernilai dan terkenal di dunia, berasal dari ladang-ladang berkat Al Madinah. Ia dibezakan oleh warna gelapnya yang hampir hitam, teksturnya yang lembut dan halus, serta rasanya yang kaya dengan kemanisan mendalam dan nota karamel yang halus.</p><h3>Kepentingan Sejarah dan Agama</h3><p>Ajwa mempunyai tempat istimewa dalam warisan Islam, kerana ia disebut dalam tradisi kenabian. Disyorkan untuk mengambil tujuh biji kurma Ajwa setiap pagi untuk manfaat kesihatannya yang luar biasa. Petani di Al Madinah telah menanam jenis ini selama berabad-abad.</p><h3>Nilai Pemakanan</h3><p>Dari segi pemakanan, kurma Ajwa kaya dengan serat, kalium, magnesium, dan zat besi, menjadikannya sumber tenaga dan khasiat semulajadi yang sangat baik. Ia juga mengandungi antioksidan kuat yang membantu meningkatkan imuniti.</p><p>Di MASSAR DATES, kami memilih kurma Ajwa terbaik terus dari ladang Al Madinah untuk menghantarnya kepada anda dengan standard kualiti dan kesegaran tertinggi.</p>',
+            image_url: '', category: 'types-of-dates', featured: 1, sort_order: 1
+        },
+        {
+            slug: 'guide-choosing-saudi-dates',
+            title_ar: 'دليل اختيار التمور السعودية المناسبة',
+            title_en: 'Guide to Choosing the Right Saudi Dates',
+            title_ms: 'Panduan Memilih Kurma Saudi yang Sesuai',
+            excerpt_ar: 'تعلم كيف تختار أفضل التمور السعودية من خلال دليلنا الشامل الذي يغطي اللون والقوام والرائحة.',
+            excerpt_en: 'Learn how to choose the best Saudi dates through our comprehensive guide covering color, texture, and aroma.',
+            excerpt_ms: 'Ketahui cara memilih kurma Saudi terbaik melalui panduan komprehensif kami yang merangkumi warna, tekstur, dan aroma.',
+            content_ar: '<h2>كيف تختار التمور المثالية؟</h2><p>عند اختيار التمور السعودية، هناك عدة عوامل يجب مراعاتها لضمان الحصول على أفضل جودة. أولاً، انتبه إلى اللون: التمور الطازجة تتميز بلون موحد ولامع دون بقع داكنة غير طبيعية.</p><h3>القوام والملمس</h3><p>ثانياً، تحقق من القوام: التمر الجيد يجب أن يكون طرياً ومرناً عند الضغط عليه بلطف، دون أن يكون جافاً أو صلباً. التمر الجاف جداً قد يكون قديماً أو مخزناً بشكل غير صحيح.</p><h3>الرائحة والتعبئة</h3><p>ثالثاً، الرائحة: التمور الطازجة تفوح منها رائحة حلوة طبيعية خالية من أي روائح غريبة. اختر دائماً التمور المعبأة بإحكام والمحفوظة في ظروف مناسبة.</p><p>تمور MASSAR DATES مختارة بعناية فائقة من أفضل المزارع السعودية لضمان أعلى معايير الجودة في كل حبة تصل إليك.</p>',
+            content_en: '<h2>How to Choose the Perfect Dates?</h2><p>When selecting Saudi dates, several factors should be considered to ensure the best quality. First, pay attention to color: fresh dates have a uniform, glossy appearance without unnatural dark spots.</p><h3>Texture and Feel</h3><p>Second, check the texture: good dates should be soft and pliable when gently pressed, neither too dry nor too hard. Overly dry dates may be old or improperly stored.</p><h3>Aroma and Packaging</h3><p>Third, the aroma: fresh dates emit a natural sweet fragrance free from any unusual odors. Always choose dates that are properly sealed and stored in appropriate conditions.</p><p>MASSAR DATES are carefully handpicked from the finest Saudi farms to ensure the highest quality standards in every single date that reaches you.</p>',
+            content_ms: '<h2>Cara Memilih Kurma yang Sempurna?</h2><p>Apabila memilih kurma Saudi, beberapa faktor perlu dipertimbangkan untuk memastikan kualiti terbaik. Pertama, perhatikan warna: kurma segar mempunyai rupa yang seragam dan berkilat tanpa bintik gelap yang tidak normal.</p><h3>Tekstur dan Rasa Sentuhan</h3><p>Kedua, periksa tekstur: kurma yang baik harus lembut dan anjal apabila ditekan perlahan, tidak terlalu kering atau keras. Kurma yang terlalu kering mungkin lama atau disimpan dengan tidak betul.</p><h3>Aroma dan Pembungkusan</h3><p>Ketiga, aroma: kurma segar mengeluarkan wangian manis semulajadi tanpa bau yang pelik. Sentiasa pilih kurma yang dibungkus dengan baik dan disimpan dalam keadaan yang sesuai.</p><p>Kurma MASSAR DATES dipilih dengan teliti dari ladang terbaik Saudi untuk memastikan standard kualiti tertinggi dalam setiap biji kurma yang sampai kepada anda.</p>',
+            image_url: '', category: 'dates-guide', featured: 0, sort_order: 2
+        },
+        {
+            slug: 'keep-dates-fresh',
+            title_ar: 'كيف تحافظ على التمور طازجة؟',
+            title_en: 'How to Keep Dates Fresh',
+            title_ms: 'Cara Mengekalkan Kesegaran Kurma',
+            excerpt_ar: 'نصائح عملية ومجربة لحفظ التمور طازجة لأطول فترة ممكنة سواء في الثلاجة أو الفريزر.',
+            excerpt_en: 'Practical and proven tips to keep dates fresh for as long as possible, whether in the fridge or freezer.',
+            excerpt_ms: 'Petua praktikal dan terbukti untuk mengekalkan kesegaran kurma selama mungkin, sama ada di dalam peti sejuk atau peti beku.',
+            content_ar: '<h2>أسرار حفظ التمور طازجة</h2><p>الحفاظ على نضارة التمور أمر بسيط إذا اتبعت الخطوات الصحيحة. أولاً، احفظ التمور في مكان بارد وجاف بعيداً عن أشعة الشمس المباشرة. الحرارة والرطوبة العالية تسرع من تلف التمور.</p><h3>التخزين في الثلاجة</h3><p>ثانياً، بعد فتح العبوة، يُفضل نقل التمور إلى وعاء محكم الإغلاق وحفظها في الثلاجة. هذا يبطئ عملية الجفاف ويحافظ على قوامها الطري لأسابيع طويلة.</p><h3>التجميد للتخزين الطويل</h3><p>ثالثاً، للتخزين طويل الأمد، يمكن تجميد التمور في أكياس محكمة الإغلاق. تبقى التمور المجمدة صالحة للأكل لمدة تصل إلى عام كامل مع الحفاظ على طعمها وقيمتها الغذائية.</p><p>ننصحك بإخراج الكمية التي تحتاجها فقط من الثلاجة وترك الباقي مغلقاً بإحكام للحفاظ على أفضل جودة.</p>',
+            content_en: '<h2>Secrets to Keeping Dates Fresh</h2><p>Keeping dates fresh is simple when you follow the right steps. First, store dates in a cool, dry place away from direct sunlight. Heat and high humidity accelerate spoilage.</p><h3>Refrigerator Storage</h3><p>Second, after opening the package, transfer dates to an airtight container and refrigerate them. This slows down the drying process and preserves their soft texture for many weeks.</p><h3>Freezing for Long-Term Storage</h3><p>Third, for long-term storage, dates can be frozen in sealed bags. Frozen dates remain edible for up to a full year while maintaining their taste and nutritional value.</p><p>We recommend taking out only the amount you need from the refrigerator and keeping the rest tightly sealed to maintain the best quality.</p>',
+            content_ms: '<h2>Rahsia Menjaga Kesegaran Kurma</h2><p>Menjaga kesegaran kurma adalah mudah jika anda mengikuti langkah yang betul. Pertama, simpan kurma di tempat yang sejuk dan kering jauh dari cahaya matahari langsung. Haba dan kelembapan tinggi mempercepatkan kerosakan.</p><h3>Penyimpanan Peti Sejuk</h3><p>Kedua, selepas membuka bungkusan, pindahkan kurma ke dalam bekas kedap udara dan simpan di dalam peti sejuk. Ini melambatkan proses pengeringan dan mengekalkan teksturnya yang lembut selama berminggu-minggu.</p><h3>Pembekuan untuk Penyimpanan Jangka Panjang</h3><p>Ketiga, untuk penyimpanan jangka panjang, kurma boleh dibekukan dalam beg kedap udara. Kurma beku kekal boleh dimakan sehingga setahun penuh sambil mengekalkan rasa dan nilai pemakanannya.</p><p>Kami mengesyorkan mengeluarkan hanya jumlah yang anda perlukan dari peti sejuk dan menyimpan bakinya tertutup rapat untuk mengekalkan kualiti terbaik.</p>',
+            image_url: '', category: 'dates-guide', featured: 0, sort_order: 3
+        },
+        {
+            slug: 'ajwa-safawi-sukkari-medjool',
+            title_ar: 'الفرق بين العجوة والصفاوي والسكري والمجدول',
+            title_en: 'Ajwa vs Safawi vs Sukkari vs Medjool',
+            title_ms: 'Perbezaan Ajwa, Safawi, Sukkari dan Medjool',
+            excerpt_ar: 'مقارنة شاملة بين أشهر أربعة أنواع من التمور السعودية من حيث الطعم والقوام واللون والسعر.',
+            excerpt_en: 'A comprehensive comparison of the four most popular Saudi date varieties in terms of taste, texture, color, and price.',
+            excerpt_ms: 'Perbandingan komprehensif empat jenis kurma Saudi paling popular dari segi rasa, tekstur, warna, dan harga.',
+            content_ar: '<h2>دليلك الشامل لأنواع التمور السعودية</h2><p>كل نوع من التمور السعودية يتميز بخصائص فريدة تجعله مناسباً لأذواق مختلفة. في هذا المقال نقارن بين أشهر أربعة أنواع.</p><h3>العجوة: الكنز الداكن</h3><p>داكن اللون يميل إلى الأسود، ناعم القوام، حلو الطعم مع نكهة كراميل غنية. وهو الأغلى ثمناً بسبب ندرته ومكانته الدينية الخاصة.</p><h3>الصفاوي: التوازن المثالي</h3><p>شبه جاف بلون داكن وطعم حلو معتدل مع قوام مطاطي مرضٍ. يُعد خياراً مثالياً لمن يفضلون التمور الأقل حلاوة والأكثر تماسكاً.</p><h3>السكري: التمر الملكي</h3><p>يُلقب بالتمر الملكي، يتميز بلونه الذهبي الفاتح وحلاوة الكراميل الاستثنائية وقوامه الناعم الرقيق الذي يذوب في الفم.</p><h3>المجدول: ملك التمور</h3><p>ملك التمور بحجمه الكبير وقوامه الممتلئ وطعمه الحلو الغني بالكراميل. يُعتبر الخيار الأمثل للهدايا والمناسبات الفاخرة.</p>',
+            content_en: '<h2>Your Complete Guide to Saudi Date Varieties</h2><p>Each Saudi date variety has unique characteristics that make it suitable for different tastes. In this article, we compare the four most popular types.</p><h3>Ajwa: The Dark Treasure</h3><p>Dark-colored approaching black, soft-textured, with a rich caramel-like sweetness. It is the most premium due to its rarity and special religious significance.</p><h3>Safawi: The Perfect Balance</h3><p>Semi-dry with a deep dark appearance and mildly sweet taste with a satisfying chewy texture. An ideal choice for those who prefer less sweet, firmer dates.</p><h3>Sukkari: The Royal Date</h3><p>Known as the Royal Date, featuring a light golden color, exceptional caramel sweetness, and a delicate soft texture that melts in your mouth.</p><h3>Medjool: The King of Dates</h3><p>The King of Dates, distinguished by its large size, plump flesh, and rich caramel flavor. Considered the perfect choice for gifts and luxury occasions.</p>',
+            content_ms: '<h2>Panduan Lengkap Jenis Kurma Saudi</h2><p>Setiap jenis kurma Saudi mempunyai ciri-ciri unik yang menjadikannya sesuai untuk selera berbeza. Dalam artikel ini, kami membandingkan empat jenis paling popular.</p><h3>Ajwa: Khazanah Gelap</h3><p>Berwarna gelap hampir hitam, bertekstur lembut, dengan kemanisan seperti karamel yang kaya. Ia paling premium kerana kejarangannya dan kepentingan agama yang istimewa.</p><h3>Safawi: Keseimbangan Sempurna</h3><p>Separuh kering dengan rupa gelap dan rasa manis sederhana dengan tekstur kenyal yang memuaskan. Pilihan ideal untuk mereka yang lebih suka kurma kurang manis dan lebih pejal.</p><h3>Sukkari: Kurma Diraja</h3><p>Dikenali sebagai Kurma Diraja, dengan warna emas muda, kemanisan karamel yang luar biasa, dan tekstur lembut halus yang cair di mulut.</p><h3>Medjool: Raja Kurma</h3><p>Raja Kurma, dibezakan oleh saiznya yang besar, isi yang montok, dan rasa karamel yang kaya. Dianggap pilihan sempurna untuk hadiah dan majlis mewah.</p>',
+            image_url: '', category: 'types-of-dates', featured: 1, sort_order: 4
+        },
+        {
+            slug: 'from-saudi-farms-to-your-home',
+            title_ar: 'من مزارع السعودية إلى منزلك',
+            title_en: 'From Saudi Farms to Your Home',
+            title_ms: 'Dari Ladang Saudi ke Rumah Anda',
+            excerpt_ar: 'تعرف على رحلة تمور MASSAR DATES من أرقى المزارع السعودية حتى باب منزلك في ماليزيا.',
+            excerpt_en: 'Learn about the journey of MASSAR DATES from the finest Saudi farms to your doorstep in Malaysia.',
+            excerpt_ms: 'Ketahui tentang perjalanan kurma MASSAR DATES dari ladang terbaik Saudi ke pintu rumah anda di Malaysia.',
+            content_ar: '<h2>رحلة التمور من المزرعة إلى مائدتك</h2><p>تبدأ رحلة تمور MASSAR DATES من أرقى المزارع في المملكة العربية السعودية، من بساتين المدينة المنورة المباركة إلى مزارع القصيم الخضراء. كل تمرة يتم قطفها بعناية فائقة في ذروة نضجها.</p><h3>مراحل الفرز والتعبئة</h3><p>بعد الحصاد، تمر التمور بمراحل دقيقة من الفرز والتنظيف والتعبئة لضمان وصولها إليك بأفضل حالة. نستخدم تقنيات التغليف الحديثة التي تحافظ على نضارة التمور وطعمها الطبيعي.</p><h3>التوصيل إلى ماليزيا</h3><p>من المزرعة إلى باب منزلك في ماليزيا، نضمن لك تجربة تمور سعودية أصيلة بنكهة لا تُنسى. نتعامل مع أفضل شركات الشحن لضمان وصول المنتجات بسرعة وأمان.</p><p>هذا هو وعد MASSAR DATES: جودة لا مساومة فيها، من شجرة النخيل إلى مائدتك.</p>',
+            content_en: '<h2>The Journey from Farm to Your Table</h2><p>The journey of MASSAR DATES begins at the finest farms across Saudi Arabia, from the blessed orchards of Al Madinah to the lush green plantations of Al-Qassim. Every single date is carefully handpicked at the peak of its ripeness.</p><h3>Sorting and Packaging</h3><p>After harvest, the dates go through meticulous stages of sorting, cleaning, and packaging to ensure they reach you in the finest condition. We use modern packaging techniques that preserve the freshness and natural flavor of the dates.</p><h3>Delivery to Malaysia</h3><p>From the farm to your doorstep in Malaysia, we guarantee you an authentic Saudi date experience with unforgettable flavor. We work with the best shipping companies to ensure fast and safe delivery.</p><p>This is the MASSAR DATES promise: uncompromising quality, from the palm tree to your table.</p>',
+            content_ms: '<h2>Perjalanan dari Ladang ke Meja Anda</h2><p>Perjalanan kurma MASSAR DATES bermula di ladang-ladang terbaik di seluruh Arab Saudi, dari ladang berkat Al Madinah hingga ladang hijau Al-Qassim. Setiap biji kurma dipetik dengan teliti pada puncak kematangannya.</p><h3>Penyusunan dan Pembungkusan</h3><p>Selepas penuaian, kurma melalui peringkat teliti penyusunan, pembersihan, dan pembungkusan untuk memastikan ia sampai kepada anda dalam keadaan terbaik. Kami menggunakan teknik pembungkusan moden yang mengekalkan kesegaran dan rasa semulajadi kurma.</p><h3>Penghantaran ke Malaysia</h3><p>Dari ladang ke pintu rumah anda di Malaysia, kami menjamin pengalaman kurma Saudi yang tulen dengan rasa yang tidak dapat dilupakan. Kami bekerjasama dengan syarikat penghantaran terbaik untuk memastikan penghantaran yang cepat dan selamat.</p><p>Ini adalah janji MASSAR DATES: kualiti tanpa kompromi, dari pokok kurma ke meja anda.</p>',
+            image_url: '', category: 'saudi-farms', featured: 0, sort_order: 5
+        }
+    ];
+    const seedBlog = db.transaction(() => {
+        for (const a of articles) { insertBlog.run(a); }
+    });
+    seedBlog();
+    console.log('\\u2705 Default blog posts seeded');
+}`;
+
+if (!dbCode.includes('blogCount')) {
+    dbCode = dbCode.replace('module.exports = db;', seedCode + '\n\nmodule.exports = db;');
+    console.log('  ✅ Added blog seed data');
+}
+
+fs.writeFileSync(path.join(ROOT, 'database.js'), dbCode, 'utf8');
+
+// ========== STEP 2: SERVER.JS ==========
+console.log('\n🔌 Step 2: Updating server.js...');
+let srvCode = fs.readFileSync(path.join(ROOT, 'server.js'), 'utf8');
+
+const blogAPIs = `
+// ==================== BLOG API ====================
+
+app.get('/api/blog', (req, res) => {
+    const posts = db.prepare(\`SELECT id, slug, title_en, title_ar, title_ms,
+        excerpt_en, excerpt_ar, excerpt_ms, image_url, category,
+        published, featured, created_at, updated_at
+        FROM blog_posts WHERE published = 1
+        ORDER BY featured DESC, sort_order ASC, created_at DESC\`).all();
+    res.json(posts);
+});
+
+app.get('/api/blog/:slug', (req, res) => {
+    const post = db.prepare('SELECT * FROM blog_posts WHERE slug = ? AND published = 1').get(req.params.slug);
+    if (!post) return res.status(404).json({ error: 'Post not found' });
+    // Related posts
+    const related = db.prepare(\`SELECT id, slug, title_en, title_ar, title_ms,
+        excerpt_en, excerpt_ar, excerpt_ms, image_url, category, created_at
+        FROM blog_posts WHERE published = 1 AND category = ? AND slug != ?
+        ORDER BY created_at DESC LIMIT 3\`).all(post.category, req.params.slug);
+    res.json({ ...post, related });
+});
+
+app.get('/api/admin/blog', authMiddleware, (req, res) => {
+    const posts = db.prepare('SELECT * FROM blog_posts ORDER BY sort_order ASC, created_at DESC').all();
+    res.json(posts);
+});
+
+app.post('/api/admin/blog', authMiddleware, (req, res) => {
+    const b = req.body;
+    const r = db.prepare(\`INSERT INTO blog_posts
+        (slug, title_ar, title_en, title_ms, excerpt_ar, excerpt_en, excerpt_ms,
+         content_ar, content_en, content_ms, image_url, category, published, featured, sort_order)
+        VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)\`).run(
+        b.slug, b.title_ar||'', b.title_en||'', b.title_ms||'',
+        b.excerpt_ar||'', b.excerpt_en||'', b.excerpt_ms||'',
+        b.content_ar||'', b.content_en||'', b.content_ms||'',
+        b.image_url||'', b.category||'news', b.published||0, b.featured||0, b.sort_order||0);
+    res.json({ id: r.lastInsertRowid, message: 'Created' });
+});
+
+app.put('/api/admin/blog/:id', authMiddleware, (req, res) => {
+    const b = req.body;
+    db.prepare(\`UPDATE blog_posts SET slug=?, title_ar=?, title_en=?, title_ms=?,
+        excerpt_ar=?, excerpt_en=?, excerpt_ms=?, content_ar=?, content_en=?, content_ms=?,
+        image_url=?, category=?, published=?, featured=?, sort_order=?, updated_at=CURRENT_TIMESTAMP
+        WHERE id=?\`).run(
+        b.slug, b.title_ar||'', b.title_en||'', b.title_ms||'',
+        b.excerpt_ar||'', b.excerpt_en||'', b.excerpt_ms||'',
+        b.content_ar||'', b.content_en||'', b.content_ms||'',
+        b.image_url||'', b.category||'news', b.published||0, b.featured||0, b.sort_order||0,
+        req.params.id);
+    res.json({ message: 'Updated' });
+});
+
+app.delete('/api/admin/blog/:id', authMiddleware, (req, res) => {
+    db.prepare('DELETE FROM blog_posts WHERE id=?').run(req.params.id);
+    res.json({ message: 'Deleted' });
+});
+
+app.patch('/api/admin/blog/:id/toggle', authMiddleware, (req, res) => {
+    const p = db.prepare('SELECT published FROM blog_posts WHERE id=?').get(req.params.id);
+    if (!p) return res.status(404).json({ error: 'Not found' });
+    db.prepare('UPDATE blog_posts SET published=?, updated_at=CURRENT_TIMESTAMP WHERE id=?').run(p.published ? 0 : 1, req.params.id);
+    res.json({ published: !p.published });
+});
+
+app.patch('/api/admin/blog/:id/featured', authMiddleware, (req, res) => {
+    const p = db.prepare('SELECT featured FROM blog_posts WHERE id=?').get(req.params.id);
+    if (!p) return res.status(404).json({ error: 'Not found' });
+    db.prepare('UPDATE blog_posts SET featured=?, updated_at=CURRENT_TIMESTAMP WHERE id=?').run(p.featured ? 0 : 1, req.params.id);
+    res.json({ featured: !p.featured });
+});
+`;
+
+if (!srvCode.includes('/api/blog')) {
+    srvCode = srvCode.replace(
+        "app.get(/.*/,",
+        blogAPIs + "\napp.get(/.*/,"
+    );
+    fs.writeFileSync(path.join(ROOT, 'server.js'), srvCode, 'utf8');
+    console.log('  ✅ Added blog API routes');
+} else {
+    console.log('  ⏭️ Blog APIs already exist');
+}
+
+// ========== STEP 3: INDEX.HTML ==========
+console.log('\n🎨 Step 3: Updating index.html...');
+let html = fs.readFileSync(path.join(PUBLIC, 'index.html'), 'utf8');
+
+// 3a. CSS
+const blogCSS = `
+/* ===== BLOG STYLES ===== */
+.blog-preview-section{padding:80px 0;background:var(--cream);border-top:1px solid rgba(184,149,106,0.15)}
+.blog-section-title{text-align:center;margin-bottom:50px}
+.blog-section-title h2{font-size:2.2rem;color:var(--dark);margin-bottom:10px}
+.blog-section-title p{color:#777;font-size:1.05rem;max-width:600px;margin:0 auto}
+.blog-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:30px}
+.blog-card{background:#fff;border-radius:12px;overflow:hidden;box-shadow:0 2px 15px rgba(0,0,0,0.06);transition:transform 0.3s,box-shadow 0.3s;cursor:pointer}
+.blog-card:hover{transform:translateY(-6px);box-shadow:0 8px 30px rgba(0,0,0,0.12)}
+.blog-card-img{width:100%;height:200px;object-fit:cover;background:linear-gradient(135deg,#c59b27 0%,#8b6914 100%);display:flex;align-items:center;justify-content:center;color:#fff;font-size:3rem}
+.blog-card-img img{width:100%;height:100%;object-fit:cover}
+.blog-card-body{padding:20px}
+.blog-card-cat{display:inline-block;background:rgba(197,155,39,0.12);color:var(--gold);font-size:0.75rem;font-weight:700;padding:4px 10px;border-radius:20px;margin-bottom:10px;text-transform:uppercase}
+.blog-card-title{font-size:1.1rem;font-weight:700;color:var(--dark);margin-bottom:8px;line-height:1.4}
+.blog-card-excerpt{font-size:0.9rem;color:#777;line-height:1.6;margin-bottom:12px}
+.blog-card-meta{display:flex;justify-content:space-between;align-items:center;font-size:0.8rem;color:#aaa}
+.blog-card-btn{color:var(--gold);font-weight:600;text-decoration:none;font-size:0.85rem}
+.blog-card-btn:hover{text-decoration:underline}
+.blog-view-all{text-align:center;margin-top:40px}
+.blog-view-all a{display:inline-block;padding:12px 30px;border:2px solid var(--gold);color:var(--gold);border-radius:30px;font-weight:600;text-decoration:none;transition:0.3s}
+.blog-view-all a:hover{background:var(--gold);color:#fff}
+/* Blog Page */
+.blog-page-header{text-align:center;padding:120px 20px 40px;background:linear-gradient(180deg,var(--cream) 0%,var(--white) 100%)}
+.blog-page-header h1{font-size:2.5rem;color:var(--dark);margin-bottom:10px}
+.blog-page-header p{color:#777;font-size:1.1rem;max-width:600px;margin:0 auto 30px}
+.blog-search{max-width:500px;margin:0 auto 20px;position:relative}
+.blog-search input{width:100%;padding:12px 20px;border:2px solid #e5e5e5;border-radius:30px;font-size:1rem;outline:none;transition:0.3s}
+.blog-search input:focus{border-color:var(--gold)}
+.blog-filters{display:flex;flex-wrap:wrap;justify-content:center;gap:8px;margin-bottom:40px}
+.blog-filter-btn{padding:8px 18px;border:1px solid #ddd;border-radius:20px;background:#fff;cursor:pointer;font-size:0.85rem;transition:0.3s;color:#555}
+.blog-filter-btn.active,.blog-filter-btn:hover{background:var(--gold);color:#fff;border-color:var(--gold)}
+.blog-full-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:30px;padding:0 20px 60px;max-width:1200px;margin:0 auto}
+.blog-featured-card{grid-column:1/-1;display:grid;grid-template-columns:1fr 1fr;background:#fff;border-radius:12px;overflow:hidden;box-shadow:0 4px 20px rgba(0,0,0,0.08);margin-bottom:20px}
+.blog-featured-card .blog-card-img{height:100%;min-height:300px}
+.blog-featured-card .blog-card-body{padding:40px;display:flex;flex-direction:column;justify-content:center}
+.blog-featured-card .blog-card-title{font-size:1.5rem}
+/* Blog Detail */
+.blog-detail-header{padding:100px 20px 30px;max-width:800px;margin:0 auto;text-align:center}
+.blog-detail-header h1{font-size:2.2rem;color:var(--dark);margin-bottom:15px;line-height:1.3}
+.blog-detail-meta{display:flex;justify-content:center;gap:20px;color:#999;font-size:0.9rem;margin-bottom:20px}
+.blog-detail-img{width:100%;max-width:800px;margin:0 auto 30px;border-radius:12px;overflow:hidden}
+.blog-detail-img img{width:100%;height:auto}
+.blog-detail-content{max-width:800px;margin:0 auto;padding:0 20px 60px;line-height:1.9;color:#444;font-size:1.05rem}
+.blog-detail-content h2{color:var(--dark);margin:30px 0 15px;font-size:1.5rem}
+.blog-detail-content h3{color:var(--dark);margin:25px 0 10px;font-size:1.2rem}
+.blog-detail-content p{margin-bottom:15px}
+.blog-detail-content ul,.blog-detail-content ol{margin:15px 0;padding-right:20px}
+.blog-back-btn{display:inline-block;margin:20px auto;padding:10px 25px;background:var(--gold);color:#fff;border-radius:25px;text-decoration:none;font-weight:600;text-align:center}
+.blog-back-btn:hover{opacity:0.9}
+.blog-related{max-width:1200px;margin:0 auto;padding:0 20px 60px}
+.blog-related h3{text-align:center;margin-bottom:30px;font-size:1.4rem;color:var(--dark)}
+@media(max-width:768px){
+    .blog-grid,.blog-full-grid{grid-template-columns:1fr}
+    .blog-featured-card{grid-template-columns:1fr}
+    .blog-featured-card .blog-card-img{min-height:200px}
+    .blog-page-header h1{font-size:1.8rem}
+    .blog-detail-header h1{font-size:1.6rem}
+}
+`;
+
+if (!html.includes('blog-preview-section')) {
+    if (html.includes('</style>')) {
+        html = html.replace('</style>', blogCSS + '\n</style>');
+    } else if (html.includes('</head>')) {
+        html = html.replace('</head>', '<style>' + blogCSS + '</style>\n</head>');
+    }
+    console.log('  ✅ Added blog CSS');
+}
+
+// 3b. Nav link
+if (!html.includes("navigateTo('blog')")) {
+    html = html.replace(
+        "onclick=\"navigateTo('contact'); return false;\" id=\"navContact\">Contact</a>",
+        "onclick=\"navigateTo('contact'); return false;\" id=\"navContact\">Contact</a>\n            <a href=\"#\" onclick=\"navigateTo('blog'); return false;\" id=\"navBlog\">Blog</a>"
+    );
+    // Mobile nav
+    html = html.replace(
+        "onclick=\"navigateTo('contact'); return false;\">Contact</a>\n        <div",
+        "onclick=\"navigateTo('contact'); return false;\">Contact</a>\n        <a href=\"#\" onclick=\"navigateTo('blog'); return false;\">Blog</a>\n        <div"
+    );
+    console.log('  ✅ Added Blog nav link');
+}
+
+// 3c. Blog preview in home page
+const blogPreviewHTML = `
+<!-- BLOG PREVIEW -->
+<section class="blog-preview-section" id="blogPreviewSection">
+    <div class="container">
+        <div class="blog-section-title">
+            <h2 id="blogPreviewTitle">From Our Blog</h2>
+            <p id="blogPreviewDesc">Discover Saudi dates, tips, and stories from the finest farms.</p>
+        </div>
+        <div class="blog-grid" id="blogPreviewGrid"></div>
+        <div class="blog-view-all">
+            <a href="#" onclick="navigateTo('blog'); return false;" id="blogViewAllBtn">View All Articles</a>
+        </div>
+    </div>
+</section>`;
+
+if (!html.includes('blogPreviewSection')) {
+    // Insert before the closing of page-home (before page-products or page-all-products)
+    const marker = html.includes('id="page-products"') ? 'id="page-products"' : 'id="page-all"';
+    if (marker) {
+        const idx = html.indexOf(marker);
+        const divStart = html.lastIndexOf('<div', idx);
+        html = html.slice(0, divStart) + blogPreviewHTML + '\n' + html.slice(divStart);
+    }
+    console.log('  ✅ Added blog preview to home page');
+}
+
+// 3d. Blog page
+const blogPageHTML = `
+<!-- BLOG PAGE -->
+<div class="page-section" id="page-blog">
+    <div class="blog-page-header">
+        <h1 id="blogPageTitle">MASSAR DATES Blog</h1>
+        <p id="blogPageDesc">Discover the world of Saudi dates</p>
+        <div class="blog-search"><input type="text" id="blogSearchInput" placeholder="Search articles..." oninput="filterBlogPosts()"></div>
+        <div class="blog-filters" id="blogFilters">
+            <button class="blog-filter-btn active" onclick="setBlogFilter('all',this)">All</button>
+            <button class="blog-filter-btn" onclick="setBlogFilter('types-of-dates',this)">Types of Dates</button>
+            <button class="blog-filter-btn" onclick="setBlogFilter('saudi-farms',this)">Saudi Farms</button>
+            <button class="blog-filter-btn" onclick="setBlogFilter('dates-guide',this)">Dates Guide</button>
+            <button class="blog-filter-btn" onclick="setBlogFilter('nutrition',this)">Nutrition</button>
+            <button class="blog-filter-btn" onclick="setBlogFilter('recipes',this)">Recipes</button>
+            <button class="blog-filter-btn" onclick="setBlogFilter('news',this)">News</button>
+        </div>
+    </div>
+    <div class="blog-full-grid" id="blogFullGrid"></div>
+</div>`;
+
+if (!html.includes('page-blog')) {
+    const footerIdx = html.indexOf('<footer');
+    if (footerIdx > 0) {
+        html = html.slice(0, footerIdx) + blogPageHTML + '\n' + html.slice(footerIdx);
+    }
+    console.log('  ✅ Added blog page');
+}
+
+// 3e. Blog detail page
+const blogDetailHTML = `
+<!-- BLOG DETAIL PAGE -->
+<div class="page-section" id="page-blog-detail">
+    <div class="blog-detail-header">
+        <span class="blog-card-cat" id="blogDetailCat"></span>
+        <h1 id="blogDetailTitle"></h1>
+        <div class="blog-detail-meta">
+            <span id="blogDetailDate"></span>
+        </div>
+    </div>
+    <div class="blog-detail-img" id="blogDetailImgWrap" style="display:none"><img id="blogDetailImg" src="" alt=""></div>
+    <div class="blog-detail-content" id="blogDetailContent"></div>
+    <div style="text-align:center;padding:0 20px 40px">
+        <a href="#" class="blog-back-btn" onclick="navigateTo('blog'); return false;" id="blogBackBtn">← Back to Blog</a>
+    </div>
+    <div class="blog-related" id="blogRelatedSection" style="display:none">
+        <h3 id="blogRelatedTitle">Related Articles</h3>
+        <div class="blog-grid" id="blogRelatedGrid"></div>
+    </div>
+</div>`;
+
+if (!html.includes('page-blog-detail')) {
+    const footerIdx = html.indexOf('<footer');
+    if (footerIdx > 0) {
+        html = html.slice(0, footerIdx) + blogDetailHTML + '\n' + html.slice(footerIdx);
+    }
+    console.log('  ✅ Added blog detail page');
+}
+
+// 3f. Blog JavaScript
+const blogJS = `
+// ===== BLOG FUNCTIONS =====
+let blogPosts = [];
+let blogFilter = 'all';
+
+const blogCatNames = {
+    'types-of-dates': { en: 'Types of Dates', ar: 'أنواع التمور', ms: 'Jenis Kurma' },
+    'saudi-farms': { en: 'Saudi Farms', ar: 'مزارع سعودية', ms: 'Ladang Saudi' },
+    'dates-guide': { en: 'Dates Guide', ar: 'دليل التمور', ms: 'Panduan Kurma' },
+    'nutrition': { en: 'Nutrition', ar: 'فوائد التمور', ms: 'Pemakanan' },
+    'recipes': { en: 'Recipes', ar: 'وصفات', ms: 'Resipi' },
+    'news': { en: 'News', ar: 'أخبار', ms: 'Berita' }
+};
+
+function getBlogCatName(cat) {
+    const l = typeof lang !== 'undefined' ? lang : 'en';
+    return (blogCatNames[cat] && blogCatNames[cat][l]) || cat;
+}
+
+function getBlogField(post, field) {
+    const l = typeof lang !== 'undefined' ? lang : 'en';
+    return post[field + '_' + l] || post[field + '_en'] || '';
+}
+
+function renderBlogCard(post, featured) {
+    const title = getBlogField(post, 'title');
+    const excerpt = getBlogField(post, 'excerpt');
+    const cat = getBlogCatName(post.category);
+    const date = new Date(post.created_at).toLocaleDateString();
+    const imgHTML = post.image_url
+        ? '<img src="' + post.image_url + '" alt="' + title + '">'
+        : '🌴';
+    if (featured) {
+        return '<div class="blog-featured-card blog-card" onclick="openBlogPost(\\'' + post.slug + '\\')">' +
+            '<div class="blog-card-img">' + imgHTML + '</div>' +
+            '<div class="blog-card-body"><span class="blog-card-cat">⭐ ' + cat + '</span>' +
+            '<div class="blog-card-title">' + title + '</div>' +
+            '<div class="blog-card-excerpt">' + excerpt + '</div>' +
+            '<div class="blog-card-meta"><span>' + date + '</span><span class="blog-card-btn">Read More →</span></div></div></div>';
+    }
+    return '<div class="blog-card" onclick="openBlogPost(\\'' + post.slug + '\\')">' +
+        '<div class="blog-card-img">' + imgHTML + '</div>' +
+        '<div class="blog-card-body"><span class="blog-card-cat">' + cat + '</span>' +
+        '<div class="blog-card-title">' + title + '</div>' +
+        '<div class="blog-card-excerpt">' + excerpt + '</div>' +
+        '<div class="blog-card-meta"><span>' + date + '</span><span class="blog-card-btn">Read More →</span></div></div></div>';
+}
+
+async function loadBlogPreview() {
+    try {
+        const res = await fetch('/api/blog');
+        blogPosts = await res.json();
+        const grid = document.getElementById('blogPreviewGrid');
+        if (!grid) return;
+        const l = typeof lang !== 'undefined' ? lang : 'en';
+        const titles = { en: 'From Our Blog', ar: 'من مدونتنا', ms: 'Daripada Blog Kami' };
+        const descs = {
+            en: 'Discover Saudi dates, tips, and stories from the finest farms.',
+            ar: 'اكتشف أنواع التمور السعودية، أسرار اختيارها وحفظها، وقصصًا من أفضل مزارع التمور.',
+            ms: 'Temui pelbagai jenis kurma Saudi, cara memilih dan menyimpannya serta kisah dari ladang kurma terbaik.'
+        };
+        const viewAll = { en: 'View All Articles', ar: 'عرض جميع المقالات', ms: 'Lihat Semua Artikel' };
+        const pt = document.getElementById('blogPreviewTitle');
+        const pd = document.getElementById('blogPreviewDesc');
+        const va = document.getElementById('blogViewAllBtn');
+        if (pt) pt.textContent = titles[l] || titles.en;
+        if (pd) pd.textContent = descs[l] || descs.en;
+        if (va) va.textContent = viewAll[l] || viewAll.en;
+        grid.innerHTML = blogPosts.slice(0, 3).map(p => renderBlogCard(p, false)).join('');
+    } catch (e) { console.log('Blog preview error:', e); }
+}
+
+async function loadBlogPage() {
+    try {
+        const res = await fetch('/api/blog');
+        blogPosts = await res.json();
+        renderBlogFull();
+        const l = typeof lang !== 'undefined' ? lang : 'en';
+        const titles = { en: 'MASSAR DATES Blog', ar: 'مدونة MASSAR DATES', ms: 'Blog MASSAR DATES' };
+        const descs = {
+            en: 'Discover the World of Saudi Dates',
+            ar: 'اكتشف عالم التمور السعودية',
+            ms: 'Terokai Dunia Kurma Saudi'
+        };
+        const pt = document.getElementById('blogPageTitle');
+        const pd = document.getElementById('blogPageDesc');
+        if (pt) pt.textContent = titles[l] || titles.en;
+        if (pd) pd.textContent = descs[l] || descs.en;
+    } catch (e) { console.log('Blog page error:', e); }
+}
+
+function renderBlogFull() {
+    const grid = document.getElementById('blogFullGrid');
+    if (!grid) return;
+    const search = (document.getElementById('blogSearchInput')?.value || '').toLowerCase();
+    const l = typeof lang !== 'undefined' ? lang : 'en';
+    let filtered = blogPosts.filter(p => {
+        if (blogFilter !== 'all' && p.category !== blogFilter) return false;
+        if (search) {
+            const t = (p['title_' + l] || '').toLowerCase();
+            const e = (p['excerpt_' + l] || '').toLowerCase();
+            if (!t.includes(search) && !e.includes(search)) return false;
+        }
+        return true;
+    });
+    let html = '';
+    const feat = filtered.find(p => p.featured);
+    if (feat) html += renderBlogCard(feat, true);
+    filtered.filter(p => !p.featured || p.id !== (feat && feat.id)).forEach(p => {
+        html += renderBlogCard(p, false);
+    });
+    grid.innerHTML = html || '<p style="text-align:center;grid-column:1/-1;color:#999">No articles found.</p>';
+}
+
+function setBlogFilter(cat, btn) {
+    blogFilter = cat;
+    document.querySelectorAll('.blog-filter-btn').forEach(b => b.classList.remove('active'));
+    if (btn) btn.classList.add('active');
+    renderBlogFull();
+}
+
+function filterBlogPosts() { renderBlogFull(); }
+
+async function openBlogPost(slug) {
+    try {
+        const res = await fetch('/api/blog/' + slug);
+        if (!res.ok) return;
+        const post = await res.json();
+        const l = typeof lang !== 'undefined' ? lang : 'en';
+        document.getElementById('blogDetailTitle').textContent = post['title_' + l] || post.title_en;
+        document.getElementById('blogDetailCat').textContent = getBlogCatName(post.category);
+        document.getElementById('blogDetailDate').textContent = new Date(post.created_at).toLocaleDateString();
+        const content = post['content_' + l] || post.content_en || '';
+        document.getElementById('blogDetailContent').innerHTML = content;
+        const imgWrap = document.getElementById('blogDetailImgWrap');
+        if (post.image_url) {
+            document.getElementById('blogDetailImg').src = post.image_url;
+            imgWrap.style.display = 'block';
+        } else {
+            imgWrap.style.display = 'none';
+        }
+        const backBtns = { en: '← Back to Blog', ar: '→ العودة للمدونة', ms: '← Kembali ke Blog' };
+        document.getElementById('blogBackBtn').textContent = backBtns[l] || backBtns.en;
+        // Related
+        const relSection = document.getElementById('blogRelatedSection');
+        const relGrid = document.getElementById('blogRelatedGrid');
+        const relTitle = { en: 'Related Articles', ar: 'مقالات ذات صلة', ms: 'Artikel Berkaitan' };
+        document.getElementById('blogRelatedTitle').textContent = relTitle[l] || relTitle.en;
+        if (post.related && post.related.length > 0) {
+            relGrid.innerHTML = post.related.map(p => renderBlogCard(p, false)).join('');
+            relSection.style.display = 'block';
+        } else {
+            relSection.style.display = 'none';
+        }
+        navigateTo('blog-detail');
+        window.scrollTo(0, 0);
+    } catch (e) { console.log('Blog detail error:', e); }
+}
+
+// Load blog on page load
+document.addEventListener('DOMContentLoaded', function() {
+    loadBlogPreview();
+});
+`;
+
+if (!html.includes('loadBlogPreview')) {
+    html = html.replace('</script>', blogJS + '\n</script>');
+    console.log('  ✅ Added blog JavaScript');
+}
+
+// Also update blog when language changes
+if (html.includes('function setLang') && !html.includes('loadBlogPreview()')) {
+    html = html.replace(
+        /function setLang\(([^)]+)\)\s*\{/,
+        'function setLang($1) {\n    setTimeout(function(){ loadBlogPreview(); if(document.getElementById("page-blog").classList.contains("active")) loadBlogPage(); }, 100);'
+    );
+}
+
+fs.writeFileSync(path.join(PUBLIC, 'index.html'), html, 'utf8');
+
+// ========== STEP 4: ADMIN PANEL ==========
+console.log('\n🔐 Step 4: Setting up Admin Blog Panel...');
+const adminPaths = [
+    path.join(PUBLIC, 'admin.html'),
+    path.join(PUBLIC, 'admin', 'index.html'),
+    path.join(PUBLIC, 'admin.htm')
+];
+let adminFile = null;
+for (const p of adminPaths) {
+    if (fs.existsSync(p)) { adminFile = p; break; }
+}
+if (!adminFile) {
+    const allHTML = fs.readdirSync(PUBLIC).filter(f => f.endsWith('.html'));
+    for (const f of allHTML) {
+        const c = fs.readFileSync(path.join(PUBLIC, f), 'utf8');
+        if (c.includes('admin') && c.includes('products') && c.includes('login')) {
+            adminFile = path.join(PUBLIC, f);
+            break;
+        }
+    }
+}
+
+if (adminFile) {
+    backup(path.relative(ROOT, adminFile));
+    let adminCode = fs.readFileSync(adminFile, 'utf8');
+    if (!adminCode.includes('blogAdminSection')) {
+        const blogAdminHTML = `
+<!-- BLOG ADMIN SECTION -->
+<div id="blogAdminSection" class="admin-section" style="display:none">
+    <h2>📝 Blog / المدونة</h2>
+    <button onclick="showBlogForm()" class="admin-btn" style="margin-bottom:20px;background:var(--gold);color:#fff;border:none;padding:10px 20px;border-radius:6px;cursor:pointer">+ Add New Article</button>
+    <div id="blogAdminList"></div>
+    <div id="blogFormWrap" style="display:none;background:#f9f9f9;padding:25px;border-radius:10px;margin-top:20px">
+        <h3 id="blogFormTitle">New Article</h3>
+        <input type="hidden" id="blogEditId">
+        <label>Slug (URL):</label><input type="text" id="blogSlug" style="width:100%;padding:8px;margin:5px 0 15px;border:1px solid #ddd;border-radius:4px">
+        <label>Category:</label>
+        <select id="blogCategory" style="width:100%;padding:8px;margin:5px 0 15px;border:1px solid #ddd;border-radius:4px">
+            <option value="types-of-dates">Types of Dates</option>
+            <option value="saudi-farms">Saudi Farms</option>
+            <option value="dates-guide">Dates Guide</option>
+            <option value="nutrition">Nutrition</option>
+            <option value="recipes">Recipes</option>
+            <option value="news">News</option>
+        </select>
+        <label>Image URL:</label><input type="text" id="blogImage" style="width:100%;padding:8px;margin:5px 0 15px;border:1px solid #ddd;border-radius:4px">
+        <label>Sort Order:</label><input type="number" id="blogSort" value="0" style="width:100%;padding:8px;margin:5px 0 15px;border:1px solid #ddd;border-radius:4px">
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:15px">
+            <div><h4>🇸🇦 Arabic</h4>
+                <input type="text" id="blogTitleAr" placeholder="Title" style="width:100%;padding:8px;margin:5px 0;border:1px solid #ddd;border-radius:4px">
+                <input type="text" id="blogExcerptAr" placeholder="Excerpt" style="width:100%;padding:8px;margin:5px 0;border:1px solid #ddd;border-radius:4px">
+                <textarea id="blogContentAr" placeholder="Content (HTML)" rows="6" style="width:100%;padding:8px;margin:5px 0;border:1px solid #ddd;border-radius:4px"></textarea>
+            </div>
+            <div><h4>🇬🇧 English</h4>
+                <input type="text" id="blogTitleEn" placeholder="Title" style="width:100%;padding:8px;margin:5px 0;border:1px solid #ddd;border-radius:4px">
+                <input type="text" id="blogExcerptEn" placeholder="Excerpt" style="width:100%;padding:8px;margin:5px 0;border:1px solid #ddd;border-radius:4px">
+                <textarea id="blogContentEn" placeholder="Content (HTML)" rows="6" style="width:100%;padding:8px;margin:5px 0;border:1px solid #ddd;border-radius:4px"></textarea>
+            </div>
+            <div><h4>🇲🇾 Malay</h4>
+                <input type="text" id="blogTitleMs" placeholder="Title" style="width:100%;padding:8px;margin:5px 0;border:1px solid #ddd;border-radius:4px">
+                <input type="text" id="blogExcerptMs" placeholder="Excerpt" style="width:100%;padding:8px;margin:5px 0;border:1px solid #ddd;border-radius:4px">
+                <textarea id="blogContentMs" placeholder="Content (HTML)" rows="6" style="width:100%;padding:8px;margin:5px 0;border:1px solid #ddd;border-radius:4px"></textarea>
+            </div>
+        </div>
+        <div style="margin-top:15px;display:flex;gap:10px">
+            <button onclick="saveBlogPost()" class="admin-btn" style="background:#27ae60;color:#fff;border:none;padding:10px 20px;border-radius:6px;cursor:pointer">💾 Save</button>
+            <button onclick="document.getElementById('blogFormWrap').style.display='none'" class="admin-btn" style="background:#999;color:#fff;border:none;padding:10px 20px;border-radius:6px;cursor:pointer">Cancel</button>
+        </div>
+    </div>
+</div>`;
+
+        const blogAdminJS = `
+// ===== BLOG ADMIN =====
+async function loadBlogAdmin() {
+    const token = localStorage.getItem('adminToken');
+    if (!token) return;
+    try {
+        const res = await fetch('/api/admin/blog', { headers: { 'Authorization': 'Bearer ' + token } });
+        const posts = await res.json();
+        const list = document.getElementById('blogAdminList');
+        if (!list) return;
+        list.innerHTML = '<table style="width:100%;border-collapse:collapse"><thead><tr style="background:#f5f5f5"><th style="padding:10px;text-align:left">Title</th><th>Category</th><th>Status</th><th>Featured</th><th>Actions</th></tr></thead><tbody>' +
+            posts.map(p => '<tr style="border-bottom:1px solid #eee"><td style="padding:10px">' + (p.title_en || p.title_ar) + '</td><td>' + p.category + '</td><td>' + (p.published ? '✅ Published' : '❌ Hidden') + '</td><td>' + (p.featured ? '⭐' : '-') + '</td><td><button onclick="editBlogPost(' + p.id + ')" style="padding:4px 8px;cursor:pointer">✏️</button> <button onclick="toggleBlogPublish(' + p.id + ')" style="padding:4px 8px;cursor:pointer">' + (p.published ? '🙈' : '👁️') + '</button> <button onclick="toggleBlogFeatured(' + p.id + ')" style="padding:4px 8px;cursor:pointer">⭐</button> <button onclick="deleteBlogPost(' + p.id + ')" style="padding:4px 8px;cursor:pointer;color:red">🗑️</button></td></tr>').join('') +
+            '</tbody></table>';
+    } catch (e) { console.log('Blog admin error:', e); }
+}
+
+function showBlogForm(post) {
+    document.getElementById('blogFormWrap').style.display = 'block';
+    document.getElementById('blogFormTitle').textContent = post ? 'Edit Article' : 'New Article';
+    document.getElementById('blogEditId').value = post ? post.id : '';
+    document.getElementById('blogSlug').value = post ? post.slug : '';
+    document.getElementById('blogCategory').value = post ? post.category : 'news';
+    document.getElementById('blogImage').value = post ? (post.image_url || '') : '';
+    document.getElementById('blogSort').value = post ? post.sort_order : 0;
+    document.getElementById('blogTitleAr').value = post ? (post.title_ar || '') : '';
+    document.getElementById('blogTitleEn').value = post ? (post.title_en || '') : '';
+    document.getElementById('blogTitleMs').value = post ? (post.title_ms || '') : '';
+    document.getElementById('blogExcerptAr').value = post ? (post.excerpt_ar || '') : '';
+    document.getElementById('blogExcerptEn').value = post ? (post.excerpt_en || '') : '';
+    document.getElementById('blogExcerptMs').value = post ? (post.excerpt_ms || '') : '';
+    document.getElementById('blogContentAr').value = post ? (post.content_ar || '') : '';
+    document.getElementById('blogContentEn').value = post ? (post.content_en || '') : '';
+    document.getElementById('blogContentMs').value = post ? (post.content_ms || '') : '';
+}
+
+async function saveBlogPost() {
+    const token = localStorage.getItem('adminToken');
+    const id = document.getElementById('blogEditId').value;
+    const data = {
+        slug: document.getElementById('blogSlug').value,
+        category: document.getElementById('blogCategory').value,
+        image_url: document.getElementById('blogImage').value,
+        sort_order: parseInt(document.getElementById('blogSort').value) || 0,
+        title_ar: document.getElementById('blogTitleAr').value,
+        title_en: document.getElementById('blogTitleEn').value,
+        title_ms: document.getElementById('blogTitleMs').value,
+        excerpt_ar: document.getElementById('blogExcerptAr').value,
+        excerpt_en: document.getElementById('blogExcerptEn').value,
+        excerpt_ms: document.getElementById('blogExcerptMs').value,
+        content_ar: document.getElementById('blogContentAr').value,
+        content_en: document.getElementById('blogContentEn').value,
+        content_ms: document.getElementById('blogContentMs').value,
+        published: 1, featured: 0
+    };
+    const url = id ? '/api/admin/blog/' + id : '/api/admin/blog';
+    const method = id ? 'PUT' : 'POST';
+    await fetch(url, { method, headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token }, body: JSON.stringify(data) });
+    document.getElementById('blogFormWrap').style.display = 'none';
+    loadBlogAdmin();
+}
+
+async function editBlogPost(id) {
+    const token = localStorage.getItem('adminToken');
+    const res = await fetch('/api/admin/blog', { headers: { 'Authorization': 'Bearer ' + token } });
+    const posts = await res.json();
+    const post = posts.find(p => p.id === id);
+    if (post) showBlogForm(post);
+}
+
+async function toggleBlogPublish(id) {
+    const token = localStorage.getItem('adminToken');
+    await fetch('/api/admin/blog/' + id + '/toggle', { method: 'PATCH', headers: { 'Authorization': 'Bearer ' + token } });
+    loadBlogAdmin();
+}
+
+async function toggleBlogFeatured(id) {
+    const token = localStorage.getItem('adminToken');
+    await fetch('/api/admin/blog/' + id + '/featured', { method: 'PATCH', headers: { 'Authorization': 'Bearer ' + token } });
+    loadBlogAdmin();
+}
+
+async function deleteBlogPost(id) {
+    if (!confirm('Delete this article?')) return;
+    const token = localStorage.getItem('adminToken');
+    await fetch('/api/admin/blog/' + id, { method: 'DELETE', headers: { 'Authorization': 'Bearer ' + token } });
+    loadBlogAdmin();
+}
+`;
+
+        // Insert HTML before </body> or at end
+        if (adminCode.includes('</body>')) {
+            adminCode = adminCode.replace('</body>', blogAdminHTML + '\n<script>' + blogAdminJS + '</script>\n</body>');
+        }
+        // Add blog tab to admin nav if there's a tab system
+        if (adminCode.includes('showSection') || adminCode.includes('admin-section')) {
+            const navBtn = '<button onclick="showSection(\'blogAdminSection\'); loadBlogAdmin();" style="padding:8px 16px;cursor:pointer;margin:4px">📝 Blog</button>';
+            if (adminCode.includes('admin-nav') || adminCode.includes('nav-btn')) {
+                adminCode = adminCode.replace(/(<\/(?:div|nav)>\s*<!-- end nav)/, navBtn + '\n$1');
+            }
+        }
+        fs.writeFileSync(adminFile, adminCode, 'utf8');
+        console.log('  ✅ Added blog admin panel to ' + path.basename(adminFile));
+    } else {
+        console.log('  ⏭️ Blog admin already exists');
+    }
+} else {
+    console.log('  ⚠️ Admin panel file not found. Creating standalone admin blog page...');
+    const standaloneAdmin = `<!DOCTYPE html>
+<html dir="ltr"><head><meta charset="UTF-8"><title>Blog Admin - MASSAR DATES</title>
+<style>body{font-family:Arial,sans-serif;max-width:1200px;margin:0 auto;padding:20px}table{width:100%;border-collapse:collapse}th,td{padding:10px;text-align:left;border-bottom:1px solid #eee}th{background:#f5f5f5}input,select,textarea{width:100%;padding:8px;margin:5px 0;border:1px solid #ddd;border-radius:4px;box-sizing:border-box}.btn{padding:8px 16px;border:none;border-radius:4px;cursor:pointer;color:#fff;margin:2px}.btn-gold{background:#c59b27}.btn-green{background:#27ae60}.btn-red{background:#e74c3c}.btn-gray{background:#999}</style></head>
+<body>
+<h1>📝 MASSAR DATES - Blog Admin</h1>
+<div id="loginWrap"><h3>Login</h3><input type="email" id="loginEmail" placeholder="Email" value="admin@massardates.com"><input type="password" id="loginPass" placeholder="Password"><button class="btn btn-gold" onclick="adminLogin()">Login</button></div>
+<div id="adminWrap" style="display:none">
+<button class="btn btn-gold" onclick="showForm()">+ New Article</button>
+<div id="blogList" style="margin-top:20px"></div>
+<div id="formWrap" style="display:none;background:#f9f9f9;padding:20px;border-radius:8px;margin-top:20px">
+<h3 id="formTitle">New Article</h3><input type="hidden" id="editId">
+<label>Slug:</label><input id="fSlug"><label>Category:</label>
+<select id="fCat"><option value="types-of-dates">Types of Dates</option><option value="saudi-farms">Saudi Farms</option><option value="dates-guide">Dates Guide</option><option value="nutrition">Nutrition</option><option value="recipes">Recipes</option><option value="news">News</option></select>
+<label>Image URL:</label><input id="fImg"><label>Sort:</label><input type="number" id="fSort" value="0">
+<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:15px;margin-top:15px">
+<div><h4>Arabic</h4><input id="fTitleAr" placeholder="Title"><input id="fExcAr" placeholder="Excerpt"><textarea id="fContAr" rows="5" placeholder="Content HTML"></textarea></div>
+<div><h4>English</h4><input id="fTitleEn" placeholder="Title"><input id="fExcEn" placeholder="Excerpt"><textarea id="fContEn" rows="5" placeholder="Content HTML"></textarea></div>
+<div><h4>Malay</h4><input id="fTitleMs" placeholder="Title"><input id="fExcMs" placeholder="Excerpt"><textarea id="fContMs" rows="5" placeholder="Content HTML"></textarea></div>
+</div>
+<div style="margin-top:15px"><button class="btn btn-green" onclick="savePost()">Save</button> <button class="btn btn-gray" onclick="document.getElementById('formWrap').style.display='none'">Cancel</button></div>
+</div></div>
+<script>
+let token='';
+async function adminLogin(){const r=await fetch('/api/admin/login',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email:document.getElementById('loginEmail').value,password:document.getElementById('loginPass').value})});const d=await r.json();if(d.token){token=d.token;localStorage.setItem('adminToken',token);document.getElementById('loginWrap').style.display='none';document.getElementById('adminWrap').style.display='block';loadPosts();}else alert('Login failed');}
+async function loadPosts(){const r=await fetch('/api/admin/blog',{headers:{'Authorization':'Bearer '+token}});const posts=await r.json();document.getElementById('blogList').innerHTML='<table><tr><th>Title</th><th>Cat</th><th>Status</th><th>Actions</th></tr>'+posts.map(p=>'<tr><td>'+(p.title_en||p.title_ar)+'</td><td>'+p.category+'</td><td>'+(p.published?'✅':'❌')+'</td><td><button class="btn btn-gold" onclick="editPost('+p.id+')">Edit</button><button class="btn btn-gray" onclick="toggleP('+p.id+')">'+(p.published?'Hide':'Show')+'</button><button class="btn btn-gray" onclick="toggleF('+p.id+')">⭐</button><button class="btn btn-red" onclick="delPost('+p.id+')">Delete</button></td></tr>').join('')+'</table>';}
+function showForm(p){document.getElementById('formWrap').style.display='block';document.getElementById('formTitle').textContent=p?'Edit':'New Article';document.getElementById('editId').value=p?p.id:'';document.getElementById('fSlug').value=p?p.slug:'';document.getElementById('fCat').value=p?p.category:'news';document.getElementById('fImg').value=p?(p.image_url||''):'';document.getElementById('fSort').value=p?p.sort_order:0;document.getElementById('fTitleAr').value=p?(p.title_ar||''):'';document.getElementById('fTitleEn').value=p?(p.title_en||''):'';document.getElementById('fTitleMs').value=p?(p.title_ms||

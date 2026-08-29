@@ -1,0 +1,917 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" id="seoDesc" content="MASSAR DATES - Premium Saudi Dates">
+    <title id="seoTitle">MASSAR DATES | Premium Saudi Dates</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Inter:wght@300;400;500;600;700&family=Amiri:wght@400;700&family=Noto+Sans+Arabic:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+        :root{--cream:#FAF7F2;--cream-dark:#F0EBE1;--beige:#E8E0D4;--gold:#B8956A;--gold-light:#D4B896;--gold-dark:#96734E;--brown:#3E2C23;--brown-dark:#2A1E17;--black:#1A1A1A;--white:#FFF;--text:#2D2D2D;--text-light:#6B6B6B;--radius-sm:6px;--radius-md:10px;--radius-lg:16px;--radius-xl:24px;--shadow-sm:0 1px 3px rgba(0,0,0,.06);--shadow-md:0 4px 12px rgba(0,0,0,.08);--shadow-lg:0 8px 30px rgba(0,0,0,.1);--transition:all .3s cubic-bezier(.4,0,.2,1);--font-display:'Playfair Display',Georgia,serif;--font-body:'Inter',-apple-system,sans-serif;--header-height:80px}
+        html[dir="rtl"]{--font-display:'Amiri',serif;--font-body:'Noto Sans Arabic',sans-serif}
+        html{scroll-behavior:smooth}body{font-family:var(--font-body);background:var(--cream);color:var(--text);line-height:1.7;overflow-x:hidden}
+        img{max-width:100%;display:block}a{text-decoration:none;color:inherit;transition:var(--transition)}button{cursor:pointer;border:none;outline:none;font-family:inherit;transition:var(--transition)}ul{list-style:none}
+        .container{max-width:1280px;margin:0 auto;padding:0 24px}.section-padding{padding:90px 0}
+        .section-header{text-align:center;margin-bottom:50px}
+        .section-subtitle{font-size:.75rem;font-weight:600;letter-spacing:3px;text-transform:uppercase;color:var(--gold);margin-bottom:12px;display:block}
+        .section-title{font-family:var(--font-display);font-size:clamp(1.8rem,4vw,2.6rem);font-weight:600;color:var(--black);margin-bottom:16px;line-height:1.2}
+        .section-desc{font-size:1rem;color:var(--text-light);max-width:640px;margin:0 auto;line-height:1.8}
+        .gold-line{width:50px;height:2px;background:linear-gradient(90deg,var(--gold-light),var(--gold),var(--gold-light));margin:18px auto}
+        .header{position:fixed;top:0;left:0;width:100%;z-index:1000;background:rgba(250,247,242,.95);backdrop-filter:blur(20px);border-bottom:1px solid rgba(184,149,106,.15);height:var(--header-height);transition:var(--transition)}
+        .header-inner{display:flex;align-items:center;justify-content:space-between;height:100%;max-width:1400px;margin:0 auto;padding:0 30px}
+        .logo{display:flex;flex-direction:column;z-index:1001}.logo-name{font-family:var(--font-display);font-size:1.5rem;font-weight:700;color:var(--brown-dark);letter-spacing:3px;line-height:1}.logo-tagline{font-size:.6rem;letter-spacing:2.5px;text-transform:uppercase;color:var(--gold);font-weight:500;margin-top:2px}
+        .nav-desktop{display:flex;align-items:center;gap:36px}.nav-desktop a{font-size:.85rem;font-weight:500;color:var(--text);position:relative;padding:4px 0}.nav-desktop a:hover,.nav-desktop a.active{color:var(--gold-dark)}
+        .header-actions{display:flex;align-items:center;gap:20px}
+        .lang-switch{display:flex;gap:2px}.lang-btn{padding:5px 10px;font-size:.75rem;font-weight:500;color:var(--text-light);background:transparent;border-radius:var(--radius-sm)}.lang-btn.active{color:var(--gold-dark);background:rgba(184,149,106,.1);font-weight:600}.lang-sep{color:var(--beige);font-size:.75rem}
+        .btn-shop-now{padding:10px 28px;background:var(--brown-dark);color:var(--white);font-size:.78rem;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;border-radius:50px;border:1.5px solid var(--brown-dark)}.btn-shop-now:hover{background:transparent;color:var(--brown-dark)}
+        .hamburger{display:none;flex-direction:column;gap:5px;background:none;padding:8px;z-index:1001}.hamburger span{width:24px;height:2px;background:var(--brown-dark);transition:var(--transition)}
+        .nav-mobile{display:none;position:fixed;top:0;left:0;width:100%;height:100vh;background:var(--cream);z-index:1000;flex-direction:column;align-items:center;justify-content:center;gap:28px;opacity:0;pointer-events:none;transition:var(--transition)}.nav-mobile.active{opacity:1;pointer-events:all}.nav-mobile a{font-family:var(--font-display);font-size:1.4rem;color:var(--brown-dark)}
+        .hero{margin-top:var(--header-height);min-height:calc(100vh - var(--header-height));display:flex;align-items:center;background:linear-gradient(135deg,var(--cream),var(--cream-dark),var(--beige));position:relative;overflow:hidden}
+        .hero-inner{display:grid;grid-template-columns:1fr 1fr;gap:60px;align-items:center;max-width:1400px;margin:0 auto;padding:60px 30px;width:100%;position:relative;z-index:2}
+        .hero-badge{display:inline-flex;align-items:center;gap:8px;padding:8px 20px;background:rgba(184,149,106,.12);border-radius:50px;margin-bottom:28px;border:1px solid rgba(184,149,106,.2)}.hero-badge-dot{width:6px;height:6px;background:var(--gold);border-radius:50%}.hero-badge span{font-size:.72rem;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:var(--gold-dark)}
+        .hero-title{font-family:var(--font-display);font-size:clamp(2.4rem,5vw,3.8rem);font-weight:700;color:var(--brown-dark);line-height:1.15;margin-bottom:24px}.hero-title .gold{color:var(--gold)}
+        .hero-desc{font-size:1.02rem;color:var(--text-light);line-height:1.8;margin-bottom:36px;max-width:480px}
+        .hero-buttons{display:flex;gap:16px;flex-wrap:wrap}
+        .btn-primary{padding:14px 34px;background:var(--brown-dark);color:var(--white);font-size:.82rem;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;border-radius:50px;border:2px solid var(--brown-dark);display:inline-flex;align-items:center;gap:10px}.btn-primary:hover{background:var(--gold-dark);border-color:var(--gold-dark);transform:translateY(-2px)}
+        .btn-secondary{padding:14px 34px;background:transparent;color:var(--brown-dark);font-size:.82rem;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;border-radius:50px;border:2px solid var(--brown-dark);display:inline-flex;align-items:center;gap:10px}.btn-secondary:hover{background:var(--brown-dark);color:var(--white)}
+        .hero-image-main{width:100%;max-width:500px;border-radius:var(--radius-xl);box-shadow:var(--shadow-lg);aspect-ratio:4/5;overflow:hidden;background:linear-gradient(145deg,var(--beige),var(--cream-dark));display:flex;align-items:center;justify-content:center;margin:0 auto}.hero-image-main img{width:100%;height:100%;object-fit:cover}
+        .hero-stats{display:flex;gap:40px;margin-top:40px;padding-top:24px;border-top:1px solid var(--beige)}.stat-item{text-align:center}.stat-number{font-family:var(--font-display);font-size:1.5rem;font-weight:700;color:var(--gold-dark)}.stat-label{font-size:.72rem;color:var(--text-light);text-transform:uppercase;letter-spacing:1px;margin-top:4px}
+        .products-section{background:var(--white)}.products-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:28px}
+        .product-card{background:var(--cream);border-radius:var(--radius-lg);overflow:hidden;transition:var(--transition);border:1px solid rgba(184,149,106,.1);display:flex;flex-direction:column}.product-card:hover{transform:translateY(-6px);box-shadow:var(--shadow-md)}
+        .product-image-wrap{position:relative;aspect-ratio:1;background:linear-gradient(145deg,var(--beige),var(--cream-dark));display:flex;align-items:center;justify-content:center;overflow:hidden}.product-image-wrap img{width:100%;height:100%;object-fit:cover}.product-image-wrap .fallback{font-size:60px;opacity:.2}
+        .product-badge{position:absolute;top:14px;left:14px;padding:5px 14px;background:var(--gold);color:var(--white);font-size:.68rem;font-weight:600;letter-spacing:1px;text-transform:uppercase;border-radius:50px}html[dir="rtl"] .product-badge{left:auto;right:14px}
+        .product-info{padding:22px;flex:1;display:flex;flex-direction:column}.product-variety{font-size:.7rem;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:var(--gold);margin-bottom:6px}.product-name{font-family:var(--font-display);font-size:1.15rem;font-weight:600;color:var(--brown-dark);margin-bottom:8px}.product-desc{font-size:.85rem;color:var(--text-light);line-height:1.6;margin-bottom:16px;flex:1}
+        .product-price{font-family:var(--font-display);font-size:1.2rem;font-weight:700;color:var(--brown-dark);margin-bottom:12px}.product-price .from{font-size:.75rem;font-weight:400;color:var(--text-light);font-family:var(--font-body)}
+        .product-weights{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:16px}.weight-tag{padding:3px 10px;background:rgba(184,149,106,.1);color:var(--gold-dark);font-size:.65rem;font-weight:500;border-radius:50px}
+        .product-actions{display:flex;gap:10px;margin-top:auto}
+        .btn-view-product{flex:1;padding:11px;background:transparent;color:var(--brown-dark);font-size:.75rem;font-weight:600;letter-spacing:1px;text-transform:uppercase;border-radius:50px;border:1.5px solid var(--brown-dark);text-align:center}.btn-view-product:hover{background:var(--brown-dark);color:var(--white)}
+        .btn-buy-now{flex:1;padding:11px;background:var(--brown-dark);color:var(--white);font-size:.75rem;font-weight:600;letter-spacing:1px;text-transform:uppercase;border-radius:50px;border:1.5px solid var(--brown-dark);text-align:center}.btn-buy-now:hover{background:var(--gold-dark);border-color:var(--gold-dark)}
+        .purchase-section{background:var(--brown-dark)}.purchase-section .section-title{color:var(--cream)}.purchase-section .section-subtitle{color:var(--gold-light)}.purchase-section .section-desc{color:rgba(250,247,242,.7)}
+        .purchase-channels-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;max-width:900px;margin:0 auto}
+        .purchase-channel-card{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.08);border-radius:var(--radius-lg);padding:40px 30px;text-align:center;transition:var(--transition)}.purchase-channel-card:hover{background:rgba(255,255,255,.1);transform:translateY(-4px)}
+        .purchase-channel-icon{width:60px;height:60px;background:rgba(184,149,106,.15);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.5rem;margin:0 auto 16px}
+        .purchase-channel-name{font-family:var(--font-display);font-size:1.2rem;font-weight:600;color:var(--cream);margin-bottom:8px}.purchase-channel-desc{font-size:.82rem;color:rgba(250,247,242,.6);margin-bottom:20px}
+        .btn-channel-link{display:inline-flex;align-items:center;gap:8px;padding:10px 24px;border:1.5px solid var(--gold);border-radius:50px;color:var(--gold);font-size:.78rem;font-weight:600;letter-spacing:1px;text-transform:uppercase}.btn-channel-link:hover{background:var(--gold);color:var(--brown-dark)}
+        .detail-grid{display:grid;grid-template-columns:1fr 1fr;gap:60px;align-items:start}
+        .detail-main-image{width:100%;aspect-ratio:1;border-radius:var(--radius-lg);overflow:hidden;background:linear-gradient(145deg,var(--beige),var(--cream-dark));margin-bottom:16px;display:flex;align-items:center;justify-content:center}.detail-main-image img{width:100%;height:100%;object-fit:cover}
+        .detail-variety{font-size:.72rem;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:var(--gold);margin-bottom:8px}
+        .detail-name{font-family:var(--font-display);font-size:clamp(1.6rem,3vw,2.2rem);font-weight:700;color:var(--brown-dark);margin-bottom:12px}
+        .detail-description{font-size:.95rem;color:var(--text-light);line-height:1.8;margin-bottom:24px}
+        .detail-meta{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:28px;padding:20px;background:var(--cream);border-radius:var(--radius-md)}.meta-label{font-size:.7rem;font-weight:600;letter-spacing:1px;text-transform:uppercase;color:var(--text-light);margin-bottom:4px}.meta-value{font-size:.9rem;font-weight:600;color:var(--brown-dark)}
+        .weight-options{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:24px}.weight-option{padding:10px 22px;border:1.5px solid var(--beige);border-radius:50px;font-size:.82rem;font-weight:500;background:transparent}.weight-option.active{background:var(--brown-dark);border-color:var(--brown-dark);color:var(--white)}
+        .detail-price{font-family:var(--font-display);font-size:2rem;font-weight:700;color:var(--brown-dark);margin-bottom:24px}
+        .quantity-selector{display:flex;align-items:center;margin-bottom:28px}.qty-btn{width:40px;height:40px;background:var(--cream);border:1.5px solid var(--beige);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.1rem}.qty-value{width:50px;text-align:center;font-size:1rem;font-weight:600}
+        .detail-actions{display:flex;flex-direction:column;gap:12px;margin-bottom:32px}
+        .btn-buy-large{padding:16px;background:var(--brown-dark);color:var(--white);font-size:.85rem;font-weight:600;letter-spacing:2px;text-transform:uppercase;border-radius:50px;text-align:center;display:block}.btn-buy-large:hover{background:var(--gold-dark)}
+        .btn-whatsapp{padding:16px;background:#25D366;color:var(--white);font-size:.85rem;font-weight:600;letter-spacing:1px;text-transform:uppercase;border-radius:50px;text-align:center;display:flex;align-items:center;justify-content:center;gap:10px}.btn-whatsapp:hover{background:#20BA5C}
+        .tabs-header{display:flex;border-bottom:2px solid var(--beige);margin-bottom:30px;overflow-x:auto}.tab-btn{padding:14px 24px;font-size:.82rem;font-weight:600;color:var(--text-light);background:transparent;border-bottom:2px solid transparent;margin-bottom:-2px;white-space:nowrap}.tab-btn.active{color:var(--brown-dark);border-bottom-color:var(--gold)}
+        .tab-content{display:none;color:var(--text-light);line-height:1.8;font-size:.9rem}.tab-content.active{display:block}.tab-content ul{padding-left:20px;list-style:disc}
+        .contact-grid{display:grid;grid-template-columns:1fr 1fr;gap:60px}
+        .contact-info-card{background:var(--cream);padding:40px;border-radius:var(--radius-lg)}.contact-item{display:flex;align-items:flex-start;gap:14px;margin-bottom:24px}.contact-icon{width:40px;height:40px;background:rgba(184,149,106,.12);border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+        .form-group{margin-bottom:20px}.form-group label{display:block;font-size:.78rem;font-weight:600;margin-bottom:8px}.form-group input,.form-group textarea{width:100%;padding:13px 18px;background:var(--cream);border:1.5px solid var(--beige);border-radius:var(--radius-md);font-family:inherit}.form-group textarea{height:120px;resize:vertical}
+        .footer{background:var(--black);color:var(--cream);padding:70px 0 30px}.footer-grid{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:50px;margin-bottom:50px}.footer-links a{color:rgba(250,247,242,.6);font-size:.85rem}.footer-links a:hover{color:var(--gold)}.footer-bottom{border-top:1px solid rgba(255,255,255,.08);padding-top:24px;display:flex;justify-content:space-between;font-size:.78rem;color:rgba(250,247,242,.4)}
+        .page-section{display:none}.page-section.active{display:block}
+        .whatsapp-float{position:fixed;bottom:30px;left:30px;width:56px;height:56px;background:#25D366;color:var(--white);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.6rem;box-shadow:0 4px 20px rgba(37,211,102,.4);z-index:999}html[dir="rtl"] .whatsapp-float{left:auto;right:30px}
+        .page-hero{margin-top:var(--header-height);padding:80px 0;background:linear-gradient(135deg,var(--cream),var(--beige));text-align:center}
+        .breadcrumb{display:flex;gap:8px;font-size:.82rem;color:var(--text-light);margin-bottom:40px;flex-wrap:wrap}.breadcrumb a:hover{color:var(--gold-dark)}.breadcrumb .current{color:var(--brown-dark);font-weight:500}
+        @media(max-width:900px){.nav-desktop,.btn-shop-now,.lang-switch{display:none}.hamburger{display:flex}.nav-mobile{display:flex}.hero-inner,.about-grid,.contact-grid,.detail-grid,.purchase-channels-grid,.footer-grid{grid-template-columns:1fr}.hero-inner{text-align:center}.hero-desc{margin:0 auto 40px}.hero-buttons{justify-content:center}.hero-stats{justify-content:center}}
+    
+    /* إخفاء الأسعار من الكتالوج وصفحة العرض */
+    .product-price, #detPrice { display: none !important; }
+    </style>
+
+<style id="storeBtnStyle">
+.store-visit-btn{position:relative;display:inline-block;margin-top:15px;z-index:100}
+.store-visit-btn .main-btn{background:linear-gradient(135deg,#b89568,#d4a853);color:#fff;border:none;padding:14px 32px;border-radius:50px;font-size:1rem;font-weight:700;cursor:pointer;box-shadow:0 4px 15px rgba(184,149,104,0.4);transition:all .3s ease;font-family:inherit;display:inline-flex;align-items:center;gap:8px}
+.store-visit-btn .main-btn:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(184,149,104,0.6)}
+.store-dropdown{display:none;position:absolute;top:110%;left:50%;transform:translateX(-50%);background:#fff;border-radius:12px;box-shadow:0 8px 30px rgba(0,0,0,0.15);padding:12px;min-width:220px;z-index:999;border:1px solid rgba(184,149,104,0.2)}
+.store-dropdown.show{display:block;animation:fadeIn .25s ease}
+.store-dropdown a{display:flex;align-items:center;gap:12px;padding:12px 16px;border-radius:8px;text-decoration:none;color:#2c1810;font-weight:600;font-size:.95rem;transition:all .2s}
+.store-dropdown a:hover{background:rgba(184,149,104,0.1);transform:translateX(5px)}
+.store-dropdown a span.icon{font-size:1.4rem}
+[dir="rtl"] .store-dropdown a:hover{transform:translateX(-5px)}
+[dir="rtl"] .store-dropdown{left:auto;right:50%;transform:translateX(50%)}
+@keyframes fadeIn{from{opacity:0;transform:translateX(-50%) translateY(-10px)}to{opacity:1;transform:translateX(-50%) translateY(0)}}
+[dir="rtl"] @keyframes fadeIn{from{opacity:0;transform:translateX(50%) translateY(-10px)}to{opacity:1;transform:translateX(50%) translateY(0)}}
+</style>
+</head>
+<body>
+
+<header class="header" id="header">
+    <div class="header-inner">
+        <a href="#" class="logo" id="siteLogoLink" onclick="navigateTo('home'); return false;">
+            <span class="logo-name" id="siteLogo">MASSAR DATES</span>
+            <span class="logo-tagline" id="siteTagline">Premium Saudi Dates</span>
+        </a>
+        <nav class="nav-desktop">
+            <a href="#" onclick="navigateTo('home'); return false;" id="navHome">Home</a>
+            <a href="#" onclick="navigateTo('products'); return false;" id="navProducts">Products</a>
+            <a href="#" onclick="navigateTo('about'); return false;" id="navAbout">About Us</a>
+            <a href="#" onclick="navigateTo('contact'); return false;" id="navContact">Contact</a>
+        </nav>
+        <div class="header-actions">
+            <div class="lang-switch">
+                <button class="lang-btn active" onclick="setLang('en')">EN</button>
+                <span class="lang-sep">|</span>
+                <button class="lang-btn" onclick="setLang('ar')">العربية</button>
+                <span class="lang-sep">|</span>
+                <button class="lang-btn" onclick="setLang('ms')">BM</button>
+            </div>
+            <a href="#" class="btn-shop-now" onclick="navigateTo('products'); return false;">SHOP NOW</a>
+        </div>
+        <button class="hamburger" id="hamburger" onclick="document.getElementById('navMobile').classList.toggle('active')"><span></span><span></span><span></span></button>
+    </div>
+    <nav class="nav-mobile" id="navMobile">
+        <a href="#" onclick="navigateTo('home'); return false;">Home</a>
+        <a href="#" onclick="navigateTo('products'); return false;">Products</a>
+        <a href="#" onclick="navigateTo('about'); return false;">About Us</a>
+        <a href="#" onclick="navigateTo('contact'); return false;">Contact</a>
+        <div style="display:flex;gap:10px"><button class="lang-btn" onclick="setLang('en')">EN</button><button class="lang-btn" onclick="setLang('ar')">العربية</button><button class="lang-btn" onclick="setLang('ms')">BM</button></div>
+    </nav>
+</header>
+
+<!-- HOME -->
+<div class="page-section active" id="page-home">
+    <section class="hero">
+        <div class="hero-inner">
+            <div>
+                <div class="hero-badge"><span class="hero-badge-dot"></span><span id="heroBadge">Loading...</span></div>
+                <h1 class="hero-title" id="heroTitle">Loading...</h1>
+                <p class="hero-desc" id="heroDesc">Loading...</p>
+                <div class="hero-buttons">
+                    <a href="#" class="btn-primary" onclick="navigateTo('products'); return false;">Explore Products →</a>
+                    <a href="#" class="btn-secondary" onclick="navigateTo('about'); return false;">Our Story</a>
+                </div>
+                <div class="hero-stats">
+                    <div class="stat-item"><div class="stat-number" id="statCount">5+</div><div class="stat-label">Varieties</div></div>
+                    <div class="stat-item"><div class="stat-number">100%</div><div class="stat-label">Natural</div></div>
+                    <div class="stat-item"><div class="stat-number">Saudi</div><div class="stat-label">Origin</div></div>
+                </div>
+            </div>
+            <div class="hero-image-main" id="heroImgWrap"><div style="font-size:120px;opacity:.15">🌴</div></div>
+        </div>
+    </section>
+
+    <!-- FEATURED PRODUCTS -->
+    <section class="products-section section-padding"><div class="container">
+        <div class="section-header"><span class="section-subtitle">Our Collection</span><h2 class="section-title">Featured Premium Dates</h2><div class="gold-line"></div></div>
+        <div class="products-grid" id="featuredGrid"></div>
+    </div></section>
+
+    <!-- PURCHASE CHANNELS -->
+    <section class="purchase-section section-padding"><div class="container">
+        <div class="section-header"><span class="section-subtitle">Where to Buy</span><h2 class="section-title" style="color:var(--cream)">Shop Our Dates</h2><div class="gold-line"></div></div>
+        <div class="purchase-channels-grid">
+            <div class="purchase-channel-card"><div class="purchase-channel-icon">🎵</div><h3 class="purchase-channel-name">TikTok Shop</h3><p class="purchase-channel-desc">Browse and buy live on TikTok Shop.</p><a href="#" id="linkTikTok" class="btn-channel-link" target="_blank">Shop Now →</a></div>
+            <div class="purchase-channel-card"><div class="purchase-channel-icon">🛒</div><h3 class="purchase-channel-name">Shopee</h3><p class="purchase-channel-desc">Secure checkout & nationwide delivery.</p><a href="#" id="linkShopee" class="btn-channel-link" target="_blank">Shop Now →</a></div>
+            <div class="purchase-channel-card"><div class="purchase-channel-icon">💬</div><h3 class="purchase-channel-name">WhatsApp</h3><p class="purchase-channel-desc">Chat for personal & bulk orders.</p><a href="#" id="linkWA" class="btn-channel-link" target="_blank">Order Now →</a></div>
+        </div>
+    </div></section>
+
+    <!-- WHY MASSAR SECTION -->
+    <section class="why-massar-section section-padding" id="whyMassarSectionEl" style="background: var(--cream); border-top: 1px solid rgba(184, 149, 106, 0.15);">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-subtitle" id="whyMassarSub">Why Choose Us</span>
+                <h2 class="section-title" id="whyMassarTitle">WHY MASSAR?</h2>
+                <div class="gold-line"></div>
+                <p class="section-desc" id="whyMassarDesc">Discover why dates connoisseurs and wholesale partners across Malaysia trust MASSAR DATES.</p>
+            </div>
+            <div id="whyMassarGrid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 24px; max-width: 1200px; margin: 0 auto;"></div>
+        </div>
+    </section>
+
+    <!-- OUR BRANDS SECTION -->
+    <section class="brands-portfolio-section section-padding" style="background: var(--white); border-top: 1px solid rgba(184, 149, 106, 0.15);">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-subtitle" id="brandsPortfolioSub">Our Brand Portfolio</span>
+                <h2 class="section-title" id="brandsPortfolioTitle">OUR BRANDS</h2>
+                <div class="gold-line"></div>
+                <p class="section-desc" id="brandsPortfolioDesc">Discover the distinctive brands under MASSAR DATES.</p>
+            </div>
+            <div id="brandsPortfolioGrid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 30px; max-width: 1200px; margin: 0 auto;"></div>
+        </div>
+    </section>
+
+    <!-- FOR BUSINESSES SECTION -->
+    <section class="b2b-section section-padding" id="b2bSectionEl" style="background: var(--cream-dark); border-top: 1px solid rgba(184, 149, 106, 0.15); border-bottom: 1px solid rgba(184, 149, 106, 0.15);">
+        <div class="container" style="text-align: center;">
+            <span class="section-subtitle" id="b2bSub">For Businesses</span>
+            <h2 class="section-title" id="b2bTitle">Premium Saudi Dates for Businesses</h2>
+            <div class="gold-line"></div>
+            <p class="section-desc" id="b2bDesc" style="max-width: 760px; margin: 0 auto 36px; font-size: 1.02rem; line-height: 1.9; color: var(--text-light);">
+                Looking for premium Saudi dates in bulk? We offer competitive wholesale pricing, flexible minimum order quantities, and reliable supply across Malaysia.
+            </p>
+            <div>
+                <a href="#" id="b2bBtnLink" class="btn-primary" target="_blank" rel="noopener">
+                    <span id="b2bBtnText">Get Wholesale Quote</span>
+                    <span>→</span>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- TESTIMONIALS SECTION -->
+    <section class="testimonials-section section-padding" style="background: var(--white);">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-subtitle" id="testiSub">Customer Reviews</span>
+                <h2 class="section-title" id="testiTitle">What Our Customers Say</h2>
+                <div class="gold-line"></div>
+            </div>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 28px; max-width: 1200px; margin: 0 auto;">
+                <div style="background: var(--cream); border-radius: var(--radius-lg); padding: 32px 28px; border: 1px solid rgba(184, 149, 106, 0.15); box-shadow: var(--shadow-sm);">
+                    <div style="color: var(--gold); font-size: 1.1rem; letter-spacing: 3px; margin-bottom: 16px;">★★★★★</div>
+                    <p id="testiQuote1" style="font-size: 0.95rem; line-height: 1.8; color: var(--text); font-style: italic; margin-bottom: 24px;">“Excellent quality dates with a delicious taste. The packaging was beautiful and the delivery was fast.”</p>
+                    <div style="border-top: 1px solid rgba(184, 149, 106, 0.2); padding-top: 16px;"><strong id="testiAuthor1" style="display:block;font-family:var(--font-display);font-size:1.05rem;color:var(--brown-dark);">Aisha M.</strong><span id="testiRole1" style="font-size:0.78rem;color:var(--text-light);text-transform:uppercase;letter-spacing:1px;">Customer — Kuala Lumpur</span></div>
+                </div>
+                <div style="background: var(--cream); border-radius: var(--radius-lg); padding: 32px 28px; border: 1px solid rgba(184, 149, 106, 0.15); box-shadow: var(--shadow-sm);">
+                    <div style="color: var(--gold); font-size: 1.1rem; letter-spacing: 3px; margin-bottom: 16px;">★★★★★</div>
+                    <p id="testiQuote2" style="font-size: 0.95rem; line-height: 1.8; color: var(--text); font-style: italic; margin-bottom: 24px;">“The Ajwa dates were fresh, soft, and exactly as described. I will definitely order again.”</p>
+                    <div style="border-top: 1px solid rgba(184, 149, 106, 0.2); padding-top: 16px;"><strong id="testiAuthor2" style="display:block;font-family:var(--font-display);font-size:1.05rem;color:var(--brown-dark);">Mohammed A.</strong><span id="testiRole2" style="font-size:0.78rem;color:var(--text-light);text-transform:uppercase;letter-spacing:1px;">Customer — Selangor</span></div>
+                </div>
+                <div style="background: var(--cream); border-radius: var(--radius-lg); padding: 32px 28px; border: 1px solid rgba(184, 149, 106, 0.15); box-shadow: var(--shadow-sm);">
+                    <div style="color: var(--gold); font-size: 1.1rem; letter-spacing: 3px; margin-bottom: 16px;">★★★★★</div>
+                    <p id="testiQuote3" style="font-size: 0.95rem; line-height: 1.8; color: var(--text); font-style: italic; margin-bottom: 24px;">“Very good quality and excellent service. The dates arrived well packed and fresh.”</p>
+                    <div style="border-top: 1px solid rgba(184, 149, 106, 0.2); padding-top: 16px;"><strong id="testiAuthor3" style="display:block;font-family:var(--font-display);font-size:1.05rem;color:var(--brown-dark);">Sara H.</strong><span id="testiRole3" style="font-size:0.78rem;color:var(--text-light);text-transform:uppercase;letter-spacing:1px;">Customer — Johor Bahru</span></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- OUR BRAND SECTION -->
+    <section class="our-brand-section section-padding" style="background: linear-gradient(180deg, var(--cream) 0%, var(--cream-dark) 100%); border-top: 1px solid rgba(184, 149, 106, 0.15);">
+        <div class="container" style="text-align: center;">
+            <span class="section-subtitle" id="ourBrandSub">Our Brand</span>
+            <h2 class="section-title" id="ourBrandTitle" style="letter-spacing: 2px;">MASSAR DATES</h2>
+            <div class="gold-line"></div>
+            <p class="section-desc" id="ourBrandDesc" style="max-width: 700px; margin: 0 auto 32px; font-size: 1.02rem; line-height: 1.9; color: var(--text-light);">
+                Dedicated to bringing the finest harvest of authentic Saudi dates directly from the blessed orchards of Al Madinah and Al-Qassim to your table.
+            </p>
+            <div><a href="#" class="btn-primary" onclick="navigateTo('about'); return false;"><span id="ourBrandBtnText">Learn More</span> <span>→</span></a></div>
+        </div>
+    </section>
+</div>
+
+<!-- PRODUCTS PAGE -->
+<div class="page-section" id="page-products"><div class="page-hero"><h1 style="font-family:var(--font-display);font-size:2.5rem;color:var(--brown-dark)">All Products</h1><div class="gold-line"></div></div>
+    <section class="products-section section-padding"><div class="container"><div class="products-grid" id="allGrid"></div></div></section>
+</div>
+
+<!-- PRODUCT DETAIL -->
+<div class="page-section" id="page-detail"><div style="margin-top:var(--header-height)"><section class="section-padding"><div class="container">
+    <div class="breadcrumb"><a href="#" onclick="navigateTo('home'); return false;">Home</a> / <a href="#" onclick="navigateTo('products'); return false;">Products</a> / <span class="current" id="detBreadcrumb">Product</span></div>
+    <div class="detail-grid">
+        <div class="detail-main-image" id="detImg"><div style="font-size:80px;opacity:.2">🌰</div></div>
+        <div>
+            <div class="detail-variety" id="detVariety"></div>
+            <h1 class="detail-name" id="detName"></h1>
+            <p class="detail-description" id="detDesc"></p>
+            <div class="detail-meta">
+                <div><div class="meta-label">Origin</div><div class="meta-value" id="detOrigin"></div></div>
+                <div><div class="meta-label">Type</div><div class="meta-value" id="detType"></div></div>
+                <div><div class="meta-label">Texture</div><div class="meta-value" id="detTexture"></div></div>
+                <div><div class="meta-label">Taste</div><div class="meta-value" id="detTaste"></div></div>
+            </div>
+            <div class="meta-label" style="margin-bottom:12px">Select Weight</div>
+            <div class="weight-options" id="detWeights"></div>
+            <div class="detail-price" id="detPrice">RM --</div>
+            <div class="quantity-selector"><button class="qty-btn" onclick="chgQty(-1)">−</button><span class="qty-value" id="detQty">1</span><button class="qty-btn" onclick="chgQty(1)">+</button></div>
+            <div class="detail-actions">
+                <div style="margin-bottom: 15px; width: 100%;">
+                    <div class="meta-label" id="lblBuyWith" style="margin-bottom: 10px; font-weight: bold; color: var(--brown-dark); font-size: 0.95rem;">BUY WITH</div>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(110px, 1fr)); gap: 10px;">
+                        <a href="#" id="detShopeeBtn" class="btn-buy-large" style="background:#ff5722; color:#fff; text-align:center; display:none; text-decoration:none; padding:10px; border-radius:6px; font-weight:bold; font-size:0.85rem;" target="_blank">
+                            🧡 Shopee
+                        </a>
+                        <a href="#" id="detTikTokBtn" class="btn-buy-large" style="background:#000000; color:#fff; text-align:center; display:none; text-decoration:none; padding:10px; border-radius:6px; font-weight:bold; font-size:0.85rem;" target="_blank">
+                            🖤 TikTok
+                        </a>
+                        <a href="#" id="detLazadaBtn" class="btn-buy-large" style="background:#1a1a82; color:#fff; text-align:center; display:none; text-decoration:none; padding:10px; border-radius:6px; font-weight:bold; font-size:0.85rem;" target="_blank">
+                            💙 Lazada
+                        </a>
+                    </div>
+                </div>
+                <a href="#" id="detWABtn" class="btn-whatsapp" target="_blank" style="width:100%; display:flex; justify-content:center; align-items:center;">💬 ORDER VIA WHATSAPP</a>
+            </div>
+        </div>
+    </div>
+    <div style="margin-top:60px">
+        <div class="tabs-header">
+            <button class="tab-btn active" onclick="switchTab('tDet',this)">Product Details</button>
+            <button class="tab-btn" onclick="switchTab('tShip',this)">Shipping</button>
+            <button class="tab-btn" onclick="switchTab('tStor',this)">Storage</button>
+            <button class="tab-btn" onclick="switchTab('tRet',this)">Returns</button>
+        </div>
+        <div class="tab-content active" id="tDet"></div>
+        <div class="tab-content" id="tShip"></div>
+        <div class="tab-content" id="tStor"></div>
+        <div class="tab-content" id="tRet"></div>
+    </div>
+</div></section></div></div>
+
+<!-- ABOUT -->
+<div class="page-section" id="page-about"><div class="page-hero"><h1 style="font-family:var(--font-display);font-size:2.5rem;color:var(--brown-dark)" id="aboutTitle">About Us</h1><div class="gold-line"></div></div>
+    <section class="about-section section-padding"><div class="container"><div class="about-grid" style="display:grid;grid-template-columns:1fr 1fr;gap:60px;align-items:center">
+        <div class="hero-image-main"><div style="font-size:100px;opacity:.15">🌴</div></div>
+        <div><p class="about-text" id="aboutText" style="font-size:1rem;line-height:1.9;color:var(--text-light)"></p></div>
+    </div></div></section>
+</div>
+
+<!-- CONTACT -->
+<div class="page-section" id="page-contact"><div class="page-hero"><h1 style="font-family:var(--font-display);font-size:2.5rem;color:var(--brown-dark)">Contact Us</h1><div class="gold-line"></div></div>
+    <section class="section-padding"><div class="container"><div class="contact-grid">
+        <div class="contact-info-card">
+            <h3 style="font-family:var(--font-display);margin-bottom:24px">Contact Information</h3>
+            <div class="contact-item"><div class="contact-icon">💬</div><div><h4>WhatsApp</h4><p id="cPhone">--</p></div></div>
+            <div class="contact-item"><div class="contact-icon">📧</div><div><h4>Email</h4><p id="cEmail">--</p></div></div>
+            <div class="contact-item"><div class="contact-icon">📍</div><div><h4>Location</h4><p id="cLoc">--</p></div></div>
+        </div>
+        <div><h3 style="font-family:var(--font-display);margin-bottom:24px">Send Message</h3>
+            <form id="contactForm" style="display:flex;flex-direction:column;gap:14px;">
+        <div class="form-group"><label>Name / الاسم</label><input id="c_name" required style="width:100%;padding:10px;border:1px solid #ccc;border-radius:6px;"></div>
+        <div class="form-group"><label>Email / البريد</label><input type="email" id="c_email" required style="width:100%;padding:10px;border:1px solid #ccc;border-radius:6px;"></div>
+        <div class="form-group"><label>Message / الرسالة</label><textarea id="c_msg" rows="4" required style="width:100%;padding:10px;border:1px solid #ccc;border-radius:6px;font-family:inherit;"></textarea></div>
+        <button type="submit" id="c_btn" class="btn-primary" style="width:100%;justify-content:center;padding:12px;cursor:pointer;">Send Message / إرسال الرسالة</button>
+        <div id="c_status" style="margin-top:10px;font-weight:bold;display:none;padding:10px;border-radius:6px;"></div>
+    </form>
+    <script>
+    (function(){
+        const form = document.getElementById('contactForm');
+        if(form){
+            form.addEventListener('submit', async function(e){
+                e.preventDefault();
+                const btn = document.getElementById('c_btn');
+                const st = document.getElementById('c_status');
+                const name = document.getElementById('c_name').value.trim();
+                const email = document.getElementById('c_email').value.trim();
+                const message = document.getElementById('c_msg').value.trim();
+
+                btn.disabled = true;
+                btn.textContent = '... جاري الإرسال';
+                st.style.display = 'block';
+                st.style.background = '#fff3cd';
+                st.style.color = '#856404';
+                st.textContent = '⏳ جاري إرسال الرسالة والإشعار...';
+
+                try {
+                    const res = await fetch('/api/messages', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ name, email, message })
+                    });
+                    const data = await res.json();
+                    if(data.success){
+                        st.style.background = '#d4edda';
+                        st.style.color = '#155724';
+                        st.textContent = '✅ تم إرسال رسالتك بنجاح ووصل إشعار بالبريد!';
+                        form.reset();
+                        if(data.waLink){
+                            window.open(data.waLink, '_blank');
+                        }
+                    } else {
+                        throw new Error(data.message || 'Error');
+                    }
+                } catch(err){
+                    st.style.background = '#f8d7da';
+                    st.style.color = '#721c24';
+                    st.textContent = '❌ حدث خطأ، حاول ثانية.';
+                } finally {
+                    btn.disabled = false;
+                    btn.textContent = 'Send Message / إرسال الرسالة';
+                }
+            });
+        }
+    })();
+    </script>
+        </div>
+    </div></div></section>
+</div>
+
+<!-- FOOTER -->
+<footer class="footer"><div class="container"><div class="footer-grid">
+    <div>
+        <div style="font-family:var(--font-display);font-size:1.3rem;margin-bottom:6px">MASSAR DATES</div>
+        <p style="font-size:.85rem;color:rgba(250,247,242,.6);margin-bottom:12px">Premium Saudi Dates delivered to your door.</p>
+        <a href="#" id="footerContactWA" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;gap:8px;color:var(--gold);font-size:0.85rem;font-weight:600;">
+            <span>💬</span><span id="footerContactWAText">Contact via WhatsApp</span>
+        </a>
+    </div>
+    <div><h4>Quick Links</h4><ul class="footer-links"><li><a href="#" onclick="navigateTo('home'); return false;">Home</a></li><li><a href="#" onclick="navigateTo('products'); return false;">Products</a></li><li><a href="#" onclick="navigateTo('about'); return false;">About</a></li><li><a href="#" onclick="navigateTo('contact'); return false;">Contact</a></li></ul></div>
+    <div><h4>Shop On</h4><ul class="footer-links"><li><a href="#" id="fTikTok" target="_blank">TikTok Shop</a></li><li><a href="#" id="fShopee" target="_blank">Shopee</a></li><li><a href="#" id="fWA" target="_blank">WhatsApp</a></li></ul></div>
+    <div><h4>Admin</h4><ul class="footer-links"><li><a href="/admin" style="color:var(--gold)">🔒 Admin Panel</a></li></ul></div>
+</div><div class="footer-bottom"><p>&copy; 2024 MASSAR DATES. All rights reserved.</p></div></div></footer>
+<a href="#" id="floatWA" class="whatsapp-float" target="_blank">💬</a>
+
+<script>
+let lang = 'en', config = {}, products = [], selProd = null, selWeight = '500g', qty = 1;
+
+const contactTranslations = {
+    ar: {
+        title: "تواصل معنا",
+        infoTitle: "معلومات الاتصال",
+        sendTitle: "أرسل رسالة",
+        name: "الاسم",
+        email: "البريد الإلكتروني",
+        message: "الرسالة",
+        submit: "إرسال الرسالة",
+        success: "✅ تم حفظ وإرسال رسالتك بنجاح!",
+        error: "❌ حدث خطأ، يرجى المحاولة مرة أخرى."
+    },
+    en: {
+        title: "Contact Us",
+        infoTitle: "Contact Information",
+        sendTitle: "Send Message",
+        name: "Name",
+        email: "Email",
+        message: "Message",
+        submit: "Send Message",
+        success: "✅ Your message has been sent successfully!",
+        error: "❌ Something went wrong. Please try again."
+    },
+    ms: {
+        title: "Hubungi Kami",
+        infoTitle: "Maklumat Hubungan",
+        sendTitle: "Hantar Mesej",
+        name: "Nama",
+        email: "E-mel",
+        message: "Mesej",
+        submit: "Hantar Mesej",
+        success: "✅ Mesej anda berjaya dihantar!",
+        error: "❌ Ralat berlaku. Sila cuba lagi."
+    }
+};
+
+async function handleContactSubmit(event) {
+    event.preventDefault();
+    const name = document.getElementById('c_name').value.trim();
+    const email = document.getElementById('c_email').value.trim();
+    const message = document.getElementById('c_message').value.trim();
+    const btnSubmit = document.getElementById('btnContactSubmit');
+    const successEl = document.getElementById('contactSuccessMsg');
+    const errorEl = document.getElementById('contactErrorMsg');
+
+    successEl.style.display = 'none';
+    errorEl.style.display = 'none';
+    btnSubmit.disabled = true;
+    const origText = btnSubmit.textContent;
+    btnSubmit.textContent = (lang === 'ar') ? 'جاري الإرسال...' : (lang === 'ms') ? 'Menghantar...' : 'Sending...';
+
+    try {
+        const res = await fetch('/api/messages', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ name, email, message })
+        });
+        const data = await res.json();
+        if (res.ok && data.success) {
+            successEl.textContent = contactTranslations[lang].success;
+            successEl.style.display = 'block';
+            document.getElementById('contactActualForm').reset();
+            const now = new Date();
+            const dateStr = now.toLocaleDateString() + ' ' + now.toLocaleTimeString();
+            const waText = `📩 *New Website Message | رسالة موقع جديدة*\n\n👤 *Name:* ${name}\n📧 *Email:* ${email || 'N/A'}\n💬 *Message:* ${message}\n\n🕒 *Date & Time:* ${dateStr}`;
+            const cleanPhone = (config.link_whatsapp || '').replace(/[^0-9]/g, '');
+            if (cleanPhone) {
+                const waUrl = `https://wa.me/${cleanPhone}?text=${encodeURIComponent(waText)}`;
+                window.open(waUrl, '_blank');
+            }
+        } else { throw new Error(); }
+    } catch (err) {
+        errorEl.textContent = contactTranslations[lang].error;
+        errorEl.style.display = 'block';
+    } finally {
+        btnSubmit.disabled = false;
+        btnSubmit.textContent = origText;
+    }
+}
+
+function getProductDesc(p, l) {
+    if (!p) return '';
+    if (p['description_' + l]) return p['description_' + l];
+    if (p['desc_' + l]) return p['desc_' + l];
+    if (p.description_en) return p.description_en;
+    if (p.desc_en) return p.desc_en;
+    return '';
+}
+
+function getProductName(p, l) {
+    if (!p) return '';
+    if (p['name_' + l]) return p['name_' + l];
+    if (p.name_en) return p.name_en;
+    return '';
+}
+
+async function init() {
+    try {
+        const [cfgRes, prodRes] = await Promise.all([fetch('/api/config'), fetch('/api/products')]);
+        config = await cfgRes.json();
+        products = await prodRes.json();
+        applyConfig();
+        renderProducts();
+    } catch(e) { console.error('Failed to load data:', e); }
+}
+
+function applyConfig() {
+    const c = config;
+    document.getElementById('seoTitle').textContent = c.seo_title || 'MASSAR DATES';
+    document.getElementById('seoDesc').content = c.seo_desc || '';
+    document.getElementById('siteLogo').textContent = c.logo_text || 'MASSAR DATES';
+
+    const logoLink = document.getElementById('siteLogoLink');
+    const siteLogoEl = document.getElementById('siteLogo');
+    const oldImg = logoLink ? logoLink.querySelector('img.logo-img') : null;
+    if (oldImg) oldImg.remove();
+
+    if (c.logo_url) {
+        const img = document.createElement('img');
+        img.src = c.logo_url;
+        img.alt = c.logo_text || 'MASSAR DATES';
+        img.className = 'logo-img';
+        img.style.cssText = 'height:44px;width:auto;max-width:220px;object-fit:contain;display:block';
+        if (logoLink) logoLink.insertBefore(img, logoLink.firstChild);
+        if (siteLogoEl) siteLogoEl.style.display = 'none';
+    } else if (siteLogoEl) {
+        siteLogoEl.style.display = '';
+    }
+
+    document.getElementById('siteTagline').textContent = c['logo_tagline_' + lang] || c.logo_tagline_en || '';
+    document.getElementById('heroBadge').textContent = c['hero_badge_' + lang] || c.hero_badge_en || '';
+    const title = c['hero_title_' + lang] || c.hero_title_en || '';
+    document.getElementById('heroTitle').innerHTML = title.replace(/Saudi Dates|التمور السعودية|Kurma Saudi/i, '<span class="gold">$&</span>');
+    document.getElementById('heroDesc').textContent = c['hero_desc_' + lang] || c.hero_desc_en || '';
+    
+    if (c.hero_img) {
+        document.getElementById('heroImgWrap').innerHTML = `<img src="${c.hero_img}" style="width:100%;height:100%;object-fit:cover;">`;
+    }
+
+    const cleanPhone = (c.link_whatsapp || '').replace(/[^0-9]/g, '');
+    const waUrl = cleanPhone ? `https://wa.me/${cleanPhone}` : '#';
+    ['linkTikTok', 'fTikTok'].forEach(id => { const el = document.getElementById(id); if (el) el.href = c.link_tiktok || '#'; });
+    ['linkShopee', 'fShopee'].forEach(id => { const el = document.getElementById(id); if (el) el.href = c.link_shopee || '#'; });
+    ['linkWA', 'fWA', 'floatWA', 'footerContactWA'].forEach(id => { const el = document.getElementById(id); if (el) el.href = waUrl; });
+
+    const fWaText = document.getElementById('footerContactWAText');
+    if (fWaText) fWaText.textContent = (lang === 'ar') ? 'تواصل معنا عبر واتساب' : (lang === 'ms') ? 'Hubungi melalui WhatsApp' : 'Contact via WhatsApp';
+
+    const abTitle = document.getElementById('aboutTitle'); if (abTitle) abTitle.textContent = c['about_title_' + lang] || c.about_title_en || 'About Us';
+    const abText = document.getElementById('aboutText'); if (abText) abText.textContent = c['about_text_' + lang] || c.about_text_en || '';
+
+    const cp = document.getElementById('cPhone'); if (cp) cp.textContent = c.link_whatsapp || '--';
+    const ce = document.getElementById('cEmail'); if (ce) ce.textContent = c.contact_email || '--';
+    const cl = document.getElementById('cLoc'); if (cl) cl.textContent = c['contact_location_' + lang] || c.contact_location_en || '--';
+
+    renderWhyMassar();
+    renderBrandsSection();
+    renderB2BSection();
+    renderTabs();
+    
+    // تطبيق الترجمة الفورية للتواصل
+    const ct = contactTranslations[lang] || contactTranslations.en;
+    if (document.getElementById('contactInfoTitle')) document.getElementById('contactInfoTitle').textContent = ct.infoTitle;
+    if (document.getElementById('contactSendTitle')) document.getElementById('contactSendTitle').textContent = ct.sendTitle;
+    if (document.getElementById('lblContactName')) document.getElementById('lblContactName').textContent = ct.name;
+    if (document.getElementById('lblContactEmail')) document.getElementById('lblContactEmail').textContent = ct.email;
+    if (document.getElementById('lblContactMessage')) document.getElementById('lblContactMessage').textContent = ct.message;
+    if (document.getElementById('btnContactSubmit')) document.getElementById('btnContactSubmit').textContent = ct.submit;
+}
+
+function renderB2BSection() {
+    const sec = document.getElementById('b2bSectionEl');
+    if (!sec) return;
+
+    let b2b = {
+        active: true,
+        subtitle_en: 'For Businesses', subtitle_ar: 'للشركات والأعمال', subtitle_ms: 'Untuk Perniagaan',
+        title_en: 'Premium Saudi Dates for Businesses', title_ar: 'تمور سعودية فاخرة للشركات والأنشطة التجارية', title_ms: 'Kurma Saudi Premium untuk Perniagaan',
+        desc_en: 'Looking for premium Saudi dates in bulk? We offer competitive wholesale pricing, flexible minimum order quantities, and reliable supply for retailers, restaurants, hotels, and businesses across Malaysia.',
+        desc_ar: 'هل تبحث عن تمور سعودية فاخرة بالجملة؟ نقدم أسعار جملة تنافسية، كميات طلب مرنة، وتوريداً موثوقاً لتجار التجزئة، المطاعم، الفنادق، والشركات في جميع أنحاء ماليزيا.',
+        desc_ms: 'Mencari kurma Saudi premium secara pukal? Kami menawarkan harga borong yang kompetitif, kuantiti pesanan minimum yang fleksibel, dan bekalan yang boleh dipercayai untuk peruncit, restoran, hotel, dan perniagaan di seluruh Malaysia.',
+        button_en: 'Get Wholesale Quote', button_ar: 'طلب تسعيرة جملة', button_ms: 'Dapatkan Sebut Harga Borong'
+    };
+
+    if (config && config.b2b_data) {
+        try {
+            const parsed = typeof config.b2b_data === 'string' ? JSON.parse(config.b2b_data) : config.b2b_data;
+            b2b = { ...b2b, ...parsed };
+        } catch(e) {}
+    }
+
+    sec.style.display = (b2b.active === false) ? 'none' : '';
+
+    if (document.getElementById('b2bSub')) document.getElementById('b2bSub').textContent = b2b['subtitle_' + lang] || b2b.subtitle_en || '';
+    if (document.getElementById('b2bTitle')) document.getElementById('b2bTitle').textContent = b2b['title_' + lang] || b2b.title_en || '';
+    if (document.getElementById('b2bDesc')) document.getElementById('b2bDesc').textContent = b2b['desc_' + lang] || b2b.desc_en || '';
+    if (document.getElementById('b2bBtnText')) document.getElementById('b2bBtnText').textContent = b2b['button_' + lang] || b2b.button_en || 'Get Wholesale Quote';
+
+    const cleanPhoneB2B = (config.link_whatsapp || '').replace(/[^0-9]/g, '');
+    let b2bMsg = (lang === 'ar') ? 'مرحباً مسار للتمور، أود الاستفسار والحصول على تسعيرة لطلبات الجملة والشركات.' : (lang === 'ms') ? 'Halo MASSAR DATES, saya ingin mendapatkan sebut harga borong untuk perniagaan.' : 'Hello MASSAR DATES, I would like to request a wholesale quote for businesses.';
+    const b2bLink = document.getElementById('b2bBtnLink');
+    if (b2bLink) b2bLink.href = cleanPhoneB2B ? `https://wa.me/${cleanPhoneB2B}?text=${encodeURIComponent(b2bMsg)}` : '#';
+}
+
+function renderWhyMassar() {
+    const sec = document.getElementById('whyMassarSectionEl');
+    const grid = document.getElementById('whyMassarGrid');
+    if (!sec || !grid) return;
+
+    let data = {
+        active: true,
+        subtitle_en: "Why Choose Us", subtitle_ar: "لماذا تختارنا", subtitle_ms: "Kenapa Pilih Kami",
+        title_en: "WHY MASSAR?", title_ar: "لماذا مسار؟", title_ms: "KENAPA MASSAR?",
+        desc_en: "Discover why dates connoisseurs and wholesale partners across Malaysia trust MASSAR DATES.",
+        desc_ar: "اكتشف لماذا يثق خبراء التمور وشركاء الجملة في جميع أنحاء ماليزيا بتمور مسار.",
+        desc_ms: "Ketahui sebab pencinta kurma dan rakan kongsi borong di seluruh Malaysia mempercayai MASSAR DATES.",
+        cards: [
+            { icon: "🏆", title_en: "Premium Quality", title_ar: "جودة فائقة", title_ms: "Kualiti Premium", desc_en: "Carefully selected Saudi dates of exceptional quality.", desc_ar: "تمور سعودية منتقاة بعناية فائقة تضمن جودة استثنائية.", desc_ms: "Kurma Saudi pilihan yang dipilih rapi bagi menjamin kualiti luar biasa.", active: true },
+            { icon: "🇸🇦", title_en: "Authentic Saudi Origin", title_ar: "منشأ سعودي أصيل", title_ms: "Asal Saudi Tulen", desc_en: "Authentic dates sourced from renowned date-growing regions in Saudi Arabia.", desc_ar: "تمور أصيلة مستوردة مباشرة من أشهر مناطق زراعة التمور.", desc_ms: "Kurma asli dibekalkan terus dari kawasan penanaman kurma terkenal.", active: true },
+            { icon: "📦", title_en: "Fresh & Carefully Packed", title_ar: "طازجة ومعبأة بعناية", title_ms: "Segar & Dibungkus Rapi", desc_en: "Packed with care to preserve freshness, taste, and quality.", desc_ar: "تعبئة راقية واحترافية تضمن الحفاظ على طراوة ومذاق التمر.", desc_ms: "Dibungkus rapi untuk mengekalkan kesegaran dan rasa.", active: true },
+            { icon: "🤝", title_en: "Trusted Service", title_ar: "خدمة موثوقة", title_ms: "Perkhidmatan Dipercayai", desc_en: "Reliable service for customers, retailers, and wholesale partners.", desc_ar: "شريككم الموثوق لتوريد التمور للأفراد والموزعين والشركات.", desc_ms: "Perkhidmatan boleh dipercayai untuk pelanggan dan rakan kongsi.", active: true }
+        ]
+    };
+
+    if (config && config.why_massar_data) {
+        try {
+            const parsed = typeof config.why_massar_data === 'string' ? JSON.parse(config.why_massar_data) : config.why_massar_data;
+            data = { ...data, ...parsed };
+        } catch(e) {}
+    }
+
+    sec.style.display = (data.active === false) ? 'none' : '';
+    document.getElementById('whyMassarSub').textContent = data['subtitle_' + lang] || data.subtitle_en || '';
+    document.getElementById('whyMassarTitle').textContent = data['title_' + lang] || data.title_en || '';
+    document.getElementById('whyMassarDesc').textContent = data['desc_' + lang] || data.desc_en || '';
+
+    grid.innerHTML = (data.cards || []).filter(c => c.active !== false).map(c => `
+        <div style="background: var(--white); border-radius: var(--radius-md); padding: 32px 24px; border: 1px solid rgba(184,149,106,0.12); box-shadow: var(--shadow-sm); text-align: center;">
+            <div style="width: 56px; height: 56px; border-radius: 50%; background: rgba(184,149,106,0.08); display: flex; align-items: center; justify-content: center; font-size: 1.6rem; margin: 0 auto 18px;">${c.icon || '✨'}</div>
+            <h3 style="font-family: var(--font-display); font-size: 1.2rem; color: var(--brown-dark); font-weight:600; margin-bottom: 10px;">${c['title_' + lang] || c.title_en || ''}</h3>
+            <p style="font-size: 0.88rem; line-height: 1.7; color: var(--text-light);">${c['desc_' + lang] || c.desc_en || ''}</p>
+        </div>
+    `).join('');
+}
+
+function renderBrandsSection() {
+    const grid = document.getElementById('brandsPortfolioGrid');
+    if (!grid) return;
+
+    let brandsList = [
+        { name: 'NAWAH', tagline_en: 'Ancient Heritage & Purity', desc_en: 'Crafted with timeless tradition, NAWAH represents the pure essence of Saudi dates.', active: true },
+        { name: 'QUBBAH', tagline_en: 'Royal Saudi Selection', desc_en: 'The pinnacle of luxury. QUBBAH brings handpicked, large-grade dates.', active: true },
+        { name: 'ALMADINAH', tagline_en: 'Blessed Sacred Harvest', desc_en: 'Sourced directly from the sacred orchards of Al Madinah Al Munawwarah.', active: true }
+    ];
+
+    if (config && config.brands_data) {
+        try {
+            const parsed = typeof config.brands_data === 'string' ? JSON.parse(config.brands_data) : config.brands_data;
+            if (Array.isArray(parsed) && parsed.length > 0) brandsList = parsed;
+        } catch(e) {}
+    }
+
+    grid.innerHTML = brandsList.filter(b => b.active !== false).map(b => {
+        const visualHtml = b.image_url 
+            ? `<img src="${b.image_url}" alt="${b.name}" style="max-height: 60px; max-width: 160px; object-fit: contain; margin: 0 auto 16px;">`
+            : `<div style="width: 64px; height: 64px; border-radius: 50%; border: 2px solid var(--gold); display: flex; align-items: center; justify-content: center; font-family: var(--font-display); font-size: 1.6rem; font-weight: 700; color: var(--gold-dark); background: rgba(184,149,106,0.08); margin: 0 auto 16px;">${(b.name||'B').charAt(0)}</div>`;
+
+        return `
+            <div style="background: var(--cream); border-radius: var(--radius-lg); padding: 36px 28px; border: 1px solid rgba(184, 149, 106, 0.18); text-align: center; display: flex; flex-direction: column; justify-content: space-between;">
+                <div>
+                    ${visualHtml}
+                    <h3 style="font-family: var(--font-display); font-size: 1.4rem; color: var(--brown-dark); letter-spacing: 2px; margin-bottom: 6px;">${b.name}</h3>
+                    <div style="font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 1.5px; color: var(--gold); margin-bottom: 16px;">${b['tagline_' + lang] || b.tagline_en || ''}</div>
+                    <p style="font-size: 0.9rem; line-height: 1.8; color: var(--text-light); margin-bottom: 20px;">${b['desc_' + lang] || b.desc_en || ''}</p>
+                </div>
+                <div style="padding-top: 16px; border-top: 1px solid rgba(184, 149, 106, 0.15);">
+                    <button onclick="navigateTo('products'); return false;" class="btn-secondary" style="padding: 8px 24px; font-size: 0.72rem; width: 100%;">View Products →</button>
+                </div>
+            </div>
+        `;
+    }).join('');
+}
+
+function renderTabs() {
+    const c = config;
+    const tDet = document.getElementById('tDet'); if (tDet) tDet.textContent = c['detail_tab_' + lang] || c.detail_tab_en || 'Our premium dates are 100% natural, hand-harvested from Saudi Arabia.';
+    const tShip = document.getElementById('tShip'); if (tShip) tShip.textContent = c['ship_tab_' + lang] || c.ship_tab_en || 'Fast nationwide delivery across Malaysia within 1-3 business days.';
+    const tStor = document.getElementById('tStor'); if (tStor) tStor.textContent = c['stor_tab_' + lang] || c.stor_tab_en || 'Store in a cool dry place. Keep refrigerated for extended freshness.';
+    const tRet = document.getElementById('tRet'); if (tRet) tRet.textContent = c['ret_tab_' + lang] || c.ret_tab_en || 'Satisfaction guaranteed. Contact us via WhatsApp within 48 hours for any issues.';
+}
+
+function renderProducts() {
+    const featuredEl = document.getElementById('featuredGrid');
+    const allEl = document.getElementById('allGrid');
+    const statEl = document.getElementById('statCount');
+    if (statEl) statEl.textContent = products.length + '+';
+
+    const cardHtml = (p) => {
+        const name = getProductName(p, lang);
+        const desc = getProductDesc(p, lang);
+        const prices = p.prices || {};
+        const pVals = Object.values(prices).filter(v => v > 0);
+        const minP = pVals.length ? Math.min(...pVals) : '--';
+        const img = p.image_url ? `<img src="${p.image_url}" alt="${name}">` : `<div class="fallback">🌰</div>`;
+
+        return `
+            <div class="product-card">
+                <div class="product-image-wrap">
+                    <span class="product-badge">${p['badge_' + lang] || p.badge_en || p.variety || 'Premium'}</span>
+                    ${img}
+                </div>
+                <div class="product-info">
+                    <div class="product-variety">${p.variety || 'Saudi Arabia'}</div>
+                    <h3 class="product-name">${name}</h3>
+                    <p class="product-desc">${desc}</p>
+                    <div class="product-price"><span class="from">From</span> RM ${minP}</div>
+                    <div class="product-weights">
+                        ${Object.keys(prices).map(w => `<span class="weight-tag">${w}</span>`).join('')}
+                    </div>
+                    <div class="product-actions">
+                        <button class="btn-view-product" onclick="showDetail('${p.slug || p.id}')">View Details</button>
+                        <button class="btn-buy-now" onclick="showDetail('${p.slug || p.id}')">Buy Now</button>
+                    </div>
+                </div>
+            </div>
+        `;
+    };
+
+    if (featuredEl) featuredEl.innerHTML = products.filter(p => p.featured).map(cardHtml).join('');
+    if (allEl) allEl.innerHTML = products.map(cardHtml).join('');
+}
+
+function showDetail(slugOrId) {
+    const p = products.find(x => x.slug === slugOrId || String(x.id) === String(slugOrId));
+    if (!p) return;
+    selProd = p;
+    qty = 1;
+
+    const name = getProductName(p, lang);
+    const desc = getProductDesc(p, lang);
+
+    document.getElementById('detBreadcrumb').textContent = name;
+    document.getElementById('detName').textContent = name;
+    document.getElementById('detDesc').textContent = desc;
+    document.getElementById('detVariety').textContent = p.variety || 'Saudi Arabia';
+    document.getElementById('detOrigin').textContent = p.origin || 'Saudi Arabia';
+    document.getElementById('detType').textContent = p.type || p.variety || 'Dates';
+    document.getElementById('detTexture').textContent = p['texture_' + lang] || p.texture_en || 'Soft & Chewy';
+    document.getElementById('detTaste').textContent = p['taste_' + lang] || p.taste_en || 'Rich & Sweet';
+
+    const imgWrap = document.getElementById('detImg');
+    imgWrap.innerHTML = p.image_url ? `<img src="${p.image_url}" alt="${name}">` : `<div style="font-size:80px;opacity:.2">🌰</div>`;
+
+    const pKeys = Object.keys(p.prices || {});
+    selWeight = pKeys.includes('500g') ? '500g' : (pKeys[0] || '500g');
+    renderDetailWeights();
+    updateDetailPrice();
+    navigateTo('detail');
+}
+
+function renderDetailWeights() {
+    if (!selProd) return;
+    const wEl = document.getElementById('detWeights');
+    const pKeys = Object.keys(selProd.prices || {});
+    wEl.innerHTML = pKeys.map(w => `
+        <button class="weight-option ${w === selWeight ? 'active' : ''}" onclick="selectWeight('${w}')">${w}</button>
+    `).join('');
+}
+
+function selectWeight(w) {
+    selWeight = w;
+    renderDetailWeights();
+    updateDetailPrice();
+}
+
+function chgQty(delta) {
+    qty = Math.max(1, qty + delta);
+    document.getElementById('detQty').textContent = qty;
+    updateDetailPrice();
+}
+
+function updateDetailPrice() {
+    if (!selProd) return;
+    const unitPrice = (selProd.prices && selProd.prices[selWeight]) || 0;
+    const total = (unitPrice * qty).toFixed(2);
+    document.getElementById('detPrice').textContent = 'RM ' + total;
+
+    const buyWithLabel = document.getElementById('lblBuyWith');
+    if (buyWithLabel) {
+        buyWithLabel.textContent = (lang === 'ar') ? 'الشراء عبر مَتاجرنا:' : (lang === 'ms') ? 'BELI DENGAN:' : 'BUY WITH:';
+    }
+
+    const prodName = getProductName(selProd, lang);
+    let msgText = (lang === 'ar') 
+        ? `مرحباً مسار للتمور،\nأود طلب:\n- المنتج: ${prodName}\n- الوزن: ${selWeight}\n- الكمية: ${qty}\n- الإجمالي: RM ${total}`
+        : (lang === 'ms')
+        ? `Halo MASSAR DATES,\nSaya ingin membuat pesanan:\n- Produk: ${prodName}\n- Berat: ${selWeight}\n- Kuantiti: ${qty}\n- Jumlah: RM ${total}`
+        : `Hello MASSAR DATES,\nI would like to order:\n- Product: ${prodName}\n- Weight: ${selWeight}\n- Quantity: ${qty}\n- Total: RM ${total}`;
+
+    const cleanPhone = (config.link_whatsapp || '').replace(/[^0-9]/g, '');
+    const waUrl = `https://wa.me/${cleanPhone}?text=${encodeURIComponent(msgText)}`;
+    document.getElementById('detWABtn').href = waUrl;
+
+    const shopeeBtn = document.getElementById('detShopeeBtn');
+    const tiktokBtn = document.getElementById('detTikTokBtn');
+    const lazadaBtn = document.getElementById('detLazadaBtn');
+
+    const shopeeUrl = config.link_shopee || '';
+    if (shopeeUrl && shopeeUrl !== '#') {
+        shopeeBtn.href = shopeeUrl;
+        shopeeBtn.style.display = 'block';
+    } else {
+        shopeeBtn.style.display = 'none';
+    }
+
+    const tiktokUrl = config.link_tiktok || '';
+    if (tiktokUrl && tiktokUrl !== '#') {
+        tiktokBtn.href = tiktokUrl;
+        tiktokBtn.style.display = 'block';
+    } else {
+        tiktokBtn.style.display = 'none';
+    }
+
+    const lazadaUrl = config.link_lazada || '';
+    if (lazadaUrl && lazadaUrl !== '#') {
+        lazadaBtn.href = lazadaUrl;
+        lazadaBtn.style.display = 'block';
+    } else {
+        lazadaBtn.style.display = 'none';
+    }
+}
+
+function switchTab(tabId, btn) {
+    document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.tabs-header .tab-btn').forEach(b => b.classList.remove('active'));
+    document.getElementById(tabId).classList.add('active');
+    btn.classList.add('active');
+}
+
+function navigateTo(pageId) {
+    document.querySelectorAll('.page-section').forEach(s => s.classList.remove('active'));
+    document.querySelectorAll('.nav-desktop a').forEach(a => a.classList.remove('active'));
+    
+    const target = document.getElementById('page-' + pageId);
+    if (target) target.classList.add('active');
+    
+    const navItem = document.getElementById('nav' + pageId.charAt(0).toUpperCase() + pageId.slice(1));
+    if (navItem) navItem.classList.add('active');
+    
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    const mobileMenu = document.getElementById('navMobile');
+    if (mobileMenu) mobileMenu.classList.remove('active');
+}
+
+function setLang(l) {
+    lang = l;
+    document.documentElement.dir = (l === 'ar') ? 'rtl' : 'ltr';
+    document.documentElement.lang = l;
+    document.querySelectorAll('.lang-btn').forEach(b => {
+        b.classList.toggle('active', b.textContent.trim().toLowerCase().includes(l === 'ms' ? 'bm' : l));
+    });
+    applyConfig();
+    renderProducts();
+    if (selProd) showDetail(selProd.slug || selProd.id);
+}
+
+document.addEventListener('DOMContentLoaded', init);
+</script>
+
+<script id="storeBtnScript">
+function toggleStoreMenu(){
+    const dd=document.getElementById('storeDropdown');
+    dd.classList.toggle('show');
+}
+document.addEventListener('click',function(e){
+    const btn=document.getElementById('storeVisitBtn');
+    const dd=document.getElementById('storeDropdown');
+    if(btn && dd && !btn.contains(e.target)){dd.classList.remove('show');}
+});
+function updateStoreBtn(){
+    const txt=document.getElementById('storeBtnText');
+    if(!txt)return;
+    if(lang==='ar')txt.textContent='زور متاجرنا';
+    else if(lang==='ms')txt.textContent='Lawati Kedai Kami';
+    else txt.textContent='Visit Our Stores';
+    if(typeof config!=='undefined'){
+        const tk=document.getElementById('storeTiktok');
+        const sh=document.getElementById('storeShopee');
+        const lz=document.getElementById('storeLazada');
+        if(tk)tk.href=config.link_tiktok||'#';
+        if(sh)sh.href=config.link_shopee||'#';
+        if(lz)lz.href=config.link_lazada||'#';
+    }
+}
+const _origApplyConfig=typeof applyConfig==='function'?applyConfig:null;
+if(_origApplyConfig){
+    applyConfig=function(){_origApplyConfig();updateStoreBtn();};
+}
+const _origSetLang=typeof setLang==='function'?setLang:null;
+if(_origSetLang){
+    setLang=function(l){_origSetLang(l);updateStoreBtn();};
+}
+document.addEventListener('DOMContentLoaded',function(){setTimeout(updateStoreBtn,200);});
+</script>
+</body>
+</html>
