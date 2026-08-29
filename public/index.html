@@ -1142,6 +1142,7 @@ html[dir="rtl"] .mobile-product-categories button{
 <style id="luxuryCategoryFinalStyles">
 
 #productCategoriesSection{
+    display:none !important;
     width:100%;
     margin:0 0 55px;
 }
@@ -2264,7 +2265,9 @@ async function loadProductCategories() {
     try {
         const res = await fetch('/api/product-categories');
         const categories = await res.json();
-        window.productCategories = categories;
+  
+    
+      window.productCategories = categories;
 
         grid.innerHTML = `
             <button
@@ -2288,8 +2291,8 @@ async function loadProductCategories() {
 }
 
 async function openProductsCategory(categoryId) {
-    selectedCategoryId = categoryId;
-
+if (Number(categoryId) === 1) categoryId = 97;
+selectedCategoryId = categoryId;
     navigateTo('products');
 
     if (!Array.isArray(products)) {
@@ -2306,6 +2309,8 @@ async function openProductsCategory(categoryId) {
 
     filterProductsByCategory(categoryId);
 }function filterProductsByCategory(categoryId) {
+    
+
     selectedCategoryId =
         categoryId === null || categoryId === undefined || categoryId === ''
             ? null
@@ -2332,8 +2337,12 @@ async function openProductsCategory(categoryId) {
                 lang === 'ms' ? 'Semua Produk' :
                 'All Products';
         } else {
-            const cat = Array.isArray(window.productCategories)
-                ? window.productCategories.find(
+            const cats = typeof luxuryCategoryData === "function"
+                ? luxuryCategoryData()
+                : [];
+
+            const cat = Array.isArray(cats)
+                ? cats.find(
                     c => Number(c.id) === selectedCategoryId
                 )
                 : null;
@@ -2341,17 +2350,28 @@ async function openProductsCategory(categoryId) {
             if (cat) {
                 pageTitle.textContent =
                     lang === 'ar'
-                        ? (cat.name_ar || cat.name_en)
+                        ? (cat.name_ar || cat.name_en || '')
                         : lang === 'ms'
-                            ? (cat.name_ms || cat.name_en)
-                            : (cat.name_en || 'All Products');
+                            ? (cat.name_ms || cat.name_en || '')
+                            : (cat.name_en || '');
             } else if (activeBtn) {
                 pageTitle.textContent = activeBtn.textContent.trim();
+            } else {
+                pageTitle.textContent = 'Products';
             }
         }
     }
 
     renderProducts();
+
+    const finalTitle = document.getElementById('productsPageTitle');
+    if (finalTitle && selectedCategoryId !== null && selectedCategoryId !== undefined && selectedCategoryId !== '') {
+        const finalCats = typeof luxuryCategoryData === 'function' ? luxuryCategoryData() : (window.productCategories || []);
+        const finalCat = Array.isArray(finalCats) ? finalCats.find(c => Number(c.id) === Number(selectedCategoryId)) : null;
+        if (finalCat) {
+            finalTitle.textContent = lang === 'ar' ? (finalCat.name_ar || finalCat.name_en) : lang === 'ms' ? (finalCat.name_ms || finalCat.name_en) : (finalCat.name_en || finalCat.slug || 'Products');
+        }
+    }
 }function renderProducts() {
     const featuredEl = document.getElementById('featuredGrid');
     const allEl = document.getElementById('allGrid');
@@ -2434,6 +2454,10 @@ async function openProductsCategory(categoryId) {
     }
 
     // Products page
+    const categoriesPanel = document.getElementById('productCategoriesGrid');
+    if (categoriesPanel) {
+        categoriesPanel.style.display = 'none';
+    }
     if (allEl) {
 
         let visibleProducts;
@@ -2667,21 +2691,58 @@ function switchTab(tabId, btn) {
     btn.classList.add('active');
 }
 
-function navigateTo(pageId) {
+function navigateTo(pageId, fromHistory) {
     document.querySelectorAll('.page-section').forEach(s => s.classList.remove('active'));
     document.querySelectorAll('.nav-desktop a').forEach(a => a.classList.remove('active'));
-    
+
     const target = document.getElementById('page-' + pageId);
     if (target) target.classList.add('active');
-    
+
     const navItem = document.getElementById('nav' + pageId.charAt(0).toUpperCase() + pageId.slice(1));
     if (navItem) navItem.classList.add('active');
-    
+
     window.scrollTo({ top: 0, behavior: 'smooth' });
+
     const mobileMenu = document.getElementById('navMobile');
     if (mobileMenu) mobileMenu.classList.remove('active');
+
+    if (!fromHistory) {
+        history.pushState(
+            { page: pageId },
+            '',
+            '#' + pageId
+        );
+    }
 }
 
+(function initBrowserNavigation() {
+
+    const initialPage =
+        location.hash && location.hash.length > 1
+            ? location.hash.substring(1)
+            : 'home';
+
+    history.replaceState(
+        { page: initialPage },
+        '',
+        '#' + initialPage
+    );
+
+    window.addEventListener('popstate', function(event) {
+
+        const page =
+            event.state && event.state.page
+                ? event.state.page
+                : (
+                    location.hash && location.hash.length > 1
+                        ? location.hash.substring(1)
+                        : 'home'
+                );
+
+        navigateTo(page, true);
+    });
+
+})();
 
 function updateNavigationLanguage() {
     const t = {
@@ -3416,25 +3477,14 @@ async function openBlogPost(slug) {
 }
 
 const originalNavigateTo = window.navigateTo;
-window.navigateTo = function(pageId) {
-    document.querySelectorAll('.page-section').forEach(s => s.classList.remove('active'));
-    
-    if (pageId === 'blog') {
-        const p = document.getElementById('page-blog');
-        if (p) p.classList.add('active');
-        renderBlogList();
-    } else if (pageId === 'blog-detail') {
-        const p = document.getElementById('page-blog-detail');
-        if (p) p.classList.add('active');
-    } else {
-        const target = document.getElementById('page-' + pageId);
-        if (target) {
-            target.classList.add('active');
-        } else if (typeof originalNavigateTo === 'function') {
-            originalNavigateTo(pageId);
-        }
+window.navigateTo = function(pageId, fromHistory) {
+    if (typeof originalNavigateTo === 'function') {
+        originalNavigateTo(pageId, fromHistory);
     }
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+
+    if (pageId === 'blog' && typeof renderBlogList === 'function') {
+        renderBlogList();
+    }
 };
 
 const originalSetLang = window.setLang;
@@ -3510,160 +3560,7 @@ html[dir="rtl"] #globalBackButton{
 }
 </style>
 
-<button id="globalBackButton" type="button" onclick="globalBack()">
-    <span id="globalBackIcon">←</span>
-    <span id="globalBackText">Back</span>
-</button>
 
-<script>
-(function(){
-    let pageHistory=[];
-    let isGoingBack=false;
-    const MAX_HISTORY=30;
-
-    const backLabels={
-        en:{back:"Back"},
-        ar:{back:"رجوع"},
-        ms:{back:"Kembali"}
-    };
-
-    function getCurrentPage(){
-        const active=document.querySelector(".page-section.active");
-        if(!active)return "home";
-        return (active.id||"").replace("page-","")||"home";
-    }
-
-    function getState(){
-        return {
-            page:getCurrentPage(),
-            category:typeof selectedCategoryId!=="undefined"
-                ? selectedCategoryId
-                : null
-        };
-    }
-
-    function updateGlobalBackButton(){
-        const btn=document.getElementById("globalBackButton");
-        const txt=document.getElementById("globalBackText");
-        const icon=document.getElementById("globalBackIcon");
-
-        if(!btn)return;
-
-        const l=typeof window.lang!=="undefined"?window.lang:"en";
-        const t=backLabels[l]||backLabels.en;
-
-        if(txt)txt.textContent=t.back;
-        if(icon)icon.textContent=l==="ar"?"→":"←";
-
-        const current=getCurrentPage();
-
-        btn.style.display=
-            current==="home"||pageHistory.length===0
-            ?"none"
-            :"flex";
-    }
-
-    window.globalBack=function(){
-        if(isGoingBack)return;
-
-        if(pageHistory.length===0){
-            if(typeof window.navigateTo==="function"){
-                isGoingBack=true;
-                window.navigateTo("home");
-
-                setTimeout(function(){
-                    isGoingBack=false;
-                    updateGlobalBackButton();
-                },120);
-            }
-            return;
-        }
-
-        const previous=pageHistory.pop();
-
-        isGoingBack=true;
-
-        if(typeof window.navigateTo==="function"){
-            window.navigateTo(previous.page);
-        }
-
-        setTimeout(function(){
-
-            if(
-                previous.page==="products" &&
-                typeof filterProductsByCategory==="function"
-            ){
-                if(typeof selectedCategoryId!=="undefined"){
-                    selectedCategoryId=previous.category;
-                }
-
-                filterProductsByCategory(previous.category);
-            }
-
-            isGoingBack=false;
-            updateGlobalBackButton();
-
-            window.scrollTo({
-                top:0,
-                behavior:"smooth"
-            });
-
-        },120);
-    };
-
-    function installBackSystem(){
-
-        if(typeof window.navigateTo!=="function"){
-            setTimeout(installBackSystem,200);
-            return;
-        }
-
-        const oldNavigateTo=window.navigateTo;
-
-        if(oldNavigateTo.__massarProfessionalBack){
-            updateGlobalBackButton();
-            return;
-        }
-
-        function newNavigateTo(pageId){
-
-            const current=getState();
-
-            if(
-                !isGoingBack &&
-                pageId &&
-                pageId!==current.page
-            ){
-                pageHistory.push(current);
-
-                if(pageHistory.length>MAX_HISTORY){
-                    pageHistory.shift();
-                }
-            }
-
-            oldNavigateTo(pageId);
-            setTimeout(updateGlobalBackButton,40);
-        }
-
-        newNavigateTo.__massarProfessionalBack=true;
-        window.navigateTo=newNavigateTo;
-
-        updateGlobalBackButton();
-    }
-
-    window.updateGlobalBackButton=updateGlobalBackButton;
-
-    document.addEventListener("DOMContentLoaded",function(){
-        setTimeout(function(){
-            installBackSystem();
-            updateGlobalBackButton();
-        },300);
-    });
-
-    setInterval(updateGlobalBackButton,500);
-
-})();
-</script>
 
 
 
@@ -3802,8 +3699,7 @@ function luxuryCategoryData(){
                 name_ms:"Semua Produk",
                 icon:"✦"
             },
-            ...window.productCategories
-        ];
+...window.productCategories.filter(c => Number(c.id) !== 1)        ];
     }
     return fallbackCategories;
 }
@@ -3940,14 +3836,21 @@ window.luxuryOpenCategory = function(categoryId){
         }
 
         setTimeout(function(){
+
             const section = document.getElementById("productCategoriesSection");
-            if(section){
-                section.scrollIntoView({
+
+            if(section){ section.style.setProperty("display","none","important"); }
+
+            const grid = document.getElementById("allGrid");
+
+            if(grid){
+                grid.scrollIntoView({
                     behavior:"smooth",
                     block:"start"
                 });
             }
-        },220);
+
+        },300);
 
     }catch(e){
         console.error("Category navigation error:",e);
@@ -4156,8 +4059,8 @@ function homeBrowseCategories(){
     ){
         return [
             homeFallbackCategories[0],
-            ...window.productCategories
-        ];
+...window.productCategories.filter(c => Number(c.id) !== 1) 
+       ];
     }
 
     return homeFallbackCategories;
