@@ -272,14 +272,13 @@ app.put('/api/admin/password', authMiddleware, (req, res) => {
 
 // ==================== EMAIL & MESSAGES HANDLER ====================
 const transporter = nodemailer.createTransport({
-                    host: 'smtp.gmail.com',
-                    port: 587,
-                    secure: false,
-                    auth: {
-                        user: 'khwlah7712@gmail.com',
-                        pass: 'vpshrgzhytlpusfg'
-                    }
-                });
+    service: 'gmail',
+    auth: {
+        user: 'khwlah7712@gmail.com',
+        pass: 'vzhzqjsjbafhyogz'
+    },
+    tls: { rejectUnauthorized: false }
+});
 
 app.post('/api/messages', (req, res) => {
     const name = (req.body && req.body.name) || '';
