@@ -10,6 +10,44 @@ const jwt = require('jsonwebtoken');
 const multer = require('multer');
 const db = require('./database');
 
+
+// ========================================================
+// AUTO-ASSIGN BRANDS TO ALL PRODUCTS ON RENDER STARTUP
+// ========================================================
+function autoRepairProductBrands() {
+    try {
+        try { db.prepare("ALTER TABLE products ADD COLUMN brand TEXT").run(); } catch(e){}
+        
+        const prods = db.prepare("SELECT id, name_en, name_ar, variety, brand FROM products").all();
+        if (prods && prods.length > 0) {
+            const brands = ['NAWAH', 'QUBBAH', 'ALMADINAH'];
+            let updatedCount = 0;
+            
+            prods.forEach((p, idx) => {
+                let assigned = (p.brand || '').trim();
+                const text = ((p.name_en || '') + ' ' + (p.variety || '') + ' ' + (p.name_ar || '')).toLowerCase();
+                
+                // إذا كان البراند فارغاً يتم تعيينه بذكاء
+                if (!assigned) {
+                    if (text.includes('ajwa') || text.includes('madin') || text.includes('عجوة') || text.includes('مدينة')) {
+                        assigned = 'ALMADINAH';
+                    } else if (text.includes('sukari') || text.includes('sukkari') || text.includes('royal') || text.includes('سكري') || text.includes('قبة')) {
+                        assigned = 'QUBBAH';
+                    } else {
+                        assigned = brands[idx % brands.length];
+                    }
+                    db.prepare("UPDATE products SET brand = ? WHERE id = ?").run(assigned, p.id);
+                    updatedCount++;
+                }
+            });
+            console.log("✅ Auto-assigned brands to " + updatedCount + " products on startup.");
+        }
+    } catch(err) {
+        console.error("Brand auto-repair error:", err.message);
+    }
+}
+autoRepairProductBrands();
+
 const app = express();
 const PORT = process.env.PORT || 3000;
 const JWT_SECRET = process.env.JWT_SECRET || 'massar-dates-secret-key-change-in-production';
