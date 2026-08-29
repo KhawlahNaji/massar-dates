@@ -1,0 +1,149 @@
+<script>
+(function(){
+    let pageHistory=[];
+    let isGoingBack=false;
+    const MAX_HISTORY=30;
+
+    const backLabels={
+        en:{back:"Back"},
+        ar:{back:"رجوع"},
+        ms:{back:"Kembali"}
+    };
+
+    function getCurrentPage(){
+        const active=document.querySelector(".page-section.active");
+        if(!active)return "home";
+        return (active.id||"").replace("page-","")||"home";
+    }
+
+    function getState(){
+        return {
+            page:getCurrentPage(),
+            category:typeof selectedCategoryId!=="undefined"
+                ? selectedCategoryId
+                : null
+        };
+    }
+
+    function updateGlobalBackButton(){
+        const btn=document.getElementById("globalBackButton");
+        const txt=document.getElementById("globalBackText");
+        const icon=document.getElementById("globalBackIcon");
+
+        if(!btn)return;
+
+        const l=typeof window.lang!=="undefined"?window.lang:"en";
+        const t=backLabels[l]||backLabels.en;
+
+        if(txt)txt.textContent=t.back;
+        if(icon)icon.textContent=l==="ar"?"→":"←";
+
+        const current=getCurrentPage();
+
+        btn.style.display=
+            current==="home"||pageHistory.length===0
+            ?"none"
+            :"flex";
+    }
+
+    window.globalBack=function(){
+        if(isGoingBack)return;
+
+        if(pageHistory.length===0){
+            if(typeof window.navigateTo==="function"){
+                isGoingBack=true;
+                window.navigateTo("home");
+
+                setTimeout(function(){
+                    isGoingBack=false;
+                    updateGlobalBackButton();
+                },120);
+            }
+            return;
+        }
+
+        const previous=pageHistory.pop();
+
+        isGoingBack=true;
+
+        if(typeof window.navigateTo==="function"){
+            window.navigateTo(previous.page);
+        }
+
+        setTimeout(function(){
+
+            if(
+                previous.page==="products" &&
+                typeof filterProductsByCategory==="function"
+            ){
+                if(typeof selectedCategoryId!=="undefined"){
+                    selectedCategoryId=previous.category;
+                }
+
+                filterProductsByCategory(previous.category);
+            }
+
+            isGoingBack=false;
+            updateGlobalBackButton();
+
+            window.scrollTo({
+                top:0,
+                behavior:"smooth"
+            });
+
+        },120);
+    };
+
+    function installBackSystem(){
+
+        if(typeof window.navigateTo!=="function"){
+            setTimeout(installBackSystem,200);
+            return;
+        }
+
+        const oldNavigateTo=window.navigateTo;
+
+        if(oldNavigateTo.__massarProfessionalBack){
+            updateGlobalBackButton();
+            return;
+        }
+
+        function newNavigateTo(pageId){
+
+            const current=getState();
+
+            if(
+                !isGoingBack &&
+                pageId &&
+                pageId!==current.page
+            ){
+                pageHistory.push(current);
+
+                if(pageHistory.length>MAX_HISTORY){
+                    pageHistory.shift();
+                }
+            }
+
+            oldNavigateTo(pageId);
+            setTimeout(updateGlobalBackButton,40);
+        }
+
+        newNavigateTo.__massarProfessionalBack=true;
+        window.navigateTo=newNavigateTo;
+
+        updateGlobalBackButton();
+    }
+
+    window.updateGlobalBackButton=updateGlobalBackButton;
+
+    document.addEventListener("DOMContentLoaded",function(){
+        setTimeout(function(){
+            installBackSystem();
+            updateGlobalBackButton();
+        },300);
+    });
+
+    setInterval(updateGlobalBackButton,500);
+
+})();
+</script>

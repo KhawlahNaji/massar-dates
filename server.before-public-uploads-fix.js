@@ -1,6 +1,3 @@
-require("dotenv").config();
-const cloudinary = require("cloudinary").v2;
-const { CloudinaryStorage } = require("multer-storage-cloudinary");
 ﻿const nodemailer = require('nodemailer');
 const express = require('express');
 const path = require('path');
@@ -18,21 +15,14 @@ const JWT_SECRET = process.env.JWT_SECRET || 'massar-dates-secret-key-change-in-
 app.use(cors());
 app.use(express.json({ limit: '10mb' }));
 app.use(express.static(path.join(__dirname, 'public')));
-app.use('/uploads', express.static(path.join(__dirname, 'public', 'uploads')));
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 // File upload config
-cloudinary.config({
-    cloud_name: process.env.CLOUDINARY_CLOUD_NAME || 'u0x5opyh',
-    api_key: process.env.CLOUDINARY_API_KEY || '472159413429157',
-    api_secret: process.env.CLOUDINARY_API_SECRET || 'Ab7P54hG8y3GYIGjNc5a_j6twYg'
-});
-
-const storage = new CloudinaryStorage({
-    cloudinary: cloudinary,
-    params: {
-        folder: 'massar-dates',
-        allowed_formats: ['jpg', 'png', 'jpeg', 'webp', 'svg', 'gif']
+const storage = multer.diskStorage({
+    destination: (req, file, cb) => cb(null, path.join(__dirname, 'uploads')),
+    filename: (req, file, cb) => {
+        const uniqueName = Date.now() + '-' + file.originalname.replace(/\s+/g, '-');
+        cb(null, uniqueName);
     }
 });
 const upload = multer({ storage, limits: { fileSize: 5 * 1024 * 1024 } });
@@ -385,7 +375,7 @@ app.put('/api/admin/brands', authMiddleware, (req, res) => {
 // Upload image
 app.post('/api/admin/upload', authMiddleware, upload.single('image'), (req, res) => {
     if (!req.file) return res.status(400).json({ error: 'No file uploaded' });
-    res.json({ url: req.file.path });
+    res.json({ url: '/uploads/' + req.file.filename });
 });
 
 // Change password
