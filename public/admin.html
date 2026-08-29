@@ -532,7 +532,14 @@
                     <div class="card-body">
                         <input type="hidden" id="categoryManagerEditId">
 
-                        <div class="form-group">
+                        
+                    <div class="form-group">
+                        <label>البراند التابع له (Brand) *</label>
+                        <select class="form-control" id="editProdBrand" style="width: 100%; padding: 10px; border: 1.5px solid var(--gold); border-radius: 6px; background: #fffcf8; font-weight: 600;">
+                            <option value="">-- بدون براند محدد (عام) --</option>
+                        </select>
+                    </div>
+<div class="form-group">
                             <label>Category Slug</label>
                             <input id="categoryManagerSlug" class="form-control">
                         </div>
@@ -2006,6 +2013,37 @@ function editProductModal(id) {
     document.getElementById('editProdId').value = p.id;
     document.getElementById('editProdSlug').value = p.slug || '';
     document.getElementById('editProdVariety').value = p.variety || '';
+
+    // تعبئة قائمة البراندات المنسدلة في نافذة المنتج
+    const brandSelect = document.getElementById('editProdBrand');
+    if (brandSelect) {
+        brandSelect.innerHTML = '<option value="">-- بدون براند محدد (عام) --</option>';
+        if (typeof BRANDS !== 'undefined' && Array.isArray(BRANDS)) {
+            BRANDS.forEach(b => {
+                const opt = document.createElement('option');
+                opt.value = b.name;
+                opt.textContent = b.name;
+                brandSelect.appendChild(opt);
+            });
+        } else if (typeof globalBrandsList !== 'undefined' && Array.isArray(globalBrandsList)) {
+            globalBrandsList.forEach(b => {
+                const opt = document.createElement('option');
+                opt.value = b.name;
+                opt.textContent = b.name;
+                brandSelect.appendChild(opt);
+            });
+        } else {
+            // كخيار احتياطي لو لم تُحمّل بعد
+            ['NAWAH', 'QUBBAH', 'ALMADINAH'].forEach(name => {
+                const opt = document.createElement('option');
+                opt.value = name;
+                opt.textContent = name;
+                brandSelect.appendChild(opt);
+            });
+        }
+        brandSelect.value = p.brand || p.variety || '';
+    }
+
     document.getElementById('editProdCategory').value = String(p.category_id || 1);
     ['en','ar','ms'].forEach(l => {
         document.getElementById('editProdName_' + l).value = p['name_' + l] || '';
@@ -2024,6 +2062,9 @@ function editProductModal(id) {
 }
 
 async function saveProductModal() {
+
+    const brandVal = document.getElementById('editProdBrand') ? document.getElementById('editProdBrand').value : '';
+
     const id = document.getElementById('editProdId').value;
     const prices = {};
     ['100g','250g','500g','1kg','3kg','5kg'].forEach(w => {
@@ -2044,7 +2085,7 @@ async function saveProductModal() {
         texture_en: document.getElementById('editProdTexture_en').value,
         texture_ar: document.getElementById('editProdTexture_ar').value,
         texture_ms: document.getElementById('editProdTexture_ms').value,
-        variety: document.getElementById('editProdVariety').value,
+        variety: document.getElementById('editProdVariety').value || brandVal, brand: brandVal,
         category_id: Number(document.getElementById('editProdCategory').value),
         image_url: document.getElementById('editProdImage').value,
         active: document.getElementById('editProdActive').checked,
