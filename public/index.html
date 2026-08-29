@@ -825,7 +825,7 @@ html[dir="rtl"] .mobile-product-categories button{
         <nav class="nav-desktop">
             <a href="#" onclick="navigateTo('home'); return false;" id="navHome">Home</a>
             <div class="products-nav-dropdown">
-    <a href="#" onclick="navigateTo('products'); return false;" id="navProducts">
+    <a href="#" onclick="filterByBrand('${b.name}'); return false;" id="navProducts">
         Products
     </a>
     <div class="products-dropdown-menu">
@@ -850,7 +850,7 @@ html[dir="rtl"] .mobile-product-categories button{
                 <span class="lang-sep">|</span>
                 <button class="lang-btn" onclick="setLang('ms')">BM</button>
             </div>
-            <a href="#" class="btn-shop-now" onclick="navigateTo('products'); return false;">SHOP NOW</a>
+            <a href="#" class="btn-shop-now" onclick="filterByBrand('${b.name}'); return false;">SHOP NOW</a>
         </div>
         <button class="hamburger" id="hamburger" onclick="document.getElementById('navMobile').classList.toggle('active')"><span></span><span></span><span></span></button>
     </div>
@@ -935,7 +935,7 @@ html[dir="rtl"] .mobile-product-categories button{
                 <h1 class="hero-title" id="heroTitle">Loading...</h1>
                 <p class="hero-desc" id="heroDesc">Loading...</p>
                 <div class="hero-buttons">
-                    <a href="#" class="btn-primary" onclick="navigateTo('products'); return false;">Explore Products →</a>
+                    <a href="#" class="btn-primary" onclick="filterByBrand('${b.name}'); return false;">Explore Products →</a>
                     <a href="#" class="btn-secondary" onclick="navigateTo('about'); return false;">Our Story</a>
                 </div>
                 <div class="hero-stats">
@@ -1730,7 +1730,7 @@ html[dir="rtl"] .mobile-product-categories button{
                 </p>
 
                 <a href="#" class="btn-primary"
-                   onclick="navigateTo('products'); return false;">
+                   onclick="filterByBrand('${b.name}'); return false;">
                     <span id="aboutProductsBtn">Explore Our Products</span> →
                 </a>
 
@@ -1860,7 +1860,7 @@ html[dir="rtl"] .mobile-product-categories button{
     </div>
     <div><h4>Quick Links</h4><ul class="footer-links"><li><a href="#" id="navHomeMobile" onclick="navigateTo('home'); return false;">Home</a></li><li>
 <div class="mobile-products-menu">
-    <a href="#" onclick="navigateTo('products'); return false;">
+    <a href="#" onclick="filterByBrand('${b.name}'); return false;">
         <span>Products</span>
         <span class="mobile-products-arrow" onclick="event.preventDefault(); event.stopPropagation(); document.getElementById('footerProductCategories').classList.toggle('active');">⌄</span>
     </a>
@@ -2241,7 +2241,7 @@ function renderBrandsSection() {
                     <p style="font-size: 0.9rem; line-height: 1.8; color: var(--text-light); margin-bottom: 20px;">${b['desc_' + lang] || b.desc_en || ''}</p>
                 </div>
                 <div style="padding-top: 16px; border-top: 1px solid rgba(184, 149, 106, 0.15);">
-                    <button onclick="navigateTo('products'); return false;" class="btn-secondary" style="padding: 8px 24px; font-size: 0.72rem; width: 100%;">View Products →</button>
+                    <button onclick="filterByBrand('${b.name}'); return false;" class="btn-secondary" style="padding: 8px 24px; font-size: 0.72rem; width: 100%;">View Products →</button>
                 </div>
             </div>
         `;
