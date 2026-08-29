@@ -48,6 +48,47 @@ function autoRepairProductBrands() {
 }
 autoRepairProductBrands();
 
+
+// ========================================================
+// SYNC BLOG POSTS FROM SEED ON RENDER STARTUP
+// ========================================================
+function syncBlogFromSeed() {
+    try {
+        if (fs.existsSync('blog-seed.json')) {
+            const seed = JSON.parse(fs.readFileSync('blog-seed.json', 'utf8'));
+            if (Array.isArray(seed) && seed.length > 0) {
+                const upsert = db.prepare(`
+                    INSERT INTO blog_posts (id, slug, category, image_url, title_ar, excerpt_ar, content_ar, title_en, excerpt_en, content_en, title_ms, excerpt_ms, content_ms, sort_order, active, created_at, updated_at)
+                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
+                    ON CONFLICT(id) DO UPDATE SET
+                        image_url = excluded.image_url,
+                        title_ar = excluded.title_ar,
+                        title_en = excluded.title_en,
+                        excerpt_ar = excluded.excerpt_ar,
+                        excerpt_en = excluded.excerpt_en,
+                        content_ar = excluded.content_ar,
+                        content_en = excluded.content_en,
+                        updated_at = CURRENT_TIMESTAMP
+                `);
+                
+                seed.forEach(item => {
+                    upsert.run(
+                        item.id, item.slug || '', item.category || 'news', item.image_url || '',
+                        item.title_ar || '', item.excerpt_ar || '', item.content_ar || '',
+                        item.title_en || '', item.excerpt_en || '', item.content_en || '',
+                        item.title_ms || '', item.excerpt_ms || '', item.content_ms || '',
+                        item.sort_order || 0, item.active !== undefined ? item.active : 1
+                    );
+                });
+                console.log("✅ Auto-synced " + seed.length + " blog posts with Cloudinary images.");
+            }
+        }
+    } catch(err) {
+        console.error("Blog sync error:", err.message);
+    }
+}
+syncBlogFromSeed();
+
 const app = express();
 const PORT = process.env.PORT || 3000;
 const JWT_SECRET = process.env.JWT_SECRET || 'massar-dates-secret-key-change-in-production';
