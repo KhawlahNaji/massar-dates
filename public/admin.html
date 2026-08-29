@@ -532,9 +532,7 @@
                     <div class="card-body">
                         <input type="hidden" id="categoryManagerEditId">
 
-                        
-                    
-<div class="form-group">
+                        <div class="form-group">
                             <label>Category Slug</label>
                             <input id="categoryManagerSlug" class="form-control">
                         </div>
@@ -1404,17 +1402,7 @@
 
         <div class="form-grid">
             <div class="field"><label>URL Slug (e.g. ajwa-madinah)</label><input id="editProdSlug"></div>
-            
-              <div class="field">
-                  <label style="font-weight:bold; color:#b8956a;">🏷️ Brand / البراند التابع له</label>
-                  <select id="editProdBrand" style="width:100%; padding:9px; border:2px solid #b8956a; border-radius:6px; background:#fffcf8; font-weight:bold; color:#2d3748;">
-                      <option value="">-- General / عام (بدون براند) --</option>
-                      <option value="NAWAH">NAWAH (نواة)</option>
-                      <option value="QUBBAH">QUBBAH (قبة)</option>
-                      <option value="ALMADINAH">ALMADINAH (المدينة)</option>
-                  </select>
-              </div>
-<div class="field"><label>Variety / Region</label><input id="editProdVariety" placeholder="Al Madinah"></div>
+            <div class="field"><label>Variety / Region</label><input id="editProdVariety" placeholder="Al Madinah"></div>
             <div class="field"><label>Product Category</label><select id="editProdCategory"><option value="1">Dates — التمور</option><option value="2">Oils — الزيوت</option><option value="3">Nuts — المكسرات</option><option value="4">Honey — العسل</option><option value="5">Gift Boxes — علب الهدايا</option></select></div>
         </div>
 
@@ -2013,64 +2001,11 @@ function openProductModal() {
 }
 function closeProductModal() { document.getElementById('productModal').classList.remove('active'); }
 
-
-function updateProductBrandDropdown(selectedBrand = '') {
-    const sel = document.getElementById('editProdBrand');
-    if (!sel) return;
-    sel.innerHTML = '<option value="">-- General / عام (بدون براند) --</option>';
-    
-    let list = (typeof BRANDS !== 'undefined' && Array.isArray(BRANDS) && BRANDS.length > 0) 
-        ? BRANDS 
-        : [{ name: 'NAWAH' }, { name: 'QUBBAH' }, { name: 'ALMADINAH' }];
-        
-    list.forEach(b => {
-        const opt = document.createElement('option');
-        opt.value = b.name;
-        opt.textContent = b.name;
-        if (b.name === selectedBrand) opt.selected = true;
-        sel.appendChild(opt);
-    });
-    if (selectedBrand) sel.value = selectedBrand;
-}
-
 function editProductModal(id) {
     const p = PRODUCTS.find(x => x.id === id); if (!p) return;
     document.getElementById('editProdId').value = p.id;
     document.getElementById('editProdSlug').value = p.slug || '';
     document.getElementById('editProdVariety').value = p.variety || '';
-    if(document.getElementById('editProdBrand')) { document.getElementById('editProdBrand').value = p.brand || p.variety || ''; }
-    updateProductBrandDropdown(p.brand || p.variety || '');
-
-    // تعبئة قائمة البراندات المنسدلة في نافذة المنتج
-    const brandSelect = document.getElementById('editProdBrand');
-    if (brandSelect) {
-        brandSelect.innerHTML = '<option value="">-- بدون براند محدد (عام) --</option>';
-        if (typeof BRANDS !== 'undefined' && Array.isArray(BRANDS)) {
-            BRANDS.forEach(b => {
-                const opt = document.createElement('option');
-                opt.value = b.name;
-                opt.textContent = b.name;
-                brandSelect.appendChild(opt);
-            });
-        } else if (typeof globalBrandsList !== 'undefined' && Array.isArray(globalBrandsList)) {
-            globalBrandsList.forEach(b => {
-                const opt = document.createElement('option');
-                opt.value = b.name;
-                opt.textContent = b.name;
-                brandSelect.appendChild(opt);
-            });
-        } else {
-            // كخيار احتياطي لو لم تُحمّل بعد
-            ['NAWAH', 'QUBBAH', 'ALMADINAH'].forEach(name => {
-                const opt = document.createElement('option');
-                opt.value = name;
-                opt.textContent = name;
-                brandSelect.appendChild(opt);
-            });
-        }
-        brandSelect.value = p.brand || p.variety || '';
-    }
-
     document.getElementById('editProdCategory').value = String(p.category_id || 1);
     ['en','ar','ms'].forEach(l => {
         document.getElementById('editProdName_' + l).value = p['name_' + l] || '';
@@ -2089,9 +2024,6 @@ function editProductModal(id) {
 }
 
 async function saveProductModal() {
-
-    const brandVal = document.getElementById('editProdBrand') ? document.getElementById('editProdBrand').value : '';
-
     const id = document.getElementById('editProdId').value;
     const prices = {};
     ['100g','250g','500g','1kg','3kg','5kg'].forEach(w => {
@@ -2112,7 +2044,7 @@ async function saveProductModal() {
         texture_en: document.getElementById('editProdTexture_en').value,
         texture_ar: document.getElementById('editProdTexture_ar').value,
         texture_ms: document.getElementById('editProdTexture_ms').value,
-        variety: document.getElementById('editProdVariety').value || brandVal, brand: brandVal,
+        variety: document.getElementById('editProdVariety').value,
         category_id: Number(document.getElementById('editProdCategory').value),
         image_url: document.getElementById('editProdImage').value,
         active: document.getElementById('editProdActive').checked,
@@ -3339,35 +3271,7 @@ function rememberAdminPanel(panelId){
     window.currentAdminPanel = panelId || 'dashboard';
     setTimeout(showAdminBackButton,50);
 }
-</script><script src="brands-manager.js"></script>
-
-
-
-
-<script>
-// مزامنة البراند عند فتح نافذة المنتج
-const origEditModal = window.editProductModal;
-window.editProductModal = function(id) {
-    if (typeof origEditModal === 'function') origEditModal(id);
-    const p = (typeof PRODUCTS !== 'undefined') ? PRODUCTS.find(x => x.id === id) : null;
-    const bSel = document.getElementById('editProdBrand');
-    if (bSel && p) {
-        bSel.value = p.brand || p.variety || '';
-    }
-};
-
-// عند تغيير البراند
-document.addEventListener('change', function(e) {
-    if (e.target && e.target.id === 'editProdBrand') {
-        const vInput = document.getElementById('editProdVariety');
-        if (vInput && e.target.value) {
-            vInput.value = e.target.value;
-        }
-    }
-});
-</script>
-
-</body>
+</script></body>
 </html>
 
 

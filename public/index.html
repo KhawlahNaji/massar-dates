@@ -825,7 +825,7 @@ html[dir="rtl"] .mobile-product-categories button{
         <nav class="nav-desktop">
             <a href="#" onclick="navigateTo('home'); return false;" id="navHome">Home</a>
             <div class="products-nav-dropdown">
-    <a href="#" onclick="filterByBrand('${b.name}'); return false;" id="navProducts">
+    <a href="#" onclick="navigateTo('products'); return false;" id="navProducts">
         Products
     </a>
     <div class="products-dropdown-menu">
@@ -850,7 +850,7 @@ html[dir="rtl"] .mobile-product-categories button{
                 <span class="lang-sep">|</span>
                 <button class="lang-btn" onclick="setLang('ms')">BM</button>
             </div>
-            <a href="#" class="btn-shop-now" onclick="filterByBrand('${b.name}'); return false;">SHOP NOW</a>
+            <a href="#" class="btn-shop-now" onclick="navigateTo('products'); return false;">SHOP NOW</a>
         </div>
         <button class="hamburger" id="hamburger" onclick="document.getElementById('navMobile').classList.toggle('active')"><span></span><span></span><span></span></button>
     </div>
@@ -935,7 +935,7 @@ html[dir="rtl"] .mobile-product-categories button{
                 <h1 class="hero-title" id="heroTitle">Loading...</h1>
                 <p class="hero-desc" id="heroDesc">Loading...</p>
                 <div class="hero-buttons">
-                    <a href="#" class="btn-primary" onclick="filterByBrand('${b.name}'); return false;">Explore Products →</a>
+                    <a href="#" class="btn-primary" onclick="navigateTo('products'); return false;">Explore Products →</a>
                     <a href="#" class="btn-secondary" onclick="navigateTo('about'); return false;">Our Story</a>
                 </div>
                 <div class="hero-stats">
@@ -1730,7 +1730,7 @@ html[dir="rtl"] .mobile-product-categories button{
                 </p>
 
                 <a href="#" class="btn-primary"
-                   onclick="filterByBrand('${b.name}'); return false;">
+                   onclick="navigateTo('products'); return false;">
                     <span id="aboutProductsBtn">Explore Our Products</span> →
                 </a>
 
@@ -1860,7 +1860,7 @@ html[dir="rtl"] .mobile-product-categories button{
     </div>
     <div><h4>Quick Links</h4><ul class="footer-links"><li><a href="#" id="navHomeMobile" onclick="navigateTo('home'); return false;">Home</a></li><li>
 <div class="mobile-products-menu">
-    <a href="#" onclick="filterByBrand('${b.name}'); return false;">
+    <a href="#" onclick="navigateTo('products'); return false;">
         <span>Products</span>
         <span class="mobile-products-arrow" onclick="event.preventDefault(); event.stopPropagation(); document.getElementById('footerProductCategories').classList.toggle('active');">⌄</span>
     </a>
@@ -2241,7 +2241,7 @@ function renderBrandsSection() {
                     <p style="font-size: 0.9rem; line-height: 1.8; color: var(--text-light); margin-bottom: 20px;">${b['desc_' + lang] || b.desc_en || ''}</p>
                 </div>
                 <div style="padding-top: 16px; border-top: 1px solid rgba(184, 149, 106, 0.15);">
-                    <button onclick="filterByBrand('${b.name}'); return false;" class="btn-secondary" style="padding: 8px 24px; font-size: 0.72rem; width: 100%;">View Products →</button>
+                    <button onclick="navigateTo('products'); return false;" class="btn-secondary" style="padding: 8px 24px; font-size: 0.72rem; width: 100%;">View Products →</button>
                 </div>
             </div>
         `;
@@ -4361,63 +4361,87 @@ if(document.readyState === "loading"){
 
 })();
 
-</script><script>
-window.applyBrandFiltering = function() {
-    if (!activeBrandFilter || !Array.isArray(products)) return;
+</script>
+<script id="massar-brand-filter-system">
+window.currentFilteredBrand = null;
+
+window.filterBrandByName = function(brandName) {
+    window.currentFilteredBrand = brandName ? brandName.trim() : null;
     
+    if (typeof navigateTo === 'function') {
+        navigateTo('products');
+    }
+    
+    setTimeout(function() {
+        window.applyBrandFilterNow();
+        const target = document.getElementById('allGrid') || document.getElementById('products');
+        if (target) {
+            target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+    }, 100);
+};
+
+window.clearBrandFilterView = function() {
+    window.currentFilteredBrand = null;
+    const banner = document.getElementById('brandFilterActiveBanner');
+    if (banner) banner.remove();
+    if (typeof renderProducts === 'function') {
+        renderProducts();
+    }
+};
+
+window.applyBrandFilterNow = function() {
+    if (!window.currentFilteredBrand) return;
     const allEl = document.getElementById('allGrid');
     if (!allEl) return;
     
-    const bName = activeBrandFilter.trim().toLowerCase();
-    
-    // خريطة المرادفات لضمان ظهور المنتجات حتى لو اختلف الإملاء
-    let synonyms = [bName];
-    if (bName.includes('nawah')) synonyms.push('nawah', 'نواة', 'نواة');
-    if (bName.includes('qubba')) synonyms.push('qubba', 'qubbah', 'قبة', 'قبه');
-    if (bName.includes('madina')) synonyms.push('madina', 'madinah', 'almadina', 'almadinah', 'المدينة', 'مدينه');
+    let list = (typeof products !== 'undefined' && Array.isArray(products)) ? products : (window.products || []);
+    const bTarget = window.currentFilteredBrand.toLowerCase();
 
-    const filtered = products.filter(p => {
-        // فحص الحقول النصية للمنتج ومطابقتها مع اسم البراند أو مرادفاته
-        const checkFields = [
-            p.brand, p.variety, p.name_en, p.name_ar, p.desc_en, p.desc_ar, p.slug
-        ].map(f => (f || '').toLowerCase());
-
-        return synonyms.some(syn => {
-            return checkFields.some(field => field.includes(syn));
-        });
+    const filtered = list.filter(function(p) {
+        const b = (p.brand || '').toLowerCase();
+        const v = (p.variety || '').toLowerCase();
+        const ne = (p.name_en || '').toLowerCase();
+        const na = (p.name_ar || '').toLowerCase();
+        return b.includes(bTarget) || (b && bTarget.includes(b)) || v.includes(bTarget) || ne.includes(bTarget) || na.includes(bTarget);
     });
-    
-    // رسم شريط الفلتر الأنيق
-    let banner = document.getElementById('brandFilterBanner');
+
+    // شريط الفلتر العلوي
+    let banner = document.getElementById('brandFilterActiveBanner');
     if (!banner) {
         banner = document.createElement('div');
-        banner.id = 'brandFilterBanner';
+        banner.id = 'brandFilterActiveBanner';
         allEl.parentNode.insertBefore(banner, allEl);
     }
-    
-    banner.innerHTML = `
-        <div style="display: flex; justify-content: space-between; align-items: center; background: rgba(184, 149, 106, 0.08); border: 1.5px solid var(--gold); padding: 14px 22px; border-radius: 12px; margin-bottom: 25px; font-family: sans-serif;">
-            <span style="font-weight: 600; color: var(--brown-dark); font-size: 1rem;">
-                🏷️ Brand: <strong style="color: var(--gold-dark); text-transform: uppercase;">${activeBrandFilter}</strong> (${filtered.length} products found)
-            </span>
-            <button onclick="clearBrandFilter()" style="background: var(--gold); color: #fff; border: none; padding: 6px 16px; border-radius: 6px; cursor: pointer; font-size: 0.85rem; font-weight: 600; transition: 0.2s;" onmouseover="this.style.background='#9e7e55'" onmouseout="this.style.background='var(--gold)'">
-                Show All Products ✕
-            </button>
-        </div>
-    `;
-    
+
+    banner.innerHTML = '<div style="display:flex; justify-content:space-between; align-items:center; background:#fff8ef; border:2px solid #b8956a; padding:14px 20px; border-radius:10px; margin-bottom:25px; box-shadow:0 3px 8px rgba(184,149,106,0.15);">' +
+        '<div style="font-size:1.1rem; font-weight:bold; color:#2d3748;">' +
+            '🏷️ Brand: <span style="color:#b8956a; text-transform:uppercase;">' + window.currentFilteredBrand + '</span> (' + filtered.length + ' Products)' +
+        '</div>' +
+        '<button onclick="window.clearBrandFilterView()" style="background:#b8956a; color:white; border:none; padding:7px 18px; border-radius:6px; font-weight:bold; cursor:pointer;">Show All Products ✕</button>' +
+    '</div>';
+
     if (filtered.length > 0 && typeof window.productCardHtml === 'function') {
         allEl.innerHTML = filtered.map(window.productCardHtml).join('');
     } else {
-        allEl.innerHTML = `
-            <div style="grid-column: 1 / -1; text-align: center; padding: 50px 20px; color: var(--text-light); background: var(--cream); border-radius: 12px; border: 1px dashed rgba(184,149,106,0.3);">
-                <p style="font-size: 1.1rem; margin-bottom: 15px; font-weight: 600;">No products found specifically for "${activeBrandFilter}".</p>
-                <button onclick="clearBrandFilter()" class="btn-primary" style="padding: 10px 24px;">View All Products</button>
-            </div>
-        `;
+        allEl.innerHTML = '<div style="grid-column:1/-1; text-align:center; padding:50px 20px; color:#718096; background:#f8fafc; border-radius:10px; font-size:1.1rem;">No products found for "' + window.currentFilteredBrand + '".</div>';
     }
 };
+
+// اعتراض الضغط على أزرار البراندات في الصفحة كاملة
+document.addEventListener('click', function(e) {
+    const btn = e.target.closest('#brandsPortfolioGrid button, .brands-portfolio-section button, #brandsPortfolioGrid a');
+    if (!btn) return;
+    const card = btn.closest('div[style*="border-radius"]') || btn.parentElement.parentElement;
+    const h3 = card ? card.querySelector('h3') : null;
+    if (h3) {
+        e.preventDefault();
+        e.stopPropagation();
+        window.filterBrandByName(h3.textContent.trim());
+    }
+}, true);
 </script>
+
 </body>
 </html>
 

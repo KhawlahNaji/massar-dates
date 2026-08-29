@@ -319,7 +319,7 @@ app.delete('/api/admin/products/:id', authMiddleware, (req, res) => {
 
 // Toggle product active
 app.patch('/api/admin/products/:id/toggle', authMiddleware, (req, res) => {
-    const p = db.prepare('SELECT active FROM products WHERE id = ?').get(req.params.id);
+    const p = db.prepare('SELECT active , brand FROM products WHERE id = ?').get(req.params.id);
     if (!p) return res.status(404).json({ error: 'Not found' });
     db.prepare('UPDATE products SET active = ? WHERE id = ?').run(p.active ? 0 : 1, req.params.id);
     res.json({ message: 'Toggled', active: !p.active });
