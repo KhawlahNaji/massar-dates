@@ -533,15 +533,7 @@
                         <input type="hidden" id="categoryManagerEditId">
 
                         
-                    <div class="form-group">
-                        <label>البراند التابع له (Brand) *</label>
-                        <select class="form-control" id="editProdBrand" style="width: 100%; padding: 10px; border: 1.5px solid var(--gold); border-radius: 6px; background: #fffcf8; font-weight: 600;">
-                            <option value="">-- General / عام --</option>
-                            <option value="NAWAH">NAWAH (نواة)</option>
-                            <option value="QUBBAH">QUBBAH (قبة)</option>
-                            <option value="ALMADINAH">ALMADINAH (المدينة)</option>
-                        </select>
-                    </div>
+                    
 <div class="form-group">
                             <label>Category Slug</label>
                             <input id="categoryManagerSlug" class="form-control">
@@ -1412,7 +1404,17 @@
 
         <div class="form-grid">
             <div class="field"><label>URL Slug (e.g. ajwa-madinah)</label><input id="editProdSlug"></div>
-            <div class="field"><label>Variety / Region</label><input id="editProdVariety" placeholder="Al Madinah"></div>
+            
+              <div class="field">
+                  <label style="font-weight:bold; color:#b8956a;">🏷️ Brand / البراند التابع له</label>
+                  <select id="editProdBrand" style="width:100%; padding:9px; border:2px solid #b8956a; border-radius:6px; background:#fffcf8; font-weight:bold; color:#2d3748;">
+                      <option value="">-- General / عام (بدون براند) --</option>
+                      <option value="NAWAH">NAWAH (نواة)</option>
+                      <option value="QUBBAH">QUBBAH (قبة)</option>
+                      <option value="ALMADINAH">ALMADINAH (المدينة)</option>
+                  </select>
+              </div>
+<div class="field"><label>Variety / Region</label><input id="editProdVariety" placeholder="Al Madinah"></div>
             <div class="field"><label>Product Category</label><select id="editProdCategory"><option value="1">Dates — التمور</option><option value="2">Oils — الزيوت</option><option value="3">Nuts — المكسرات</option><option value="4">Honey — العسل</option><option value="5">Gift Boxes — علب الهدايا</option></select></div>
         </div>
 
@@ -3340,6 +3342,30 @@ function rememberAdminPanel(panelId){
 </script><script src="brands-manager.js"></script>
 
 
+
+
+<script>
+// مزامنة البراند عند فتح نافذة المنتج
+const origEditModal = window.editProductModal;
+window.editProductModal = function(id) {
+    if (typeof origEditModal === 'function') origEditModal(id);
+    const p = (typeof PRODUCTS !== 'undefined') ? PRODUCTS.find(x => x.id === id) : null;
+    const bSel = document.getElementById('editProdBrand');
+    if (bSel && p) {
+        bSel.value = p.brand || p.variety || '';
+    }
+};
+
+// عند تغيير البراند
+document.addEventListener('change', function(e) {
+    if (e.target && e.target.id === 'editProdBrand') {
+        const vInput = document.getElementById('editProdVariety');
+        if (vInput && e.target.value) {
+            vInput.value = e.target.value;
+        }
+    }
+});
+</script>
 
 </body>
 </html>
