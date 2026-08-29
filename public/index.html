@@ -4361,7 +4361,64 @@ if(document.readyState === "loading"){
 
 })();
 
-</script></body>
+</script><script>
+window.applyBrandFiltering = function() {
+    if (!activeBrandFilter || !Array.isArray(products)) return;
+    
+    const allEl = document.getElementById('allGrid');
+    if (!allEl) return;
+    
+    const bName = activeBrandFilter.trim().toLowerCase();
+    
+    // خريطة المرادفات لضمان ظهور المنتجات حتى لو اختلف الإملاء
+    let synonyms = [bName];
+    if (bName.includes('nawah')) synonyms.push('nawah', 'نواة', 'نواة');
+    if (bName.includes('qubba')) synonyms.push('qubba', 'qubbah', 'قبة', 'قبه');
+    if (bName.includes('madina')) synonyms.push('madina', 'madinah', 'almadina', 'almadinah', 'المدينة', 'مدينه');
+
+    const filtered = products.filter(p => {
+        // فحص الحقول النصية للمنتج ومطابقتها مع اسم البراند أو مرادفاته
+        const checkFields = [
+            p.brand, p.variety, p.name_en, p.name_ar, p.desc_en, p.desc_ar, p.slug
+        ].map(f => (f || '').toLowerCase());
+
+        return synonyms.some(syn => {
+            return checkFields.some(field => field.includes(syn));
+        });
+    });
+    
+    // رسم شريط الفلتر الأنيق
+    let banner = document.getElementById('brandFilterBanner');
+    if (!banner) {
+        banner = document.createElement('div');
+        banner.id = 'brandFilterBanner';
+        allEl.parentNode.insertBefore(banner, allEl);
+    }
+    
+    banner.innerHTML = `
+        <div style="display: flex; justify-content: space-between; align-items: center; background: rgba(184, 149, 106, 0.08); border: 1.5px solid var(--gold); padding: 14px 22px; border-radius: 12px; margin-bottom: 25px; font-family: sans-serif;">
+            <span style="font-weight: 600; color: var(--brown-dark); font-size: 1rem;">
+                🏷️ Brand: <strong style="color: var(--gold-dark); text-transform: uppercase;">${activeBrandFilter}</strong> (${filtered.length} products found)
+            </span>
+            <button onclick="clearBrandFilter()" style="background: var(--gold); color: #fff; border: none; padding: 6px 16px; border-radius: 6px; cursor: pointer; font-size: 0.85rem; font-weight: 600; transition: 0.2s;" onmouseover="this.style.background='#9e7e55'" onmouseout="this.style.background='var(--gold)'">
+                Show All Products ✕
+            </button>
+        </div>
+    `;
+    
+    if (filtered.length > 0 && typeof window.productCardHtml === 'function') {
+        allEl.innerHTML = filtered.map(window.productCardHtml).join('');
+    } else {
+        allEl.innerHTML = `
+            <div style="grid-column: 1 / -1; text-align: center; padding: 50px 20px; color: var(--text-light); background: var(--cream); border-radius: 12px; border: 1px dashed rgba(184,149,106,0.3);">
+                <p style="font-size: 1.1rem; margin-bottom: 15px; font-weight: 600;">No products found specifically for "${activeBrandFilter}".</p>
+                <button onclick="clearBrandFilter()" class="btn-primary" style="padding: 10px 24px;">View All Products</button>
+            </div>
+        `;
+    }
+};
+</script>
+</body>
 </html>
 
 
