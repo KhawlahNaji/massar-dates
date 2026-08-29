@@ -536,7 +536,10 @@
                     <div class="form-group">
                         <label>البراند التابع له (Brand) *</label>
                         <select class="form-control" id="editProdBrand" style="width: 100%; padding: 10px; border: 1.5px solid var(--gold); border-radius: 6px; background: #fffcf8; font-weight: 600;">
-                            <option value="">-- بدون براند محدد (عام) --</option>
+                            <option value="">-- General / عام --</option>
+                            <option value="NAWAH">NAWAH (نواة)</option>
+                            <option value="QUBBAH">QUBBAH (قبة)</option>
+                            <option value="ALMADINAH">ALMADINAH (المدينة)</option>
                         </select>
                     </div>
 <div class="form-group">
@@ -2033,6 +2036,7 @@ function editProductModal(id) {
     document.getElementById('editProdId').value = p.id;
     document.getElementById('editProdSlug').value = p.slug || '';
     document.getElementById('editProdVariety').value = p.variety || '';
+    if(document.getElementById('editProdBrand')) { document.getElementById('editProdBrand').value = p.brand || p.variety || ''; }
     updateProductBrandDropdown(p.brand || p.variety || '');
 
     // تعبئة قائمة البراندات المنسدلة في نافذة المنتج
@@ -3335,75 +3339,7 @@ function rememberAdminPanel(panelId){
 }
 </script><script src="brands-manager.js"></script>
 
-<!-- BRAND SELECTOR RUNTIME INJECTOR -->
-<script>
-(function() {
-    function injectBrandSelector() {
-        const varietyInput = document.getElementById('editProdVariety');
-        if (!varietyInput) return;
-        
-        // التحقق إذا كانت القائمة مضافة مسبقاً
-        if (document.getElementById('editProdBrand')) return;
 
-        const parentDiv = varietyInput.closest('.field') || varietyInput.closest('.form-group') || varietyInput.parentElement;
-        if (!parentDiv) return;
-
-        // إنشاء عنصر حقل البراند
-        const brandDiv = document.createElement('div');
-        brandDiv.className = parentDiv.className || 'field';
-        brandDiv.style.marginBottom = '12px';
-        brandDiv.innerHTML = `
-            <label style="display:block; font-weight:bold; margin-bottom:5px; color:#b8956a; font-size:0.88rem;">
-                🏷️ Brand / البراند التابع له
-            </label>
-            <select id="editProdBrand" style="width:100%; padding:10px; border:2px solid #b8956a; border-radius:6px; background:#fffcf8; font-weight:bold; font-size:0.95rem; color:#2d3748;">
-                <option value="">-- General / بدون براند (عام) --</option>
-                <option value="NAWAH">NAWAH (نواة)</option>
-                <option value="QUBBAH">QUBBAH (قبة)</option>
-                <option value="ALMADINAH">ALMADINAH (المدينة)</option>
-            </select>
-        `;
-
-        parentDiv.parentNode.insertBefore(brandDiv, parentDiv);
-
-        // عند تغيير البراند يكتب تلقائياً في خانة Variety لضمان التوافق
-        document.getElementById('editProdBrand').addEventListener('change', function(e) {
-            if (e.target.value) {
-                varietyInput.value = e.target.value;
-            }
-        });
-    }
-
-    // مزامنة قيمة البراند عند فتح نافذة التعديل
-    function syncBrandValue() {
-        injectBrandSelector();
-        const brandSelect = document.getElementById('editProdBrand');
-        const varietyInput = document.getElementById('editProdVariety');
-        if (!brandSelect || !varietyInput) return;
-
-        const val = (varietyInput.value || '').toUpperCase();
-        if (val.includes('NAWAH')) {
-            brandSelect.value = 'NAWAH';
-        } else if (val.includes('QUBBA') || val.includes('QUBBAH')) {
-            brandSelect.value = 'QUBBAH';
-        } else if (val.includes('MADINA') || val.includes('MADINAH') || val.includes('ALMADINA')) {
-            brandSelect.value = 'ALMADINAH';
-        } else {
-            brandSelect.value = '';
-        }
-    }
-
-    // مراقبة فتح النوافذ المنبثقة
-    document.addEventListener('click', function(e) {
-        if (e.target && (e.target.innerText.includes('Edit') || e.target.innerText.includes('Add') || e.target.onclick)) {
-            setTimeout(syncBrandValue, 80);
-            setTimeout(syncBrandValue, 300);
-        }
-    });
-
-    setInterval(injectBrandSelector, 1000);
-})();
-</script>
 
 </body>
 </html>
