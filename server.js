@@ -43,14 +43,23 @@ function authMiddleware(req, res, next) {
 
 // ==================== 📬 مسار استقبال الرسائل والواتساب ====================
 
-// ==================== إعداد خادم الإيميل السحابي المعتمد لـ Render ====================
+
+    } catch (e) {
+        console.error("General Message Error:", e);
+        res.status(500).json({ error: 'Failed to process message' });
+    }
+});
+
+// مسار جلب الرسائل للأدمن
+
+// ==================== خادم البريد المعتمد والمتزامن لـ Render ====================
 const emailUser = (process.env.EMAIL_USER || 'khwlah7712@gmail.com').trim();
 const emailPass = (process.env.EMAIL_PASS || 'vzhzqjsjbafhyogz').replace(/s+/g, '');
 
 const transporter = nodemailer.createTransport({
     host: 'smtp.gmail.com',
-    port: 465,
-    secure: true, // استخدام SSL الصريح لمنع الحظر السحابي
+    port: 587,
+    secure: false, // استخدام STARTTLS المعتمد في Render
     auth: {
         user: emailUser,
         pass: emailPass
@@ -60,22 +69,14 @@ const transporter = nodemailer.createTransport({
     }
 });
 
-// التحقق من صحة الاتصال بخادم البريد عند بدء التشغيل
-transporter.verify((error, success) => {
-    if (error) {
-        console.log('⚠️ [SMTP Status] خطأ في مصادقة البريد:', error.message);
-    } else {
-        console.log('✅ [SMTP Status] خادم البريد جاهز ومتصل بنجاح مع Google!');
-    }
-});
-
-app.post('/api/messages', (req, res) => {
+// استقبال الرسائل وإرسال الإيميل مع انتظار التأكيد (await)
+app.post('/api/messages', async (req, res) => {
     try {
         const name = (req.body && req.body.name) || 'عميل جديد';
         const email = (req.body && req.body.email) || '';
         const message = (req.body && req.body.message) || '';
 
-        console.log(`📩 استلام رسالة من: ${name} (${email})`);
+        console.log('📩 [Render] استلام رسالة جديدة من:', name);
 
         // 1. حفظ الرسالة في قاعدة البيانات
         try {
@@ -86,13 +87,11 @@ app.post('/api/messages', (req, res) => {
         } catch(e) {
             try {
                 sqliteDb.prepare(`INSERT INTO messages (name, email, message) VALUES (?, ?, ?)`).run(name, email, message);
-            } catch(err) {
-                console.error("DB Message Insert Error:", err.message);
-            }
+            } catch(err) {}
         }
 
-        // 2. تجهيز رابط الواتساب بصيغة دولية صحيحة
-        let waNumber = '601111134716'; // الرقم الافتراضي (ماليزيا)
+        // 2. تجهيز رابط الواتساب
+        let waNumber = '601111134716';
         try {
             const row = sqliteDb.prepare("SELECT value FROM site_config WHERE key = 'link_whatsapp'").get();
             if (row && row.value) {
@@ -101,46 +100,50 @@ app.post('/api/messages', (req, res) => {
             }
         } catch(e){}
 
-        const waText = encodeURIComponent(`🌴 رسالة جديدة من موقع MASSAR DATES:\n\n👤 الاسم: ${name}\n📧 البريد: ${email}\n💬 الرسالة: ${message}`);
+        const waText = encodeURIComponent(`🌴 رسالة جديدة من موقع MASSAR DATES:
+
+👤 الاسم: ${name}
+📧 البريد: ${email}
+💬 الرسالة: ${message}`);
         const waLink = `https://wa.me/${waNumber}?text=${waText}`;
 
-        // 3. إرسال الإيميل (في الخلفية دون تعطيل الرد)
-        const mailOptions = {
-            from: `"MASSAR DATES" <${emailUser}>`,
-            to: emailUser,
-            subject: `📬 رسالة جديدة من: ${name}`,
-            html: `
-                <div style="font-family: Arial, sans-serif; direction: rtl; text-align: right; padding: 20px; background: #fdfbf7; border: 1px solid #b89568; border-radius: 10px;">
-                    <h2 style="color: #4b372b; border-bottom: 2px solid #b89568; padding-bottom: 8px;">🌴 رسالة تواصل جديدة عبر موقع مسار للتمور</h2>
-                    <p style="font-size: 15px;"><strong>👤 الاسم:</strong> ${name}</p>
-                    <p style="font-size: 15px;"><strong>📧 البريد الإلكتروني:</strong> <a href="mailto:${email}">${email}</a></p>
-                    <p style="font-size: 15px;"><strong>🕒 التاريخ:</strong> ${new Date().toLocaleString('ar-SA')}</p>
-                    <div style="background: #ffffff; padding: 15px; border-radius: 6px; border-right: 4px solid #b89568; margin-top: 15px;">
-                        <h4 style="margin: 0 0 10px 0; color: #4b372b;">💬 نص الرسالة:</h4>
-                        <p style="white-space: pre-wrap; color: #333; line-height: 1.6; margin: 0;">${message}</p>
+        // 3. إرسال الإيميل بشكل متزامن وانتظار تسليمه لسيرفر Google
+        try {
+            const info = await transporter.sendMail({
+                from: `"MASSAR DATES" <${emailUser}>`,
+                to: emailUser,
+                subject: `📬 رسالة جديدة من: ${name}`,
+                html: `
+                    <div style="font-family: Arial, sans-serif; direction: rtl; text-align: right; padding: 20px; background: #fdfbf7; border: 1px solid #b89568; border-radius: 10px;">
+                        <h2 style="color: #4b372b; border-bottom: 2px solid #b89568; padding-bottom: 8px;">🌴 رسالة تواصل جديدة عبر موقع مسار للتمور</h2>
+                        <p style="font-size: 15px;"><strong>👤 الاسم:</strong> ${name}</p>
+                        <p style="font-size: 15px;"><strong>📧 البريد الإلكتروني:</strong> <a href="mailto:${email}">${email}</a></p>
+                        <p style="font-size: 15px;"><strong>🕒 التاريخ:</strong> ${new Date().toLocaleString('ar-SA')}</p>
+                        <div style="background: #ffffff; padding: 15px; border-radius: 6px; border-right: 4px solid #b89568; margin-top: 15px;">
+                            <h4 style="margin: 0 0 10px 0; color: #4b372b;">💬 نص الرسالة:</h4>
+                            <p style="white-space: pre-wrap; color: #333; line-height: 1.6; margin: 0;">${message}</p>
+                        </div>
                     </div>
-                </div>
-            `
-        };
+                `
+            });
+            console.log('✅ [Email Sent Successfully]:', info.messageId);
+        } catch (mailError) {
+            console.error('❌ [Gmail SMTP Error on Render]:', mailError.message);
+        }
 
-        transporter.sendMail(mailOptions)
-            .then(() => console.log('✅ تم إرسال الإيميل بنجاح'))
-            .catch(err => console.log('⚠️ خطأ في إرسال الإيميل:', err.message));
-
-        // الرد بنجاح مع رابط الواتساب
         res.json({
             success: true,
-            message: 'Message received successfully',
+            message: 'Message processed successfully',
             waLink: waLink
         });
 
     } catch (e) {
-        console.error("General Message Error:", e);
+        console.error('General Message Error:', e);
         res.status(500).json({ error: 'Failed to process message' });
     }
 });
 
-// مسار جلب الرسائل للأدمن
+
 app.get('/api/admin/messages', authMiddleware, (req, res) => {
     try {
         const rows = sqliteDb.prepare('SELECT * FROM messages ORDER BY created_at DESC').all();
