@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en" dir="ltr">
 <head>
     <meta charset="UTF-8">
@@ -2587,6 +2587,28 @@ switchPanel = function(name, btn) {
     }
 };
 
+
+        // تحديث قائمة الفئات ديناميكياً عند فتح نافذة إضافة/تعديل منتج
+        async function loadCategoriesIntoSelect() {
+            try {
+                const res = await fetch('/api/product-categories');
+                const categories = await res.json();
+                const select = document.getElementById('productCategory') || document.getElementById('category_id') || document.querySelector('select[name="category_id"]');
+                if (select) {
+                    select.innerHTML = categories.map(c => `<option value="${c.id}">${c.name_en} / ${c.name_ar}</option>`).join('');
+                }
+            } catch (e) {
+                console.error("Failed to load dynamic categories:", e);
+            }
+        }
+        // استدعاء الدالة تلقائياً عند فتح المودال أو تحميل الصفحة
+        if (typeof document !== 'undefined') {
+            document.addEventListener('DOMContentLoaded', loadCategoriesIntoSelect);
+            // ربطها بزر إضافة منتج
+            const addBtn = document.getElementById('btnAddProduct') || document.querySelector('.btn-add-product');
+            if (addBtn) addBtn.addEventListener('click', loadCategoriesIntoSelect);
+        }
+    
 </script>
 
 
@@ -3280,7 +3302,362 @@ function rememberAdminPanel(panelId){
     window.currentAdminPanel = panelId || 'dashboard';
     setTimeout(showAdminBackButton,50);
 }
-</script></body>
+</script>
+<script>
+// تحميل الفئات ديناميكياً لقائمة المنتجات
+async function populateProductCategorySelect() {
+    try {
+        const res = await fetch('/api/product-categories');
+        if (!res.ok) return;
+        const categories = await res.json();
+        const selects = document.querySelectorAll('#productModal select[name="category_id"], #productForm select[name="category_id"], select#category_id, select#productCategory');
+        selects.forEach(select => {
+            const current = select.value;
+            // select.innerHTML cleared by dynamic loader
+            categories.forEach(c => {
+                const opt = document.createElement('option');
+                opt.value = c.id;
+                opt.textContent = c.name_en + ' / ' + c.name_ar;
+                if (String(c.id) === String(current)) opt.selected = true;
+                select.appendChild(opt);
+            });
+        });
+    } catch (e) {
+        console.warn('Failed to load categories for product form:', e);
+    }
+}
+
+// تحديث القائمة عند فتح المودال
+document.addEventListener('click', function(e) {
+    if (e.target && (e.target.id === 'btnAddProduct' || e.target.closest('#btnAddProduct') || e.target.textContent.includes('Add Product'))) {
+        setTimeout(populateProductCategorySelect, 100);
+    }
+});
+
+// تحديث عند تعديل منتج
+window.populateProductCategorySelect = populateProductCategorySelect;
+</script>
+
+
+// ===================== إصلاح ديناميكي لقائمة الفئات =====================
+async function refreshProductCategories() {
+    try {
+        const res = await fetch('/api/product-categories');
+        if (!res.ok) return;
+        const categories = await res.json();
+        const selects = document.querySelectorAll('select[name="category_id"], #productCategory, #category_id');
+        selects.forEach(select => {
+            const current = select.value;
+            select.innerHTML = '';
+            categories.forEach(c => {
+                const option = document.createElement('option');
+                option.value = c.id;
+                option.textContent = c.name_en + ' / ' + c.name_ar;
+                if (String(c.id) === String(current)) {
+                    option.selected = true;
+                }
+                select.appendChild(option);
+            });
+        });
+    } catch (e) {
+        console.warn('فشل في تحميل الفئات:', e);
+    }
+}
+
+// استدعاء عند فتح نافذة إضافة/تعديل منتج
+if (typeof window.showProductModal === 'function') {
+    const originalShowProductModal = window.showProductModal;
+    window.showProductModal = function(mode, productId) {
+        originalShowProductModal(mode, productId);
+        setTimeout(refreshProductCategories, 80);
+    };
+}
+
+// استدعاء عند الضغط المباشر على زر إضافة منتج
+document.addEventListener('DOMContentLoaded', function() {
+    const addBtn = document.getElementById('btnAddProduct');
+    if (addBtn) {
+        addBtn.addEventListener('click', function() {
+            setTimeout(refreshProductCategories, 100);
+        });
+    }
+    refreshProductCategories();
+});
+
+
+// ===================== تحميل الفئات ديناميكياً (إصلاح نهائي) =====================
+async function loadProductCategoriesForForm() {
+    try {
+        const res = await fetch('/api/product-categories');
+        if (!res.ok) return;
+        const categories = await res.json();
+        
+        // البحث عن جميع قوائم الفئات في نموذج المنتج
+        const selects = document.querySelectorAll('#productModal select[name="category_id"], #productForm select[name="category_id"], select[name="category_id"], #productCategory');
+        
+        selects.forEach(select => {
+            const currentValue = select.value;
+            // مسح القائمة بالكامل
+            select.innerHTML = '';
+            // إضافة جميع الفئات من قاعدة البيانات
+            categories.forEach(c => {
+                const option = document.createElement('option');
+                option.value = c.id;
+                option.textContent = c.name_en + ' / ' + c.name_ar;
+                if (String(c.id) === String(currentValue)) {
+                    option.selected = true;
+                }
+                select.appendChild(option);
+            });
+        });
+    } catch (e) {
+        console.warn('فشل تحميل الفئات:', e);
+    }
+}
+
+// مراقبة فتح نافذة المنتج وملء القائمة فوراً
+const observer = new MutationObserver(function(mutations) {
+    mutations.forEach(function(mutation) {
+        if (mutation.type === 'attributes' && mutation.attributeName === 'style') {
+            const modal = document.getElementById('productModal');
+            if (modal && modal.style.display === 'block') {
+                // تأخير بسيط لضمان إنشاء العناصر
+                setTimeout(loadProductCategoriesForForm, 50);
+            }
+        }
+    });
+});
+
+document.addEventListener('DOMContentLoaded', function() {
+    const modal = document.getElementById('productModal');
+    if (modal) {
+        observer.observe(modal, { attributes: true });
+    }
+    
+    // أيضاً عند الضغط على زر إضافة منتج
+    const addBtn = document.getElementById('btnAddProduct');
+    if (addBtn) {
+        addBtn.addEventListener('click', function() {
+            setTimeout(loadProductCategoriesForForm, 150);
+        });
+    }
+    
+    // عند الضغط على زر تعديل منتج
+    document.addEventListener('click', function(e) {
+        if (e.target && (e.target.classList.contains('btn-edit-product') || e.target.closest('.btn-edit-product'))) {
+            setTimeout(loadProductCategoriesForForm, 150);
+        }
+    });
+    
+    loadProductCategoriesForForm();
+});
+
+
+<script id="category-dynamic-fix">
+(function() {
+    let cachedCategories = [];
+
+    async function fetchLiveCategories() {
+        try {
+            const res = await fetch('/api/product-categories?t=' + Date.now());
+            if (!res.ok) return [];
+            const data = await res.json();
+            if (Array.isArray(data)) {
+                cachedCategories = data;
+                return data;
+            }
+        } catch (e) {
+            console.error('Error fetching categories:', e);
+        }
+        return [];
+    }
+
+    async function updateAllCategoryDropdowns() {
+        const categories = cachedCategories.length ? cachedCategories : await fetchLiveCategories();
+        if (!categories || !categories.length) return;
+
+        // البحث عن جميع عناصر select الخاصة بفئات المنتجات
+        const allSelects = document.querySelectorAll('select');
+        allSelects.forEach(select => {
+            const id = (select.id || '').toLowerCase();
+            const name = (select.name || '').toLowerCase();
+            const isCategorySelect = id.includes('cat') || name.includes('cat') || 
+                Array.from(select.options).some(opt => /dates|تمور|kurma|oils|عسل|مكسرات/i.test(opt.text));
+
+            // استثناء القوائم غير المتعلقة بالمنتجات مثل المقالات
+            if (isCategorySelect && !id.includes('blog') && !name.includes('blog')) {
+                const currentVal = select.value;
+                select.innerHTML = '';
+                
+                categories.forEach(c => {
+                    const opt = document.createElement('option');
+                    opt.value = c.id;
+                    opt.textContent = (c.name_en || c.slug) + (c.name_ar ? ' / ' + c.name_ar : '');
+                    if (String(c.id) === String(currentVal)) {
+                        opt.selected = true;
+                    }
+                    select.appendChild(opt);
+                });
+
+                if (currentVal && select.querySelector('option[value="' + currentVal + '"]')) {
+                    select.value = currentVal;
+                }
+            }
+        });
+    }
+
+    // تشغيل عند التحميل
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', () => {
+            fetchLiveCategories().then(updateAllCategoryDropdowns);
+        });
+    } else {
+        fetchLiveCategories().then(updateAllCategoryDropdowns);
+    }
+
+    // تشغيل فوري عند النقر على أي زر (إضافة منتج، تعديل منتج، فتح نافذة)
+    document.addEventListener('click', function(e) {
+        setTimeout(updateAllCategoryDropdowns, 20);
+        setTimeout(updateAllCategoryDropdowns, 150);
+        setTimeout(updateAllCategoryDropdowns, 400);
+    });
+
+    window.updateAllCategoryDropdowns = updateAllCategoryDropdowns;
+})();
+</script>
+
+
+<!-- =================================================== -->
+<!-- 📱 LUXURY MOBILE & DESKTOP SMART NAVIGATION SYSTEM -->
+<!-- =================================================== -->
+
+
+
+<!-- =================================================== -->
+<!-- 👑 ULTIMATE SMART BACK SYSTEM (MOBILE & DESKTOP) -->
+<!-- =================================================== -->
+
+
+
+<script id="native-browser-history-engine">
+(function() {
+    let isHistoryNavigation = false;
+
+    // دالة لتفعيل وتغيير القسم برمجياً في الواجهة
+    function navigateToSectionUI(sectionId) {
+        if (!sectionId) return;
+
+        // 1. استدعاء دوال لوحة الأدمن الأصلية
+        if (typeof window.showSection === 'function') {
+            window.showSection(sectionId);
+            return;
+        }
+        if (typeof window.showTab === 'function') {
+            window.showTab(sectionId);
+            return;
+        }
+
+        // 2. البحث عن الزر المطابق في القائمة الجانبية والنقر عليه
+        const targetBtn = document.querySelector('[data-section="' + sectionId + '"], [onclick*="' + sectionId + '"], .sidebar a[href*="' + sectionId + '"]');
+        if (targetBtn) {
+            targetBtn.click();
+        }
+    }
+
+    // تتبع وتغليف دوال التنقل الرسمية في لوحة الأدمن
+    const navFunctions = ['showSection', 'showTab', 'switchTab', 'openSection'];
+    navFunctions.forEach(fnName => {
+        if (typeof window[fnName] === 'function') {
+            const originalFn = window[fnName];
+            window[fnName] = function(id, ...args) {
+                originalFn.apply(this, [id, ...args]);
+                if (!isHistoryNavigation && id) {
+                    history.pushState({ section: id }, '', '#/' + id);
+                }
+            };
+        }
+    });
+
+    // تتبع النقر على أزرار القائمة الجانبية والنوافذ
+    document.addEventListener('click', function(e) {
+        const link = e.target.closest('.sidebar a, .nav-item, [data-section], [onclick*="show"]');
+        if (link) {
+            const onclickAttr = link.getAttribute('onclick') || '';
+            const match = onclickAttr.match(/['"]([a-zA-Z0-9_-]+)['"]/);
+            const section = link.getAttribute('data-section') || (match ? match[1] : null);
+            
+            if (section && !isHistoryNavigation) {
+                history.pushState({ section: section }, '', '#/' + section);
+            }
+        }
+
+        // تتبع فتح النوافذ والمودالات لتسجيلها في تاريخ المتصفح
+        const modalOpener = e.target.closest('#btnAddProduct, [onclick*="Modal"], [onclick*="Form"], .btn-edit-product');
+        if (modalOpener) {
+            history.pushState({ modalOpen: true }, '', '#/view-modal');
+        }
+    });
+
+    // =========================================================================
+    // 🎯 المحرك الرئيسي: التعامل مع زر الرجوع بالهاتف والمتصفح (popstate event)
+    // =========================================================================
+    window.addEventListener('popstate', function(event) {
+        isHistoryNavigation = true;
+
+        // 1. فحص هل هناك نافذة أو مودال مفتوح لإغلاقه أولاً
+        const openModals = document.querySelectorAll('.modal[style*="display: block"], #productModal[style*="display: block"], #categoryModal[style*="display: block"]');
+        let modalWasClosed = false;
+
+        openModals.forEach(m => {
+            m.style.display = 'none';
+            modalWasClosed = true;
+        });
+
+        const catForm = document.getElementById('categoryManagerFormCard');
+        if (catForm && catForm.style.display !== 'none') {
+            catForm.style.display = 'none';
+            modalWasClosed = true;
+        }
+
+        // إذا تم إغلاق نافذة فقط، نوقف العملية هنا
+        if (modalWasClosed) {
+            setTimeout(() => { isHistoryNavigation = false; }, 50);
+            return;
+        }
+
+        // 2. إذا لم يكن هناك نافذة، نرجع للقسم السابق
+        if (event.state && event.state.section) {
+            navigateToSectionUI(event.state.section);
+        } else {
+            // قراءة الرابط الحالي
+            const hash = window.location.hash.replace('#/', '').replace('#', '');
+            if (hash && hash !== 'view-modal') {
+                navigateToSectionUI(hash);
+            } else {
+                // العودة للرئيسية كافتراضي
+                const firstNav = document.querySelector('.sidebar a, .nav-item');
+                if (firstNav) firstNav.click();
+            }
+        }
+
+        setTimeout(() => { isHistoryNavigation = false; }, 50);
+    });
+
+    // دعم استعادة الصفحة عند إعادة تحميل المتصفح (Deep Linking)
+    document.addEventListener('DOMContentLoaded', function() {
+        if (!history.state) {
+            history.replaceState({ section: 'dashboard' }, '', window.location.pathname);
+        }
+        
+        const initialHash = window.location.hash.replace('#/', '').replace('#', '');
+        if (initialHash && initialHash !== 'view-modal') {
+            setTimeout(() => navigateToSectionUI(initialHash), 100);
+        }
+    });
+})();
+</script>
+
+</body>
 </html>
 
 

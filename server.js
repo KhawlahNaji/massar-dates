@@ -50,6 +50,68 @@ app.get('/api/config', (req, res) => {
 });
 
 // Get active products (public)
+
+// ==========================================
+// PRODUCT CATEGORIES API (PUBLIC & ADMIN)
+// ==========================================
+const getCategoriesHandler = (req, res) => {
+    try {
+        const categories = db.prepare("SELECT * FROM product_categories ORDER BY sort_order ASC, id ASC").all();
+        res.setHeader("Content-Type", "application/json");
+        res.json(categories);
+    } catch (e) {
+        res.status(500).json({ error: e.message });
+    }
+};
+
+const saveCategoryHandler = (req, res) => {
+    try {
+        const id = req.params.id || req.body.id;
+        const { slug, category_id, name_en, name_ar, name_ms, image_url, description_en, description_ar, description_ms, sort_order, active } = req.body;
+        const cleanSlug = (slug || name_en || "category").toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "");
+
+        if (id) {
+            db.prepare("UPDATE product_categories SET slug = COALESCE(?, slug), name_en = COALESCE(?, name_en), name_ar = COALESCE(?, name_ar), name_ms = COALESCE(?, name_ms), image_url = COALESCE(?, image_url), description_en = COALESCE(?, description_en), description_ar = COALESCE(?, description_ar), description_ms = COALESCE(?, description_ms), sort_order = COALESCE(?, sort_order), active = COALESCE(?, active) WHERE id = ?").run(
+                slug, name_en, name_ar, name_ms, image_url, description_en, description_ar, description_ms,
+                sort_order !== undefined ? Number(sort_order) : null,
+                active !== undefined ? (active ? 1 : 0) : null,
+                id
+            );
+            res.json({ success: true, id: Number(id) });
+        } else {
+            const info = db.prepare("INSERT INTO product_categories (slug, name_en, name_ar, name_ms, image_url, description_en, description_ar, description_ms, sort_order, active) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)").run(
+                cleanSlug, name_en || "", name_ar || "", name_ms || "", image_url || "",
+                description_en || "", description_ar || "", description_ms || "",
+                Number(sort_order) || 0,
+                active !== undefined ? (active ? 1 : 0) : 1
+            );
+            res.json({ success: true, id: info.lastInsertRowid });
+        }
+    } catch (e) {
+        res.status(500).json({ error: e.message });
+    }
+};
+
+const deleteCategoryHandler = (req, res) => {
+    try {
+        const id = req.params.id;
+        db.prepare("DELETE FROM product_categories WHERE id = ?").run(id);
+        res.json({ success: true });
+    } catch (e) {
+        res.status(500).json({ error: e.message });
+    }
+};
+
+app.get('/api/product-categories', getCategoriesHandler);
+app.get('/api/admin/product-categories', getCategoriesHandler);
+app.post('/api/product-categories', saveCategoryHandler);
+app.post('/api/admin/product-categories', saveCategoryHandler);
+app.put('/api/product-categories/:id', saveCategoryHandler);
+app.put('/api/admin/product-categories/:id', saveCategoryHandler);
+app.delete('/api/product-categories/:id', deleteCategoryHandler);
+app.delete('/api/admin/product-categories/:id', deleteCategoryHandler);
+
+
 app.get('/api/products', (req, res) => {
     const products = db.prepare('SELECT * FROM products WHERE active = 1 ORDER BY sort_order ASC').all();
     const priceStmt = db.prepare('SELECT weight, price FROM product_prices WHERE product_id = ? ORDER BY weight');
@@ -93,7 +155,7 @@ app.get('/api/admin/products', authMiddleware, (req, res) => {
 });
 // Create product
 app.post('/api/admin/products', authMiddleware, (req, res) => {
-    const { slug, name_en, name_ar, name_ms, desc_en, desc_ar, desc_ms,
+    const { slug, category_id, name_en, name_ar, name_ms, desc_en, desc_ar, desc_ms,
         variety, brand, origin, type, texture_en, texture_ar, texture_ms,
         taste_en, taste_ar, taste_ms, badge_en, badge_ar, badge_ms,
         image_url, active, featured, prices, shopee_url, tiktok_url, lazada_url } = req.body;

@@ -3777,7 +3777,7 @@ function luxuryCategoryData(){
                 name_ms:"Semua Produk",
                 icon:"✦"
             },
-...window.productCategories.filter(c => Number(c.id) !== 1)        ];
+...window.productCategories        ];
     }
     return fallbackCategories;
 }
@@ -4141,7 +4141,7 @@ function homeBrowseCategories(){
     ){
         return [
             homeFallbackCategories[0],
-...window.productCategories.filter(c => Number(c.id) !== 1) 
+...window.productCategories 
        ];
     }
 
