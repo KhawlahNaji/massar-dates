@@ -40,11 +40,17 @@ function authMiddleware(req, res, next) {
 }
 
 // ==================== إعداد إرسال الإيميل الذكي ====================
-const emailUser = process.env.EMAIL_USER || 'khwlah7712@gmail.com';
-const emailPass = process.env.EMAIL_PASS || 'vzhzqjsjbafhyogz';
+
+// ==================== 📬 مسار استقبال الرسائل والواتساب ====================
+
+// ==================== إعداد خادم الإيميل السحابي المعتمد لـ Render ====================
+const emailUser = (process.env.EMAIL_USER || 'khwlah7712@gmail.com').trim();
+const emailPass = (process.env.EMAIL_PASS || 'vzhzqjsjbafhyogz').replace(/s+/g, '');
 
 const transporter = nodemailer.createTransport({
-    service: 'gmail',
+    host: 'smtp.gmail.com',
+    port: 465,
+    secure: true, // استخدام SSL الصريح لمنع الحظر السحابي
     auth: {
         user: emailUser,
         pass: emailPass
@@ -54,7 +60,15 @@ const transporter = nodemailer.createTransport({
     }
 });
 
-// ==================== 📬 مسار استقبال الرسائل والواتساب ====================
+// التحقق من صحة الاتصال بخادم البريد عند بدء التشغيل
+transporter.verify((error, success) => {
+    if (error) {
+        console.log('⚠️ [SMTP Status] خطأ في مصادقة البريد:', error.message);
+    } else {
+        console.log('✅ [SMTP Status] خادم البريد جاهز ومتصل بنجاح مع Google!');
+    }
+});
+
 app.post('/api/messages', (req, res) => {
     try {
         const name = (req.body && req.body.name) || 'عميل جديد';
