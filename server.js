@@ -7,50 +7,13 @@ const jwt = require('jsonwebtoken');
 const multer = require('multer');
 const nodemailer = require('nodemailer');
 const Database = require('better-sqlite3');
-const { Pool } = require('pg');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 const JWT_SECRET = process.env.JWT_SECRET || 'massar-dates-super-secret-jwt-key';
 
-// 1. قاعدة البيانات المحلية الاحتياطية (SQLite) - لضمان عدم فراغ الموقع أبداً
+// الاتصال بقاعدة البيانات
 const sqliteDb = new Database(path.join(__dirname, 'massar.db'));
-
-// 2. قاعدة البيانات السحابية (Supabase PG)
-let pgPool = null;
-if (process.env.DATABASE_URL) {
-    try {
-        pgPool = new Pool({
-            connectionString: process.env.DATABASE_URL,
-            ssl: { rejectUnauthorized: false }
-        });
-    } catch(e) {
-        console.log("Using SQLite fallback");
-    }
-}
-
-// دالة تنفيذ الاستعلامات الذكية (Supabase أولاً ثم SQLite كأمان)
-async function queryDB(sql, pgSql, params = []) {
-    if (pgPool) {
-        try {
-            const res = await pgPool.query(pgSql || sql, params);
-            if (res.rows && res.rows.length > 0) return res.rows;
-        } catch (e) {
-            // في حال وجود خطأ في السحابة، يتم التبديل تلقائياً للمحلي
-        }
-    }
-    // الاحتياطي المضمون (SQLite)
-    try {
-        const stmt = sqliteDb.prepare(sql);
-        if (sql.trim().toUpperCase().startsWith('SELECT')) {
-            return stmt.all(...params);
-        } else {
-            return stmt.run(...params);
-        }
-    } catch (err) {
-        return [];
-    }
-}
 
 // Middleware
 app.use(cors());
@@ -76,10 +39,120 @@ function authMiddleware(req, res, next) {
     }
 }
 
-// ==================== APIs ====================
+// ==================== إعداد إرسال الإيميل الذكي ====================
+const emailUser = process.env.EMAIL_USER || 'khwlah7712@gmail.com';
+const emailPass = process.env.EMAIL_PASS || 'vzhzqjsjbafhyogz';
 
-// 1. Config
-app.get('/api/config', async (req, res) => {
+const transporter = nodemailer.createTransport({
+    service: 'gmail',
+    auth: {
+        user: emailUser,
+        pass: emailPass
+    },
+    tls: {
+        rejectUnauthorized: false
+    }
+});
+
+// ==================== 📬 مسار استقبال الرسائل والواتساب ====================
+app.post('/api/messages', (req, res) => {
+    try {
+        const name = (req.body && req.body.name) || 'عميل جديد';
+        const email = (req.body && req.body.email) || '';
+        const message = (req.body && req.body.message) || '';
+
+        console.log(`📩 استلام رسالة من: ${name} (${email})`);
+
+        // 1. حفظ الرسالة في قاعدة البيانات
+        try {
+            sqliteDb.prepare(`
+                INSERT INTO messages (name, email, message, is_read, created_at, updated_at)
+                VALUES (?, ?, ?, 0, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
+            `).run(name, email, message);
+        } catch(e) {
+            try {
+                sqliteDb.prepare(`INSERT INTO messages (name, email, message) VALUES (?, ?, ?)`).run(name, email, message);
+            } catch(err) {
+                console.error("DB Message Insert Error:", err.message);
+            }
+        }
+
+        // 2. تجهيز رابط الواتساب بصيغة دولية صحيحة
+        let waNumber = '601111134716'; // الرقم الافتراضي (ماليزيا)
+        try {
+            const row = sqliteDb.prepare("SELECT value FROM site_config WHERE key = 'link_whatsapp'").get();
+            if (row && row.value) {
+                const cleaned = row.value.replace(/[^0-9]/g, '');
+                if (cleaned.length > 5) waNumber = cleaned;
+            }
+        } catch(e){}
+
+        const waText = encodeURIComponent(`🌴 رسالة جديدة من موقع MASSAR DATES:\n\n👤 الاسم: ${name}\n📧 البريد: ${email}\n💬 الرسالة: ${message}`);
+        const waLink = `https://wa.me/${waNumber}?text=${waText}`;
+
+        // 3. إرسال الإيميل (في الخلفية دون تعطيل الرد)
+        const mailOptions = {
+            from: `"MASSAR DATES" <${emailUser}>`,
+            to: emailUser,
+            subject: `📬 رسالة جديدة من: ${name}`,
+            html: `
+                <div style="font-family: Arial, sans-serif; direction: rtl; text-align: right; padding: 20px; background: #fdfbf7; border: 1px solid #b89568; border-radius: 10px;">
+                    <h2 style="color: #4b372b; border-bottom: 2px solid #b89568; padding-bottom: 8px;">🌴 رسالة تواصل جديدة عبر موقع مسار للتمور</h2>
+                    <p style="font-size: 15px;"><strong>👤 الاسم:</strong> ${name}</p>
+                    <p style="font-size: 15px;"><strong>📧 البريد الإلكتروني:</strong> <a href="mailto:${email}">${email}</a></p>
+                    <p style="font-size: 15px;"><strong>🕒 التاريخ:</strong> ${new Date().toLocaleString('ar-SA')}</p>
+                    <div style="background: #ffffff; padding: 15px; border-radius: 6px; border-right: 4px solid #b89568; margin-top: 15px;">
+                        <h4 style="margin: 0 0 10px 0; color: #4b372b;">💬 نص الرسالة:</h4>
+                        <p style="white-space: pre-wrap; color: #333; line-height: 1.6; margin: 0;">${message}</p>
+                    </div>
+                </div>
+            `
+        };
+
+        transporter.sendMail(mailOptions)
+            .then(() => console.log('✅ تم إرسال الإيميل بنجاح'))
+            .catch(err => console.log('⚠️ خطأ في إرسال الإيميل:', err.message));
+
+        // الرد بنجاح مع رابط الواتساب
+        res.json({
+            success: true,
+            message: 'Message received successfully',
+            waLink: waLink
+        });
+
+    } catch (e) {
+        console.error("General Message Error:", e);
+        res.status(500).json({ error: 'Failed to process message' });
+    }
+});
+
+// مسار جلب الرسائل للأدمن
+app.get('/api/admin/messages', authMiddleware, (req, res) => {
+    try {
+        const rows = sqliteDb.prepare('SELECT * FROM messages ORDER BY created_at DESC').all();
+        res.json(rows);
+    } catch(e) { res.json([]); }
+});
+
+app.patch('/api/admin/messages/:id/toggle-read', authMiddleware, (req, res) => {
+    try {
+        const msg = sqliteDb.prepare('SELECT is_read FROM messages WHERE id = ?').get(req.params.id);
+        const newStatus = msg && msg.is_read ? 0 : 1;
+        sqliteDb.prepare('UPDATE messages SET is_read = ? WHERE id = ?').run(newStatus, req.params.id);
+        res.json({ success: true, is_read: newStatus });
+    } catch(e) { res.status(500).json({ error: e.message }); }
+});
+
+app.delete('/api/admin/messages/:id', authMiddleware, (req, res) => {
+    try {
+        sqliteDb.prepare('DELETE FROM messages WHERE id = ?').run(req.params.id);
+        res.json({ success: true });
+    } catch(e) { res.status(500).json({ error: e.message }); }
+});
+
+// ==================== بقية الـ APIs (Config, Categories, Products, Blog) ====================
+
+app.get('/api/config', (req, res) => {
     try {
         const rows = sqliteDb.prepare('SELECT key, value FROM site_config').all();
         const config = {};
@@ -88,11 +161,9 @@ app.get('/api/config', async (req, res) => {
     } catch (e) { res.json({}); }
 });
 
-// 2. Categories
 app.get(['/api/product-categories', '/api/admin/product-categories'], (req, res) => {
     try {
-        const cats = sqliteDb.prepare('SELECT * FROM product_categories ORDER BY sort_order ASC, id ASC').all();
-        res.json(cats);
+        res.json(sqliteDb.prepare('SELECT * FROM product_categories ORDER BY sort_order ASC, id ASC').all());
     } catch (e) { res.json([]); }
 });
 
@@ -130,16 +201,11 @@ app.delete(['/api/product-categories/:id', '/api/admin/product-categories/:id'],
     } catch (e) { res.status(500).json({ error: e.message }); }
 });
 
-// 3. Products
 app.get('/api/products', (req, res) => {
     try {
         const prods = sqliteDb.prepare('SELECT * FROM products WHERE active = 1 ORDER BY sort_order ASC').all();
         const priceStmt = sqliteDb.prepare('SELECT weight, price FROM product_prices WHERE product_id = ?');
-        const result = prods.map(p => ({
-            ...p,
-            prices: Object.fromEntries(priceStmt.all(p.id).map(pr => [pr.weight, pr.price]))
-        }));
-        res.json(result);
+        res.json(prods.map(p => ({ ...p, prices: Object.fromEntries(priceStmt.all(p.id).map(pr => [pr.weight, pr.price])) })));
     } catch (e) { res.json([]); }
 });
 
@@ -147,11 +213,7 @@ app.get('/api/admin/products', authMiddleware, (req, res) => {
     try {
         const prods = sqliteDb.prepare('SELECT * FROM products ORDER BY sort_order ASC').all();
         const priceStmt = sqliteDb.prepare('SELECT weight, price FROM product_prices WHERE product_id = ?');
-        const result = prods.map(p => ({
-            ...p,
-            prices: Object.fromEntries(priceStmt.all(p.id).map(pr => [pr.weight, pr.price]))
-        }));
-        res.json(result);
+        res.json(prods.map(p => ({ ...p, prices: Object.fromEntries(priceStmt.all(p.id).map(pr => [pr.weight, pr.price])) })));
     } catch (e) { res.json([]); }
 });
 
@@ -220,7 +282,6 @@ app.delete('/api/admin/products/:id', authMiddleware, (req, res) => {
     } catch(e) { res.status(500).json({ error: e.message }); }
 });
 
-// Admin Login
 app.post('/api/admin/login', (req, res) => {
     try {
         const { email, password } = req.body;
@@ -233,13 +294,11 @@ app.post('/api/admin/login', (req, res) => {
     } catch(e) { res.status(500).json({ error: e.message }); }
 });
 
-// Upload
 app.post('/api/admin/upload', authMiddleware, upload.single('image'), (req, res) => {
     if (!req.file) return res.status(400).json({ error: 'No file' });
     res.json({ url: '/uploads/' + req.file.filename });
 });
 
-// Config
 app.put('/api/admin/config', authMiddleware, (req, res) => {
     const upsert = sqliteDb.prepare('INSERT INTO site_config (key, value) VALUES (?, ?) ON CONFLICT(key) DO UPDATE SET value = excluded.value');
     const updateAll = sqliteDb.transaction((items) => {
@@ -249,10 +308,10 @@ app.put('/api/admin/config', authMiddleware, (req, res) => {
     res.json({ message: 'Saved' });
 });
 
-// Blog
 app.get('/api/blog', (req, res) => {
     try { res.json(sqliteDb.prepare('SELECT * FROM blog_posts WHERE published = 1 ORDER BY featured DESC, sort_order ASC').all()); } catch(e){ res.json([]); }
 });
+
 app.get('/api/blog/:slug', (req, res) => {
     try {
         const post = sqliteDb.prepare('SELECT * FROM blog_posts WHERE slug = ?').get(req.params.slug);
@@ -271,5 +330,5 @@ app.get(/.*/, (req, res) => {
 });
 
 app.listen(PORT, () => {
-    console.log(`\n🌴 MASSAR DATES (Protected & Complete) Running on http://localhost:${PORT}`);
+    console.log(`\n🌴 MASSAR DATES Running with Email & WhatsApp support on http://localhost:${PORT}`);
 });
