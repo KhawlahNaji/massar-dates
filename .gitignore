@@ -1,7 +1,7 @@
 node_modules/
-massar.db
-massar.db-shm
-massar.db-wal
+
+
+
 .env
 
 *.bak
@@ -47,13 +47,13 @@ public/admin - Copy.html
 public/index - Copy.html
 public/index.html.blog_backup
 public/const fs = require('fs');.txt
-massar_before_product_categories.db
+
 server-error.log
 
 public/*.backup*
 public/*_backup*
 public/*_before_*
-massar_before_product_categories.db
+
 server-error.log
 public/*.backup*
 public/*_backup*

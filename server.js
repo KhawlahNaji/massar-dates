@@ -7,6 +7,53 @@ const jwt = require('jsonwebtoken');
 const multer = require('multer');
 const db = require('./database');
 
+// ====================================================
+// 🚀 AUTO-MIGRATION & DATABASE SETUP (FOR RENDER & PROD)
+// ====================================================
+try {
+    // 1. إنشاء جدول الفئات إن لم يكن موجوداً
+    db.exec(`
+        CREATE TABLE IF NOT EXISTS product_categories (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            slug TEXT NOT NULL UNIQUE,
+            name_en TEXT NOT NULL,
+            name_ar TEXT DEFAULT '',
+            name_ms TEXT DEFAULT '',
+            image_url TEXT DEFAULT '',
+            description_en TEXT DEFAULT '',
+            description_ar TEXT DEFAULT '',
+            description_ms TEXT DEFAULT '',
+            sort_order INTEGER DEFAULT 0,
+            active INTEGER DEFAULT 1
+        );
+    `);
+
+    // 2. التحقق من وجود عمود category_id في جدول المنتجات
+    const prodCols = db.prepare("PRAGMA table_info(products)").all().map(c => c.name);
+    if (!prodCols.includes("category_id")) {
+        db.exec("ALTER TABLE products ADD COLUMN category_id INTEGER DEFAULT 1;");
+        console.log("✅ Added category_id column to products table.");
+    }
+
+    // 3. تنظيف وتوحيد فئة التمور وتفادي التكرار
+    db.prepare("UPDATE products SET category_id = 1 WHERE category_id = 97 OR category_id IS NULL OR slug LIKE '%date%'").run();
+    db.prepare("DELETE FROM product_categories WHERE id = 97").run();
+
+    // 4. زراعة الفئات الأساسية إن كانت فارغة
+    const catCount = db.prepare("SELECT COUNT(*) as c FROM product_categories").get().c;
+    if (catCount === 0) {
+        const insert = db.prepare("INSERT OR IGNORE INTO product_categories (id, slug, name_en, name_ar, name_ms, sort_order, active) VALUES (?, ?, ?, ?, ?, ?, ?)");
+        insert.run(1, 'dates', 'Dates', 'التمور', 'Kurma', 1, 1);
+        insert.run(2, 'oils', 'Oils', 'الزيوت', 'Minyak', 2, 1);
+        insert.run(3, 'nuts', 'Nuts', 'المكسرات', 'Kekacang', 3, 1);
+        insert.run(4, 'honey', 'Honey', 'العسل', 'Madu', 4, 1);
+        insert.run(5, 'gift-boxes', 'Gift Boxes', 'علب الهدايا', 'Kotak Hadiah', 5, 1);
+        console.log("✅ Seeded default categories.");
+    }
+} catch (e) {
+    console.error("⚠️ Migration warning:", e.message);
+}
+
 const app = express();
 const PORT = process.env.PORT || 3000;
 const JWT_SECRET = process.env.JWT_SECRET || 'massar-dates-secret-key-change-in-production';
