@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en" dir="ltr">
 <head>
     <meta charset="UTF-8">
@@ -2358,7 +2358,7 @@ async function loadProductCategories() {
 }
 
 async function openProductsCategory(categoryId) {
-if (Number(categoryId) === 1) categoryId = 97;
+// category fixed
 selectedCategoryId = categoryId;
     navigateTo('products');
 
@@ -2424,7 +2424,11 @@ selectedCategoryId = categoryId;
             } else if (activeBtn) {
                 pageTitle.textContent = activeBtn.textContent.trim();
             } else {
-                pageTitle.textContent = 'Products';
+                if (selectedCategoryId === 1 || selectedCategoryId === 97) {
+    pageTitle.textContent = lang === 'ar' ? 'التمور' : lang === 'ms' ? 'Kurma' : 'Dates';
+} else {
+    pageTitle.textContent = (activeBtn ? activeBtn.textContent.trim() : (lang === 'ar' ? 'المنتجات' : 'Products'));
+}
             }
         }
     }
@@ -2540,9 +2544,16 @@ selectedCategoryId = categoryId;
 
         // SELECTED CATEGORY
         else {
-            visibleProducts = products.filter(p =>
-                Number(p.category_id) === Number(selectedCategoryId)
-            );
+            visibleProducts = products.filter(function(p) {
+    if (selectedCategoryId === null || selectedCategoryId === undefined || selectedCategoryId === '') return true;
+    var target = Number(selectedCategoryId);
+    var pCatId = Number(p.category_id || p.categoryId || 0);
+    var pCatName = String(p.category || p.category_slug || '').toLowerCase();
+    if (target === 1 || target === 97) {
+        return pCatId === 1 || pCatId === 97 || pCatName.indexOf('date') !== -1 || pCatName.indexOf('تمر') !== -1;
+    }
+    return pCatId === target || pCatName === String(selectedCategoryId).toLowerCase();
+});
         }
 
         allEl.innerHTML = visibleProducts
@@ -3776,21 +3787,25 @@ function luxuryCategoryLabel(c){
     return c["name_" + l] || c.name_en || c.slug || "";
 }
 
-function luxuryCategoryCount(id){
-    try{
-        if(id === null) {
-            return Array.isArray(window.products) ? window.products.length : "";
+function countProductsForCategory(id, list) {
+    if (!Array.isArray(list)) list = (typeof products !== "undefined" && Array.isArray(products)) ? products : (window.products || []);
+    if (!list.length) return 0;
+    if (id === null || id === undefined || id === "all" || id === "") return list.length;
+    
+    var target = String(id).toLowerCase();
+    return list.filter(function(p) {
+        var cId = String(p.category_id || p.categoryId || "").toLowerCase();
+        var cName = String(p.category || p.category_name || p.name || "").toLowerCase();
+        var cSlug = String(p.category_slug || p.slug || "").toLowerCase();
+        
+        // فئة التمور (تشمل ID 1 أو 97 أو أي اسم تمر)
+        if (target === "1" || target === "97" || target.indexOf("date") !== -1 || target.indexOf("تمر") !== -1) {
+            return cId === "1" || cId === "97" || cName.indexOf("date") !== -1 || cName.indexOf("تمر") !== -1 || cSlug.indexOf("date") !== -1 || cSlug.indexOf("تمر") !== -1;
         }
-
-        if(Array.isArray(window.products)){
-            return window.products.filter(function(p){
-                return Number(p.category_id) === Number(id);
-            }).length;
-        }
-    }catch(e){}
-
-    return "";
+        return cId === target || cSlug === target || cName.indexOf(target) !== -1;
+    }).length;
 }
+function luxuryCategoryCount(id){ var c = countProductsForCategory(id); return c > 0 ? c : ''; }
 
 function renderLuxuryCategories(){
 
@@ -4181,7 +4196,7 @@ function homeBrowseCount(category){
     }
 
     return list.filter(function(p){
-        return Number(p.category_id) === Number(category.id);
+        var t=Number(category.id);var pc=Number(p.category_id||p.categoryId||0);var pn=String(p.category||p.category_name||p.category_slug||"").toLowerCase();var ps=String(p.slug||"").toLowerCase();var pnm=String(p.name||p.name_en||"").toLowerCase();if(t===1||t===97){return pc===1||pc===97||pn.indexOf("date")>-1||ps.indexOf("date")>-1||pnm.indexOf("date")>-1||pn.indexOf("kurma")>-1||pnm.indexOf("kurma")>-1||ps.indexOf("kurma")>-1||pnm.indexOf("\u062a\u0645\u0631")>-1||pnm.indexOf("\u062a\u0645\u0648\u0631")>-1;}return pc===t;
     }).length;
 }
 
@@ -4513,6 +4528,7 @@ document.addEventListener('click', function(e) {
 <!-- BUILD_TIMESTAMP: 1788030322442 -->
 </body>
 </html>
+
 
 
 
