@@ -1,16 +1,11 @@
 ﻿require('dotenv').config();
-process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
-const { Resend } = require('resend');
 const express = require('express');
 const path = require('path');
 const cors = require('cors');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const multer = require('multer');
-const cloudinary = require('cloudinary').v2;
-const { CloudinaryStorage } = require('multer-storage-cloudinary');
 const nodemailer = require('nodemailer');
-const { Pool } = require('pg');
 const Database = require('better-sqlite3');
 
 const app = express();
@@ -18,7 +13,6 @@ const PORT = process.env.PORT || 3000;
 const JWT_SECRET = process.env.JWT_SECRET || 'massar-dates-super-secret-jwt-key';
 
 // 1. قاعدة البيانات المحلية
-const pool = new Pool({ connectionString: process.env.DATABASE_URL, ssl: { rejectUnauthorized: false } });
 const db = new Database(path.join(__dirname, 'massar.db'));
 
 // 2. Middleware
@@ -28,26 +22,10 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 // 3. رفع الملفات
-// 3. رفع الملفات السحابي عبر Cloudinary
-cloudinary.config({
-    cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
-    api_key: process.env.CLOUDINARY_API_KEY,
-    api_secret: process.env.CLOUDINARY_API_SECRET
+const storage = multer.diskStorage({
+    destination: (req, file, cb) => cb(null, path.join(__dirname, 'uploads')),
+    filename: (req, file, cb) => cb(null, Date.now() + '-' + file.originalname.replace(/\s+/g, '-'))
 });
-
-const storage = (process.env.CLOUDINARY_CLOUD_NAME && process.env.CLOUDINARY_API_KEY)
-    ? new CloudinaryStorage({
-        cloudinary: cloudinary,
-        params: {
-            folder: 'massar-dates',
-            allowed_formats: ['jpg', 'png', 'jpeg', 'webp', 'avif', 'svg']
-        }
-    })
-    : multer.diskStorage({
-        destination: (req, file, cb) => cb(null, path.join(__dirname, 'uploads')),
-        filename: (req, file, cb) => cb(null, Date.now() + '-' + file.originalname.replace(/\s+/g, '-'))
-    });
-
 const upload = multer({ storage });
 
 // 4. الحماية للمشرف
@@ -76,67 +54,71 @@ const transporter = nodemailer.createTransport({
 
 // ==================== 📬 مسار الرسائل والواتساب ====================
 app.post('/api/messages', async (req, res) => {
+    const name = (req.body && req.body.name) || 'عميل جديد';
+    const email = (req.body && req.body.email) || '';
+    const message = (req.body && req.body.message) || '';
+
+    console.log(`📩 [Render Message] استلام رسالة من: ${name}`);
+
+    // حفظ في قاعدة البيانات
     try {
-        const name = (req.body && req.body.name) || 'عميل جديد';
-        const email = (req.body && req.body.email) || '';
-        const message = (req.body && req.body.message) || '';
-
-        console.log(`📩 [Render Message] استلام رسالة من: ${name}`);
-
-        // 1. حفظ في قاعدة البيانات
+        db.prepare(`
+            INSERT INTO messages (name, email, message, is_read, created_at, updated_at)
+            VALUES (?, ?, ?, 0, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
+        `).run(name, email, message);
+    } catch(e) {
         try {
-            db.prepare(`
-                INSERT INTO messages (name, email, message, is_read, created_at, updated_at)
-                VALUES (?, ?, ?, 0, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
-            `).run(name, email, message);
-        } catch(e) {
-            try {
-                db.prepare(`INSERT INTO messages (name, email, message) VALUES (?, ?, ?)`).run(name, email, message);
-            } catch(err) {}
-        }
+            db.prepare(`INSERT INTO messages (name, email, message) VALUES (?, ?, ?)`).run(name, email, message);
+        } catch(err) {}
+    }
 
-        // 2. إرسال الإيميل عبر Gmail المباشر
+    // تجهيز رابط الواتساب
+    let waNumber = '601111134716';
+    try {
+        const row = db.prepare("SELECT value FROM site_config WHERE key = 'link_whatsapp'").get();
+        if (row && row.value) {
+            const cleaned = row.value.replace(/[^0-9]/g, '');
+            if (cleaned.length > 5) waNumber = cleaned;
+        }
+    } catch(e){}
+
+    const waText = encodeURIComponent(`🌴 رسالة جديدة من موقع MASSAR DATES:\n\n👤 الاسم: ${name}\n📧 البريد: ${email}\n💬 الرسالة: ${message}`);
+    const waLink = `https://wa.me/${waNumber}?text=${waText}`;
+
+    // إرسال الإيميل مع حماية السيرفر من التعطل
+    try {
         try {
-            const emailUser = (process.env.EMAIL_USER || 'khwlah7712@gmail.com').trim();
-            const emailPass = (process.env.EMAIL_PASS || 'rgrdjfjzjupwyxhl').replace(/\s+/g, '');
-            const emailTo = process.env.EMAIL_TO || 'khwlah7712@gmail.com';
+        const transporter = nodemailer.createTransport({
+            host: process.env.SMTP_HOST || 'smtp.gmail.com',
+            port: parseInt(process.env.SMTP_PORT) || 465,
+            secure: true,
+            auth: {
+                user: process.env.EMAIL_USER,
+                pass: process.env.EMAIL_PASS
+            }
+        });
 
-            const transporter = nodemailer.createTransport({
-                service: 'gmail',
-                auth: {
-                    user: emailUser,
-                    pass: emailPass
-                },
-                tls: {
-                    rejectUnauthorized: false
-                }
-            });
+        await transporter.sendMail({
+            from: process.env.EMAIL_USER,
+            to: process.env.EMAIL_TO || 'info@massartrading.com',
+            replyTo: email || undefined,
+            subject: 'رسالة جديدة من موقع MASSAR DATES',
+            html: '<div dir="rtl" style="font-family:Arial,sans-serif"><h2>رسالة جديدة من موقع MASSAR DATES</h2><p><strong>الاسم:</strong> ' + name + '</p><p><strong>بريد الزبون:</strong> ' + email + '</p><p><strong>الرسالة:</strong></p><p>' + String(message).replace(/</g,'&lt;') + '</p></div>'
+        });
+        console.log('✅ Email sent successfully');
+    } catch (err) {
+        console.log('⚠️ Email error:', err.message);
+    }
 
-            await transporter.sendMail({
-                from: `"MASSAR DATES" <${emailUser}>`,
-                to: emailTo,
-                replyTo: email || undefined,
-                subject: 'رسالة جديدة من: ' + name,
-                html: '<div dir="rtl" style="font-family:Arial,sans-serif"><h2>رسالة جديدة من موقع MASSAR DATES</h2><p><strong>الاسم:</strong> ' + name + '</p><p><strong>بريد الزبون:</strong> ' + email + '</p><p><strong>الرسالة:</strong></p><p>' + String(message).replace(/</g,'&lt;') + '</p></div>'
-            });
-            console.log('✅ Email sent via Gmail to', emailTo);
-        } catch (err) {
-            console.log('⚠️ Email error:', err.message);
-        }
-
-        // 3. تجهيز رابط الواتساب
-        const waNumber = '601111134716';
-        const waText = encodeURIComponent(`🌴 رسالة جديدة من موقع MASSAR DATES:\n\n👤 الاسم: ${name}\n📧 البريد: ${email}\n💬 الرسالة: ${message}`);
-        const waLink = `https://wa.me/${waNumber}?text=${waText}`;
-
+    if (typeof res !== 'undefined') {
         return res.status(200).json({
             success: true,
-            message: 'تم استلام رسالتك بنجاح',
-            waLink: waLink
+            message: 'تم استلام رسالتك بنجاح، سنرد عليك في أقرب وقت ممكن'
         });
-    } catch(err) {
-        return res.status(500).json({ success: false, error: err.message });
     }
+        rows.forEach(r => config[r.key] = r.value);
+        res.json(config);
+    } catch(e) { res.json({}); }
 });
 
 app.put('/api/admin/config', authMiddleware, (req, res) => {
@@ -150,7 +132,7 @@ app.put('/api/admin/config', authMiddleware, (req, res) => {
 });
 
 // Categories
-app.get(['/api/categories', '/api/product-categories', '/api/admin/product-categories'], (req, res) => {
+app.get(['/api/product-categories', '/api/admin/product-categories'], (req, res) => {
     try {
         res.json(db.prepare('SELECT * FROM product_categories ORDER BY sort_order ASC, id ASC').all());
     } catch(e) { res.json([]); }
@@ -191,15 +173,6 @@ app.delete(['/api/product-categories/:id', '/api/admin/product-categories/:id'],
 });
 
 // Products
-app.get(['/api/config', '/api/site-config'], (req, res) => {
-    try {
-        const rows = db.prepare('SELECT key, value FROM site_config').all();
-        const config = {};
-        rows.forEach(r => config[r.key] = r.value);
-        res.json(config);
-    } catch(e) { res.json({}); }
-});
-
 app.get('/api/products', (req, res) => {
     try {
         const prods = db.prepare('SELECT * FROM products WHERE active = 1 ORDER BY sort_order ASC').all();
@@ -296,9 +269,7 @@ app.post('/api/admin/login', (req, res) => {
 
 app.post('/api/admin/upload', authMiddleware, upload.single('image'), (req, res) => {
     if (!req.file) return res.status(400).json({ error: 'No file' });
-    const fileUrl = req.file.path || req.file.url || ('/uploads/' + req.file.filename);
-    console.log('📸 تم رفع الصورة بنجاح إلى Cloudinary:', fileUrl);
-    res.json({ url: fileUrl });
+    res.json({ url: '/uploads/' + req.file.filename });
 });
 
 // Blog
@@ -314,11 +285,6 @@ app.get('/api/blog/:slug', (req, res) => {
 });
 
 // SPA Fallback
-
-app.use('/api', (req, res) => {
-    res.status(404).json({ error: 'API route not found' });
-});
-
 app.get(/.*/, (req, res) => {
     if (req.path.startsWith('/admin')) {
         res.sendFile(path.join(__dirname, 'public', 'admin.html'));

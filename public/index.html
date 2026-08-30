@@ -1889,6 +1889,8 @@ section[id*="brandstory"] .container > div {
                         body: JSON.stringify({ name, email, message })
                     });
                     const data = await res.json();
+        if (data && data.waLink) { window.location.href = data.waLink; return; }
+
                     if(data.success){
                         st.style.background = '#d4edda';
                         st.style.color = '#155724';
@@ -2007,6 +2009,8 @@ async function handleContactSubmit(event) {
             body: JSON.stringify({ name, email, message })
         });
         const data = await res.json();
+        if (data && data.waLink) { window.location.href = data.waLink; return; }
+
         if (res.ok && data.success) {
             successEl.textContent = contactTranslations[lang].success;
             successEl.style.display = 'block';
@@ -4526,6 +4530,90 @@ document.addEventListener('click', function(e) {
 
 <script src="back-navigation.js"></script>
 <!-- BUILD_TIMESTAMP: 1788030322442 -->
+<script>
+    const contactForm = document.getElementById('contactForm');
+    if (contactForm) {
+        contactForm.addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const btn = contactForm.querySelector('button[type="submit"]');
+            const originalText = btn ? btn.innerHTML : 'إرسال';
+            if (btn) {
+                btn.disabled = true;
+                btn.innerHTML = '⏳ جاري الإرسال والتحويل للواتساب...';
+            }
+
+            const name = document.getElementById('contactName')?.value || '';
+            const email = document.getElementById('contactEmail')?.value || '';
+            const message = document.getElementById('contactMessage')?.value || '';
+
+            try {
+                const response = await fetch('/api/messages', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ name, email, message })
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    contactForm.reset();
+                    if (btn) btn.innerHTML = '✅ تم الإرسال بنجاح!';
+                    
+                    // فتح رابط الواتساب مباشرة
+                    if (data.waLink) {
+                        setTimeout(() => {
+                            window.location.href = data.waLink;
+                        }, 500);
+                    }
+                } else {
+                    alert(data.message || 'حدث خطأ أثناء الإرسال');
+                    if (btn) {
+                        btn.disabled = false;
+                        btn.innerHTML = originalText;
+                    }
+                }
+            } catch (err) {
+                console.error(err);
+                alert('حدث خطأ في الاتصال بالسيرفر');
+                if (btn) {
+                    btn.disabled = false;
+                    btn.innerHTML = originalText;
+                }
+            }
+        });
+    }
+</script>
+
+
+
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // التقاط أي نموذج تواصل في الصفحة
+    const forms = document.querySelectorAll('form');
+    forms.forEach(form => {
+        form.addEventListener('submit', function(e) {
+            const nameInput = form.querySelector('input[name="name"], #name, #contactName, input[type="text"]');
+            const emailInput = form.querySelector('input[name="email"], #email, #contactEmail, input[type="email"]');
+            const msgInput = form.querySelector('textarea[name="message"], #message, #contactMessage, textarea');
+
+            const name = nameInput ? nameInput.value : '';
+            const email = emailInput ? emailInput.value : '';
+            const message = msgInput ? msgInput.value : '';
+
+            // رابط الواتساب الاحتياطي المباشر
+            const waText = encodeURIComponent("🌴 رسالة جديدة من موقع MASSAR DATES:\n\n👤 الاسم: " + name + "\n📧 البريد: " + email + "\n💬 الرسالة: " + message);
+            const fallbackWa = "https://wa.me/601111134716?text=" + waText;
+
+            // مراقبة الـ fetch
+            setTimeout(() => {
+                window.location.href = fallbackWa;
+            }, 1000);
+        });
+    });
+});
+</script>
+
 </body>
 </html>
 
