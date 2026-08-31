@@ -1,4 +1,4 @@
-require('dotenv').config();
+﻿require('dotenv').config();
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
 
 const express = require('express');
@@ -308,10 +308,11 @@ app.get(/.*/, (req, res) => {
 
 
 // POSTGRES STARTUP DIAGNOSTIC
-pool.query('SELECT current_database() AS db, current_user AS db_user, COUNT(*)::int AS products_count FROM products')
+pool.query('SELECT current_database() AS db, current_user AS db_user, (SELECT COUNT(*)::int FROM products) AS products_count')
   .then(({ rows }) => console.log('POSTGRES_DIAGNOSTIC_OK', rows[0]))
   .catch(err => console.error('POSTGRES_DIAGNOSTIC_ERROR', err.message));
 
 app.listen(PORT, () => {
   console.log('\n🌴 MASSAR DATES (Postgres+Cloudinary) on http://localhost:' + PORT);
 });
+
