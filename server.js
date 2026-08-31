@@ -187,11 +187,11 @@ async function getProducts(all) {
 }
 
 app.get('/api/products', async (req, res) => {
-  try { res.json(await getProducts(false)); } catch (e) { res.json([]); }
+  try { res.json(await getProducts(false)); } catch (e) { console.error('API_PRODUCTS_ERROR:', e.message); res.status(500).json({ error: e.message }); }
 });
 
 app.get('/api/admin/products', authMiddleware, async (req, res) => {
-  try { res.json(await getProducts(true)); } catch (e) { res.json([]); }
+  try { res.json(await getProducts(true)); } catch (e) { console.error('API_ADMIN_PRODUCTS_ERROR:', e.message); res.status(500).json({ error: e.message }); }
 });
 
 app.get('/api/products/:slug', async (req, res) => {
