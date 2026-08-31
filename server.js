@@ -306,6 +306,12 @@ app.get(/.*/, (req, res) => {
   }
 });
 
+
+// POSTGRES STARTUP DIAGNOSTIC
+pool.query('SELECT current_database() AS db, current_user AS db_user, COUNT(*)::int AS products_count FROM products')
+  .then(({ rows }) => console.log('POSTGRES_DIAGNOSTIC_OK', rows[0]))
+  .catch(err => console.error('POSTGRES_DIAGNOSTIC_ERROR', err.message));
+
 app.listen(PORT, () => {
   console.log('\n🌴 MASSAR DATES (Postgres+Cloudinary) on http://localhost:' + PORT);
 });
